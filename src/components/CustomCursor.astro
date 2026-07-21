@@ -1,0 +1,200 @@
+---
+
+---
+
+<div id="custom-cursor" class="cursor-wrapper">
+    <div class="cursor-blob"></div>
+    <div class="cursor-text"></div>
+</div>
+
+<style>
+    :global(*),
+    :global(*::before),
+    :global(*::after) {
+        cursor: none !important;
+    }
+
+    @media (pointer: coarse) {
+        .cursor-wrapper {
+            display: none !important;
+        }
+        :global(body) {
+            cursor: auto;
+        }
+    }
+
+    .cursor-wrapper {
+        position: fixed;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 9999;
+        will-change: transform;
+    }
+
+    .cursor-blob {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 80px;
+        height: 80px;
+        background-color: #0000004d;
+        border-radius: 50%;
+        transform: translate(-50%, -50%) scale(0.2);
+        will-change: transform;
+    }
+
+    .cursor-text {
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: translate(-50%, -50%);
+        color: var(--white);
+        font-size: 12px;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        font-family: 'Jubilee', Serif;
+        font-weight: 500;
+    }
+
+    [data-magnetic] {
+        transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        will-change: transform;
+        display: inline-block;
+    }
+</style>
+
+<script>
+    let rafId;
+
+    function initCursor() {
+        const cursor = document.getElementById('custom-cursor');
+        const blob = cursor?.querySelector('.cursor-blob') as HTMLElement;
+        const textEl = cursor?.querySelector('.cursor-text') as HTMLElement;
+
+        if (!cursor || !blob || !textEl) return;
+
+        let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+        let pos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+
+        let targetScale = 0.2;
+        let scale = 0.2;
+        let isHovering = false;
+        let hasMoved = false;
+        let magneticTarget = null;
+
+        window.addEventListener('mousemove', (e) => {
+            if (!hasMoved) {
+                pos.x = e.clientX;
+                pos.y = e.clientY;
+                hasMoved = true;
+            }
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        document.addEventListener('mouseleave', () => {
+            cursor.style.opacity = '0';
+        });
+
+        document.addEventListener('mouseenter', () => {
+            cursor.style.opacity = '1';
+        });
+
+        const setupHoverElements = () => {
+            const interactives = document.querySelectorAll('[data-cursor-text], [data-magnetic], [data-cursor-hover]');
+
+            interactives.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    isHovering = true;
+                    targetScale = 0.5;
+
+                    if (el.hasAttribute('data-cursor-text')) {
+                        targetScale = 1;
+                        textEl.textContent = el.getAttribute('data-cursor-text');
+                        textEl.style.opacity = '1';
+                    }
+
+                    if (el.hasAttribute('data-magnetic')) {
+                        magneticTarget = el;
+                        targetScale = el.hasAttribute('data-cursor-text') ? 1 : 0.6;
+                    }
+                });
+
+                el.addEventListener('mouseleave', () => {
+                    isHovering = false;
+                    targetScale = 0.2;
+                    textEl.style.opacity = '0';
+
+                    if (magneticTarget) {
+                        magneticTarget.style.transform = `translate(0px, 0px)`;
+                        magneticTarget = null;
+                    }
+                });
+            });
+        };
+
+        setupHoverElements();
+
+        function render() {
+            const lerp = 0.15;
+
+            let targetX = mouse.x;
+            let targetY = mouse.y;
+
+            if (magneticTarget) {
+                const rect = magneticTarget.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+
+                const magnetStrength = 0.2;
+
+                targetX = centerX + (mouse.x - centerX) * magnetStrength;
+                targetY = centerY + (mouse.y - centerY) * magnetStrength;
+
+                const buttonMoveX = (mouse.x - centerX) / 3;
+                const buttonMoveY = (mouse.y - centerY) / 3;
+                magneticTarget.style.transform = `translate(${buttonMoveX}px, ${buttonMoveY}px)`;
+            }
+
+            pos.x += (targetX - pos.x) * lerp;
+            pos.y += (targetY - pos.y) * lerp;
+            scale += (targetScale - scale) * lerp;
+
+            const velX = targetX - pos.x;
+            const velY = targetY - pos.y;
+
+            const speed = Math.sqrt(velX * velX + velY * velY);
+
+            const stretch = 1 + Math.min(speed * 0.005, 0.4);
+            const squeeze = 1 - Math.min(speed * 0.005, 0.4);
+
+            const angle = Math.atan2(velY, velX);
+
+            const skewX = Math.max(-15, Math.min(15, velX * 0.15));
+            const skewY = Math.max(-15, Math.min(15, velY * 0.15));
+
+            cursor.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0)`;
+
+            if (isHovering && speed > 0.1) {
+                blob.style.transform = `translate(-50%, -50%) rotate(${angle}rad) scale(${scale * stretch}, ${scale * squeeze})`;
+                textEl.style.transform = `translate(-50%, -50%) skew(${skewX}deg, ${skewY}deg)`;
+            } else {
+                blob.style.transform = `translate(-50%, -50%) rotate(0rad) scale(${scale}, ${scale})`;
+                textEl.style.transform = `translate(-50%, -50%) skew(0deg, 0deg)`;
+            }
+
+            rafId = requestAnimationFrame(render);
+        }
+
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(render);
+    }
+    document.addEventListener('dom-updated', () => {
+        initCursor();
+    });
+
+    document.addEventListener('astro:page-load', initCursor);
+</script>

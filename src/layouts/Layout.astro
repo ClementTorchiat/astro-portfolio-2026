@@ -1,15 +1,44 @@
+---
+import Header from "../components/Header.astro";
+import HeaderAlternatif from "../components/HeaderAlternatif.astro";
+import Footer from "../components/Footer.astro"
+import { ClientRouter } from 'astro:transitions';
+import '../styles/style.less';
+import PageTransition from '../components/PageTransition.astro';
+import CustomCursor from '../components/CustomCursor.astro';
+
+interface Props {
+	titre: string;
+	masquerFooter?: boolean;
+	typeHeader?: 'normal' | 'alternatif';
+}
+
+const {
+	titre,
+	masquerFooter = false,
+	typeHeader = 'normal'
+} = Astro.props;
+---
+
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width" />
+	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+	<link rel="icon" href="/favicon.ico" />
+	<meta name="generator" content={Astro.generator} />
+	<title>{titre}</title>
+	<ClientRouter />
+</head>
 	<body>
-		<slot />
+		<PageTransition />
+		{typeHeader === 'alternatif' ? <HeaderAlternatif /> : <Header />}
+		<main>
+			<slot />
+		</main>
+		{!masquerFooter && <Footer />}
+		<CustomCursor />
 	</body>
 </html>
 

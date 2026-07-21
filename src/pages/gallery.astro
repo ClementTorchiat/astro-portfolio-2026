@@ -1,0 +1,25 @@
+---
+import Gallery from '../components/Gallery.jsx';
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout titre="Galerie - Clément Torchiat" masquerFooter={true} typeHeader="alternatif">
+    <div class="gallery-wrapper">
+        <Gallery client:only="react" />
+    </div>
+</Layout>
+
+<style is:global>
+    body, html {
+        overflow: hidden !important;
+    }
+
+    .gallery-wrapper {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 10;
+    }
+</style>

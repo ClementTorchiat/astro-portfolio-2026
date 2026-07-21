@@ -1,8 +1,783 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+
+import palette1 from '../assets/images/palette-1-1.webp';
+import palette2 from '../assets/images/palette-1-2.webp';
+import palette3 from '../assets/images/palette-1-3.webp';
+import palette4 from '../assets/images/palette-1-4.webp';
 ---
 
-<Layout>
-	<Welcome />
+<Layout titre="Clément Torchiat: Directeur artstique & Développeur web" masquerFooter={false} typeHeader="normal">
+	<div id="hero">
+		<div class="hero-background-image"></div>
+		<div class="hero-title">
+			<h1>Concevoir</h1>
+			<h1>Coder</h1>
+			<h1>Sublimer</h1>
+		</div>
+		<div class="hero-bottom-container">
+			<div class="hero-line"></div>
+			<div class="hero-bottom-background-gradient"></div>
+			<div class="hero-bottom">
+				<div class="hero-bottom-left">
+					<p>Directeur artistique</p>
+				</div>
+				<div class="hero-bottom-center">
+					<p>Je suis un designer passionné qui façonne méticuleusement des expériences numériques d'une qualité et d'un impact inégalés.</p>
+				</div>
+				<div class="hero-bottom-right">
+					<p>Développeur web</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="about">
+		<div class="about-container">
+			<p class="grey-subtitle">(À propos)</p>
+			<p class="about-description">Je suis Clément. En alliant design d'interface et ingénierie web, je donne vie à des expériences digitales pensées pour connecter profondément les utilisateurs à votre univers.</p>
+		</div>
+	</div>
+	<div id="work">
+		<div class="work-title-container">
+			<div class="work-title-flex">
+				<h2>Projets phares</h2>
+				<p>(01)</p>
+			</div>
+			<div class="work-line"></div>
+		</div>
+		<div class="work-projects-container">
+			<div class="work-projects-up">
+				<div class="project-wrapper">
+					<a class="project-image" data-cursor-text="Voir le projet">
+						<div class="video-container">
+							<div class="video-subcontainer"></div>
+							<video class="video"></video>
+						</div>
+						<div class="image-split"></div>
+						<div class="blurred-background"></div>
+					</a>
+					<div class="project-info">
+						<h3>Casa Lunara</h3>
+						<p>Art Direction, UI/UX Design, Web Development</p>
+					</div>
+				</div>
+				<div class="project-wrapper">
+					<a class="project-image" data-cursor-text="Voir le projet">
+						<div class="video-container">
+							<div class="video-subcontainer"></div>
+							<video class="video"></video>
+						</div>
+						<div class="image-split"></div>
+						<div class="blurred-background"></div>
+					</a>
+					<div class="project-info">
+						<h3>Casa Lunara</h3>
+						<p>Art Direction, UI/UX Design, Web Development</p>
+					</div>
+				</div>
+			</div>
+			<div class="work-projects-down">
+				<div class="project-space"></div>
+				<div class="project-wrapper">
+					<a class="project-image" data-cursor-text="Voir le projet">
+						<div class="video-container">
+							<div class="video-subcontainer"></div>
+							<video class="video"></video>
+						</div>
+						<div class="image-split"></div>
+						<div class="blurred-background"></div>
+					</a>
+					<div class="project-info">
+						<h3>Casa Lunara</h3>
+						<p>Art Direction, UI/UX Design, Web Development</p>
+					</div>
+				</div>
+				<a href="/work" class="button-dot">
+					<div class="text-wrapper">
+						<span class="original-text">Voir les projets</span>
+						<span class="hover-text">Voir les projets</span>
+					</div>
+					<div class="liquid-bg"></div>
+				</a>
+			</div>
+		</div>
+	</div>
+	<div id="palette">
+		<div class="palette-title-container">
+			<div class="palette-title-flex">
+				<h2>Ma palette</h2>
+				<p>(02)</p>
+			</div>
+		</div>
+		<div class="palette-wrapper">
+			<div class="palette-container">
+				<div class="palette palette1">
+					<div class="dark-overlay-palette"></div>
+					<h3 class="palette-title">Direction artistique</h3>
+					<div class="palette-image"></div>
+					<div class="palette-bg-images">
+						<Image src={palette1} alt="" />
+						<Image src={palette2} alt="" />
+						<Image src={palette3} alt="" />
+						<Image src={palette4} alt="" />
+					</div>
+					<div class="palette-details-wrapper">
+						<div class="palette-details-container">
+							<div class="dark-overlay-palette"></div>
+							<div class="palette-details">
+								<p>Identité visuelle</p>
+							</div>
+							<div class="palette-details">
+								<p>Direction créative</p>
+							</div>
+							<div class="palette-details">
+								<p>Typographies et couleurs</p>
+							</div>
+							<div class="palette-details">
+								<p>Charte graphique</p>
+							</div>
+							<div class="palette-details">
+								<p>Raffinement de concept</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="palette palette1">
+					<div class="dark-overlay-palette"></div>
+					<h3 class="palette-title">Direction artistique</h3>
+					<div class="palette-image"></div>
+					<div class="palette-bg-images">
+						<Image src={palette1} alt="" />
+						<Image src={palette2} alt="" />
+						<Image src={palette3} alt="" />
+						<Image src={palette4} alt="" />
+					</div>
+					<div class="palette-details-wrapper">
+						<div class="palette-details-container">
+							<div class="dark-overlay-palette"></div>
+							<div class="palette-details">
+								<p>Identité visuelle</p>
+							</div>
+							<div class="palette-details">
+								<p>Direction créative</p>
+							</div>
+							<div class="palette-details">
+								<p>Typographies et couleurs</p>
+							</div>
+							<div class="palette-details">
+								<p>Charte graphique</p>
+							</div>
+							<div class="palette-details">
+								<p>Raffinement de concept</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="palette palette1">
+					<div class="dark-overlay-palette"></div>
+					<h3 class="palette-title">Direction artistique</h3>
+					<div class="palette-image"></div>
+					<div class="palette-bg-images">
+						<Image src={palette1} alt="" />
+						<Image src={palette2} alt="" />
+						<Image src={palette3} alt="" />
+						<Image src={palette4} alt="" />
+					</div>
+					<div class="palette-details-wrapper">
+						<div class="palette-details-container">
+							<div class="dark-overlay-palette"></div>
+							<div class="palette-details">
+								<p>Identité visuelle</p>
+							</div>
+							<div class="palette-details">
+								<p>Direction créative</p>
+							</div>
+							<div class="palette-details">
+								<p>Typographies et couleurs</p>
+							</div>
+							<div class="palette-details">
+								<p>Charte graphique</p>
+							</div>
+							<div class="palette-details">
+								<p>Raffinement de concept</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </Layout>
+
+<style>
+	#hero .hero-background-image {
+		z-index: 9;
+		background-image: url(../assets/images/hero-background-image.webp);
+		background-position: 50%;
+		background-size: cover;
+		width: 100vw;
+		height: 100vh;
+		position: absolute;
+		inset: 0;
+	}
+
+	#hero .hero-title {
+		z-index: 11;
+		cursor: default;
+		width: 100%;
+		height: 100vh;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		padding-bottom: 15vh;
+		position: relative;
+		box-sizing: border-box;
+	}
+
+	#hero .hero-title h1 {
+		margin: 0;
+		line-height: 1.1;
+		font-weight: normal;
+		font-size: 4rem;
+	}
+
+	#hero .hero-title h1:nth-child(1) { align-self: flex-start; margin-left: 10%; }
+	#hero .hero-title h1:nth-child(2) { align-self: flex-end; margin-right: 10%; }
+	#hero .hero-title h1:nth-child(3) { align-self: flex-start; margin-left: 15%; }
+
+	#hero .hero-bottom-container {
+		z-index: 11;
+		flex-flow: column;
+		justify-content: flex-start;
+		align-items: center;
+		width: 100%;
+		padding-left: 20px;
+		padding-right: 20px;
+		display: flex;
+		position: absolute;
+		inset: auto 0 0;
+	}
+
+	#hero .hero-line {
+		width: 100%;
+		height: 1px;
+		background-color: var(--white);
+		color: var(--white);
+		position: relative;
+		inset: auto 0 0;
+	}
+
+	#hero .hero-bottom-background-gradient {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		height: 145px;
+		/* #7B5136 avec 60% d'opacité = #7B513699 */
+		background: linear-gradient(to top, #7B513699, #7B513600);
+		z-index: -1;
+		pointer-events: none;
+	}
+
+	#hero .hero-bottom {
+		justify-content: space-between;
+		align-items: center;
+		width: 100%;
+		padding-top: 16px;
+		padding-bottom: 24px;
+		display: flex;
+	}
+
+	#hero .hero-bottom-left,
+	#hero .hero-bottom-right { display: none; }
+
+	#hero .hero-bottom-center {
+		font-size: 15px;
+		line-height: 1.2;
+		text-align: center;
+	}
+
+	#hero .hero-bottom-center p { color: var(--white); }
+
+	#about {
+		z-index: 4;
+		justify-content: center;
+		align-items: center;
+		width: 100vw;
+		padding-left: 20px;
+		padding-right: 20px;
+		display: flex;
+		position: relative;
+		padding-top: 86px;
+		padding-bottom: 130px;
+	}
+
+	#about .about-container {
+		width: 43em;
+		flex-flow: column;
+		justify-content: center;
+		align-items: center;
+		display: flex;
+		overflow: hidden;
+		text-align: center;
+		gap: 15px;
+	}
+
+	#about .about-description {
+		font-size: 1rem;
+		line-height: 1.25;
+	}
+
+	#work {
+		padding-left: 20px;
+		padding-right: 20px;
+		padding-bottom: 100px;
+	}
+
+	#work .work-title-flex {
+		justify-content: space-between;
+		align-items: flex-end;
+		display: flex;
+		padding-bottom: 20px;
+	}
+
+	#work .work-title-flex h2 { text-transform: uppercase; }
+	#work .work-title-flex p { display: none; }
+
+	#work .work-line {
+		background-color: var(--light-grey);
+		width: 100%;
+		height: 1px;
+		position: relative;
+		inset: auto 0 0;
+	}
+
+	#work .work-projects-container {
+		flex-flow: column;
+		justify-content: center;
+		padding-top: 20px;
+		display: flex;
+		align-items: flex-start;
+		gap: 1rem;
+	}
+
+	#work .project-wrapper {
+		cursor: pointer !important;
+		width: 100%;
+		height: 317px;
+		margin-right: 0;
+		padding-bottom: 1.4em;
+		color: var(--black);
+		text-decoration: none;
+	}
+
+	#work .project-wrapper a.project-image {
+		height: 90%;
+		cursor: pointer;
+		justify-content: center;
+		align-items: center;
+		width: 100%;
+		display: flex;
+		position: relative;
+		overflow: hidden;
+		max-width: 100%;
+	}
+	.work-projects-up {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.work-projects-down {
+		width: 100%;
+	}
+
+	#work .video-container {
+		will-change: transform;
+		transform: translate3d(0em, 0em, 0px) scale3d(1, 1, 1);
+		transform-style: preserve-3d;
+		width: 100%;
+		height: 100%;
+		z-index: 8;
+		position: relative;
+	}
+
+	#work .video-subcontainer,
+	#work .video {
+		transform: scale(0.6, 0.6);
+		opacity: 0;
+		transition: none;
+	}
+
+	#work .video-subcontainer {
+		height: 100%;
+		width: 100%;
+		background-size: cover;
+		background-repeat: no-repeat;
+		background-position: center;
+		position: relative;
+		z-index: -3;
+	}
+
+	#work .video {
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: -4;
+		height: 100%;
+		width: 100%;
+		object-fit: cover;
+		pointer-events: none !important;
+	}
+
+	#work .image-split {
+		z-index: 3;
+		background-image: linear-gradient(#0000001a, #0000001a), url(https://karim-saab.com/images/Frame-358_1.webp);
+		background-position: 0 0, 50%;
+		background-repeat: repeat, no-repeat;
+		background-size: auto, cover;
+		justify-content: center;
+		align-items: center;
+		width: 100%;
+		height: 100%;
+		display: flex;
+		position: absolute;
+		inset: 0;
+	}
+
+	#work .blurred-background {
+		background-image: linear-gradient(#000000b3, #000000b3);
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		z-index: 3;
+		opacity: 0;
+	}
+
+	#work .project-info { margin-top: 4px; padding-top: 8px; }
+	#work .project-info p { margin-top: 5px; line-height: 1; }
+	#work .button-dot { width: 50%; margin-top: 49px; margin-left: auto; margin-right: auto; }
+
+	#palette .palette-title-container { padding-left: 20px; padding-right: 20px; }
+	#palette .palette-title-flex { justify-content: space-between; align-items: flex-end; display: flex; padding-bottom: 20px; }
+	#palette .palette-title-flex h2 { text-transform: uppercase; }
+	#palette .palette-title-flex p { display: none; }
+
+
+	@media (min-width: 1024px) {
+		#hero .hero-title h1 { font-size: 183px; line-height: 0.8; }
+		#hero .hero-title h1:nth-child(1) { margin-left: 15%; }
+		#hero .hero-title h1:nth-child(2) { margin-right: 20%; }
+		#hero .hero-title h1:nth-child(3) { margin-left: 25%; }
+
+		#hero .hero-bottom-container { padding-left: 30px; padding-right: 30px; }
+
+		#hero .hero-bottom { padding-top: 29px; padding-bottom: 29px; }
+		#hero .hero-bottom-left,
+		#hero .hero-bottom-right { display: block; text-transform: uppercase; }
+		#hero .hero-bottom-left p,
+		#hero .hero-bottom-right p {
+			color: var(--white);
+			font-weight: 700;
+			letter-spacing: -3%;
+			font-size: 1rem;
+			line-height: 1.1;
+		}
+
+		#hero .hero-bottom-center { max-width: 553px; }
+
+		#about { padding-top: 175px; padding-bottom: 189px; padding-left: 30px; padding-right: 30px; }
+		#about .about-container { width: 46%; }
+		#about .about-description { font-size: 20px; line-height: 1.15; }
+
+		#work { padding-left: 30px; padding-right: 30px; padding-bottom: 221px; }
+		#work .work-title-flex p {
+			display: block;
+			font-family: 'Jubilee', Serif;
+			font-size: 64px;
+			font-weight: 100;
+			line-height: 1.4;
+		}
+
+		#work .work-projects-up {
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-start;
+			flex-direction: row;
+			gap: 16px;
+			width: 100%;
+		}
+
+		#work .work-projects-up .project-wrapper { width: 40%; }
+		#work .work-projects-up .project-wrapper:nth-child(2) { width: 60%; }
+		#work .work-projects-down .project-wrapper {  }
+
+		.work-projects-up {
+			height: 100%;
+		}
+
+		.work-projects-container {
+			padding-top: 58px !important;
+		}
+		.project-wrapper {
+			padding-bottom: 0 !important;
+			height: auto !important;
+		}
+
+		.project-image {
+			height: 30em !important;
+		}
+
+		.project-wrapper:nth-child(2) .project-image {
+			height: 58em !important;
+		}
+
+		.project-space {
+			width: 133px;
+		}
+
+		#work .work-projects-down {
+			justify-content: flex-start;
+			align-items: flex-end;
+			padding-top: 8em;
+			display: flex;
+			width: 100%;
+		}
+
+		#work .work-projects-down .project-wrapper {
+			width: 33.33% !important;
+		}
+
+		#work .work-projects-down .project-wrapper .project-image {
+			height: 23em !important;
+		}
+
+		.button-dot {
+			margin: 0 !important;
+			margin-left: 174px !important;
+			width: auto !important;
+			padding: 8px 37px 23px 11px !important;
+		}
+
+		.button-dot span {
+			font-size: 15px;
+			line-height: 1;
+		}
+
+		.palette-wrapper {
+			width: 100%;
+			top: 0;
+		}
+
+		.palette-container {
+			width: 100%;
+			height: 100vh;
+			display: flex;
+		}
+
+		.palette {
+			flex-flow: column;
+			justify-content: center;
+			align-items: center;
+			width: 33.33%;
+			height: 100%;
+			display: flex;
+			position: relative;
+		}
+
+		.dark-overlay-palette {
+			z-index: 12;
+			opacity: 0;
+			background-image: linear-gradient(#00000080, #00000080);
+			width: 100%;
+			height: 100%;
+			display: block;
+			position: absolute;
+			inset: 0;
+		}
+
+		.palette-title {
+			z-index: 6;
+			color: var(--white);
+			text-transform: uppercase;
+			font-size: 27px;
+			line-height: 1;
+			font-weight: 500;
+			display: block;
+			position: relative;
+		}
+
+		.palette-title-flex {
+			padding-bottom: 32px !important;
+		}
+
+		.palette-title-flex p {
+			display: block !important;
+			font-family: Jubilee, serif;
+			font-size: 64px;
+			font-weight: 100;
+			line-height: 1.4;
+		}
+
+		.palette-image {
+			z-index: 2;
+			background-image: url(../assets/images/palette-1-bg.webp);
+			background-position: 50%;
+			background-repeat: no-repeat;
+			background-size: cover;
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			inset: 0;
+			background-color: var(--white);
+		}
+
+		.palette-image::after {
+			content: "";
+			position: absolute;
+			inset: 0;
+			background-image: inherit;
+			background-position: inherit;
+			background-repeat: inherit;
+			background-size: inherit;
+			background-color: inherit;
+			background-blend-mode: difference;
+			opacity: 0;
+			transition: opacity 0.5s ease;
+		}
+
+		.palette-bg-images {
+			z-index: 3;
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			inset: 0%;
+			overflow: hidden;
+		}
+
+		.palette-bg-images img {
+			z-index: 20;
+			display: inline-block;
+			position: absolute;
+			height: auto;
+			object-fit: cover;
+			opacity: 0;
+			transition: transform 0.6s ease-out, opacity 0.6s ease-out;
+		}
+
+		.palette:hover .palette-bg-images img {
+			opacity: 1;
+			transform: translate(0, 0);
+		}
+
+		.palette:hover .palette-bg-images img:first-child {
+			transition-delay: 0s;
+		}
+
+		.palette:hover .palette-bg-images img:nth-child(2) {
+			transition-delay: 0.1s;
+		}
+
+		.palette:hover .palette-bg-images img:nth-child(3) {
+			transition-delay: 0.2s;
+		}
+
+		.palette:hover .palette-bg-images img:nth-child(4) {
+			transition-delay: 0.3s;
+		}
+
+		.palette-bg-images img:first-child {
+			width: 40%;
+			top: -10%;
+			left: -20%;
+			transform: translate(-20%, -20%);
+		}
+
+		.palette-bg-images img:nth-child(2) {
+			width: 26%;
+			top: 20%;
+			right: 2%;
+			transform: translate(20%, -10%);
+		}
+
+		.palette-bg-images img:nth-child(3) {
+			width: 43%;
+			bottom: 20%;
+			left: -9%;
+			transform: translate(-20%, 20%);
+		}
+
+		.palette-bg-images img:nth-child(4) {
+			width: 46%;
+			bottom: 1%;
+			right: -9%;
+			transform: translate(20%, 20%);
+		}
+
+		.palette-details-wrapper {
+			z-index: 3;
+			flex-flow: column;
+			width: 100%;
+			height: 40vh;
+			display: flex;
+			position: absolute;
+			inset: auto 0% 0%;
+			background: linear-gradient(to top, #08182C99, #08182C00);
+			opacity: 0;
+			transition: opacity 0.3s ease;
+		}
+
+		.palette-details-container {
+			z-index: 1;
+			flex-flow: column;
+			justify-content: flex-start;
+			align-items: center;
+			width: 100%;
+			height: 100%;
+			padding-top: 2em;
+			display: flex;
+			position: relative;
+		}
+
+		.palette-details {
+			z-index: 5;
+			margin-bottom: .5em;
+			justify-content: center;
+			align-items: center;
+			display: flex;
+			position: relative;
+			overflow: hidden;
+		}
+
+		.palette-details p {
+			font-size: 1em;
+			line-height: 1;
+			font-family: 'Switzer', sans-serif;
+			font-weight: 400;
+			color: var(--white);
+			opacity: 0;
+			transform: translate3d(0px, 1em, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg);
+			transform-style: preserve-3d;
+		}
+
+		.palette:hover .palette-image::after {
+			opacity: 1;
+		}
+
+		.palette:hover .palette-bg-images {
+			opacity: 1;
+		}
+
+		.palette:hover .palette-details-wrapper {
+			opacity: 1;
+		}
+
+		.palette:hover .palette-details-wrapper .palette-details-container .palette-details p {
+			opacity: 1;
+			transform: translate3d(0px, 0em, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg);
+			transform-style: preserve-3d;
+		}
+	}
+</style>

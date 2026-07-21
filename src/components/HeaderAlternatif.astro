@@ -1,0 +1,324 @@
+---
+// Header.astro
+---
+
+<header class="site-header">
+    <div class="header-container">
+        <a href="/" class="logo" aria-label="Retour à l'accueil">
+            <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="25" height="28" viewBox="0 0 25 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M24.64 11.0481V6.98693L12.32 0L0 6.98693V21.012L12.32 27.9995L24.64 21.012V13.3199L12.32 20.3074L11.1411 19.6389V13.3555L17.0065 10.0286L18.0124 10.5995V14.8068L24.6395 11.0486L24.64 11.0481ZM12.32 22.8024L22.1867 17.2064V19.9095L12.32 25.5055L2.21175 19.7726V8.22959L8.02115 4.9329L10.279 6.2133L4.32026 9.59301V18.2652L12.3195 22.8024H12.32ZM17.0109 7.53682L8.68061 12.2568V18.2436L6.63414 17.0829V10.7753L14.6773 6.2133L10.2214 3.68485L12.32 2.49448L22.1867 8.0905V9.94289L20.2829 11.0211V9.39246L17.0114 7.53682H17.0109Z" fill="#222222"></path>
+            </svg>
+        </a>
+
+        <!-- Navigation Desktop -->
+        <nav class="desktop-nav">
+            <ul>
+                <div class="nav-indicator"></div>
+
+                <li><a href="/work">Projets</a></li>
+                <li><a href="/gallery">Galerie</a></li>
+                <li><a href="/about">À Propos</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+
+        <!-- Bouton Burger -->
+        <button class="mobile-menu-btn" aria-label="Ouvrir le menu">
+            <span class="line line-1"></span>
+            <span class="line line-2"></span>
+            <span class="line line-3"></span>
+        </button>
+    </div>
+
+    <nav class="mobile-nav">
+        <ul class="mobile-nav-links">
+            <li><a href="/work">Projets</a></li>
+            <li><a href="/gallery">Galerie</a></li>
+            <li><a href="/about">À Propos</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+
+<style>
+    .site-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 1.5rem;
+        z-index: 100;
+    }
+
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        max-width: 1440px;
+        margin: 0 auto;
+        z-index: 101;
+    }
+
+    .logo svg {
+        display: block;
+        height: 35px;
+        width: auto;
+    }
+
+    .desktop-nav {
+        display: none;
+    }
+
+    .mobile-menu-btn {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 32px;
+        height: 20px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        z-index: 101;
+    }
+
+    .mobile-menu-btn .line {
+        width: 100%;
+        height: 2px;
+        background-color: var(--black);
+        border-radius: 2px;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .line-1, .line-3 {
+        width: 80% !important;
+        margin-left: 10%;
+    }
+
+    /* Animation de la croix quand le menu est actif */
+    .mobile-menu-btn.is-active .line-1 {
+        transform: translateY(9px) rotate(45deg);
+    }
+    .mobile-menu-btn.is-active .line-2 {
+        opacity: 0;
+    }
+    .mobile-menu-btn.is-active .line-3 {
+        transform: translateY(-9px) rotate(-45deg);
+    }
+
+    .mobile-nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background-color: rgba(139, 104, 79, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 90;
+        visibility: hidden;
+    }
+
+    .mobile-nav-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .mobile-nav-links a {
+        color: #fff;
+        text-decoration: none;
+        font-family: 'Jubilee', Serif;
+        font-size: 3rem;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+
+    @media (min-width: 768px) {
+        .site-header {
+            padding: 2rem 3rem;
+        }
+        .mobile-nav-links a {
+            font-size: 4rem; /* Encore plus grand sur tablette */
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .mobile-menu-btn {
+            display: none;
+        }
+
+        /* On s'assure que le menu mobile disparaît complètement sur grand écran */
+        .mobile-nav {
+            display: none !important;
+        }
+
+        .desktop-nav {
+            display: block;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+            padding: 3px;
+            border-radius: 8px;
+            z-index: 99;
+        }
+
+        .desktop-nav ul {
+            list-style: none;
+            display: flex;
+            position: relative;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-indicator {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+            width 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+            opacity 0.3s ease;
+            z-index: 0;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .desktop-nav li {
+            position: relative;
+            z-index: 1;
+        }
+
+        .desktop-nav a {
+            display: block;
+            padding: 6px 52px;
+            color: var(--white);
+            text-decoration: none;
+            font-family: 'Switzer', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: uppercase;
+            line-height: 1.4;
+            white-space: nowrap;
+            transition: color 0.3s ease;
+        }
+    }
+</style>
+
+<script>
+    import gsap from "gsap";
+
+    document.addEventListener("astro:page-load", () => {
+
+        /* ====================================================
+           1. LOGIQUE DE LA NAVIGATION DESKTOP (Pastille)
+           ==================================================== */
+        const nav = document.querySelector('.desktop-nav ul');
+        const indicator = document.querySelector('.nav-indicator');
+        const items = document.querySelectorAll('.desktop-nav li');
+
+        if (nav && indicator && items.length > 0) {
+            const moveIndicator = (item) => {
+                const navRect = nav.getBoundingClientRect();
+                const itemRect = item.getBoundingClientRect();
+
+                const leftOffset = itemRect.left - navRect.left;
+                const width = itemRect.width;
+
+                indicator.style.transform = `translateX(${leftOffset}px)`;
+                indicator.style.width = `${width}px`;
+                indicator.style.opacity = '1';
+            };
+
+            const currentPath = window.location.pathname;
+            let activeItem = null;
+
+            items.forEach(item => {
+                const link = item.querySelector('a');
+                if(!link) return;
+
+                const href = link.getAttribute('href');
+                if (currentPath.includes(href)) {
+                    activeItem = item;
+                }
+
+                item.addEventListener('mouseenter', () => {
+                    moveIndicator(item);
+                });
+            });
+
+            nav.addEventListener('mouseleave', () => {
+                if (activeItem) {
+                    moveIndicator(activeItem);
+                } else {
+                    indicator.style.opacity = '0';
+                }
+            });
+
+            if (activeItem) {
+                setTimeout(() => moveIndicator(activeItem), 50);
+            }
+        }
+
+        /* ====================================================
+           2. LOGIQUE DU MENU MOBILE GSAP
+           ==================================================== */
+        const burgerBtn = document.querySelector('.mobile-menu-btn');
+        const mobileNav = document.querySelector('.mobile-nav');
+        const mobileLinks = document.querySelectorAll('.mobile-nav-links li');
+
+        if (burgerBtn && mobileNav) {
+            let isMenuOpen = false;
+
+            // On prépare la Timeline GSAP (en pause par défaut)
+            const tl = gsap.timeline({ paused: true });
+
+            // On place le menu au-dessus de l'écran pour commencer
+            gsap.set(mobileNav, { yPercent: -100, autoAlpha: 1 });
+
+            // 1. Le fond noir descend
+            tl.to(mobileNav, {
+                yPercent: 0,
+                duration: 0.7,
+                ease: "power4.inOut"
+            })
+                // 2. Les liens arrivent du bas un par un
+                .fromTo(mobileLinks,
+                    { y: 40, opacity: 0 },
+                    { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: "power2.out" },
+                    "-=0.3" // Cette ligne fait démarrer les textes un peu avant que le fond noir n'ait fini de tomber
+                );
+
+            // Gestion du clic sur le burger
+            burgerBtn.addEventListener('click', () => {
+                isMenuOpen = !isMenuOpen;
+                burgerBtn.classList.toggle('is-active');
+
+                if (isMenuOpen) {
+                    tl.play(); // Joue l'animation
+                } else {
+                    tl.reverse(); // Rembobine l'animation
+                }
+            });
+
+            // Fermer le menu si on clique sur un lien (très utile avec View Transitions !)
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    isMenuOpen = false;
+                    burgerBtn.classList.remove('is-active');
+                    tl.reverse();
+                });
+            });
+        }
+    });
+</script>
