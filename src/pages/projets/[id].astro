@@ -1,0 +1,369 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+    const projetsBruts = await getCollection('projets');
+    const projets = projetsBruts.sort((a, b) => a.data.order - b.data.order);
+
+    return projets.map((projet, index) => {
+        const nextProject = projets[(index + 1) % projets.length];
+
+        return {
+            params: { id: projet.id },
+            props: { projet, nextProject },
+        };
+    });
+}
+
+const { projet, nextProject } = Astro.props;
+const { Content } = await render(projet);
+---
+
+<Layout titre={`${projet.data.title} - Clément Torchiat`} masquerFooter={false} typeHeader="alternatif">
+    <main class="project-page">
+
+        <header class="project-header">
+            <div class="col-info">
+                <h1>{projet.data.title}</h1>
+                <p>{projet.data.description}</p>
+            </div>
+            <div class="col-roles">
+                <h3>RÔLES :</h3>
+                <ul>
+                    {projet.data.tags.map(tag => (
+                            <li>{tag}</li>
+                    ))}
+                </ul>
+            </div>
+            <div class="col-client">
+                <h3>CLIENT :</h3>
+                <p>{projet.data.clientName}</p>
+                <p>{projet.data.clientCompany}</p>
+                <p>{projet.data.year}</p>
+            </div>
+        </header>
+
+        <section class="project-body">
+            <article class="project-content">
+                <Content />
+            </article>
+
+            <aside class="minimap-container">
+                <div class="minimap">
+                    <div class="minimap-viewport"></div>
+                    <div class="minimap-content"></div>
+                </div>
+            </aside>
+        </section>
+
+        <section class="next-project">
+            <p>(Prochain projet)</p>
+            <h2>{nextProject.data.title}</h2>
+            <a href={`/projets/${nextProject.id}`} data-cursor-text="Voir">
+                <img
+                        src={nextProject.data.coverImage.src}
+                        alt={`Projet ${nextProject.data.title}`}
+                />
+            </a>
+        </section>
+
+    </main>
+</Layout>
+
+<style>
+    .project-page {
+        background-color: var(--white);
+        color: var(--black);
+        padding: 150px 20px 0 20px;
+        min-height: 100vh;
+    }
+
+    .project-content :global(img) {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .project-header {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 80px;
+        align-items: start;
+    }
+
+    .col-info h1 {
+        font-family: 'Jubilee', serif;
+        font-size: 3rem;
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+        color: var(--black);
+    }
+
+    .col-info p {
+        font-size: 1.1rem;
+        line-height: 1.4;
+        max-width: 90%;
+    }
+
+    .col-roles h3, .col-client h3 {
+        font-family: 'Switzer', sans-serif;
+        font-weight: 700;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        margin-bottom: 0.5rem;
+    }
+
+    .col-roles ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .col-roles li, .col-client p {
+        font-size: 0.9rem;
+        font-weight: 500;
+        line-height: 1.6;
+        font-family: 'Switzer', sans-serif;
+    }
+
+    .project-body {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .project-content {
+        width: 75%;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .project-content :global(img) {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .minimap-container {
+        position: fixed;
+        top: 260px;
+        right: 10%;
+        width: 80px;
+        display: flex;
+        justify-content: flex-end;
+        z-index: 10;
+    }
+
+    .minimap {
+        position: relative;
+        width: 120px;
+    }
+
+    .minimap-content {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .minimap-content :global(img) {
+        width: 100%;
+        height: auto;
+        display: block;
+        opacity: 0.8;
+    }
+
+    .minimap-viewport {
+        position: absolute;
+        top: 0;
+        left: -4px;
+        width: calc(100% + 8px);
+        height: 50px;
+        border: 2px solid #1A1A1A;
+        pointer-events: none;
+        z-index: 2;
+        transition: transform 0.1s ease-out;
+    }
+
+    .next-project {
+        margin-top: 150px;
+        padding-bottom: 50px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        z-index: 20;
+        background-color: var(--white);
+    }
+
+    .next-project p {
+        color: var(--light-grey);
+        font-family: Jubilee, serif;
+        font-size: 15px;
+        line-height: 1.5;
+        font-weight: 500;
+        margin-bottom: 8px;
+    }
+
+    .next-project h2 {
+        font-family: 'Jubilee', serif;
+        font-size: 4rem;
+        text-transform: uppercase;
+        margin-bottom: 2rem;
+        color: var(--black);
+    }
+
+    .next-project a {
+        width: 100%;
+        display: block;
+        overflow: hidden;
+    }
+
+    .next-project img {
+        width: 100%;
+        height: auto;
+        max-height: 80vh;
+        object-fit: cover;
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .next-project a:hover img {
+        transform: scale(1.02);
+    }
+
+    :global(.site-footer) {
+        position: relative ;
+        z-index: 20 ;
+        background-color: var(--white) ;
+    }
+
+    :global(.lightbox) {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.9);
+        z-index: 9998;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    :global(.lightbox img) {
+        max-width: 90vw;
+        max-height: 90vh;
+        object-fit: contain;
+        transform: scale(0.95);
+        transition: transform 0.3s ease;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+
+    :global(.lightbox.active) {
+        opacity: 1;
+    }
+
+    :global(.lightbox.active img) {
+        transform: scale(1);
+    }
+
+    @media (min-width: 1024px) {
+        .project-page {
+            padding: 150px 128px 0 128px;
+        }
+    }
+
+    @media (max-width: 1000px) {
+        .project-header {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        .project-content {
+            width: 100%;
+        }
+        .minimap-container {
+            display: none;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener("astro:page-load", () => {
+        const contentImages = document.querySelectorAll('.project-content img');
+        const minimapContent = document.querySelector('.minimap-content');
+        const minimapViewport = document.querySelector('.minimap-viewport');
+        const projectContent = document.querySelector('.project-content');
+
+        if (minimapContent && minimapViewport && contentImages.length > 0) {
+            minimapContent.innerHTML = '';
+            contentImages.forEach(img => {
+                const clone = img.cloneNode() as HTMLImageElement;
+                clone.removeAttribute('id');
+                minimapContent.appendChild(clone);
+            });
+
+            const updateMinimap = () => {
+                const contentHeight = projectContent.getBoundingClientRect().height;
+                const windowHeight = window.innerHeight;
+                const contentTop = projectContent.getBoundingClientRect().top;
+                const minimapHeight = minimapContent.getBoundingClientRect().height;
+
+                const viewportRatio = Math.min(windowHeight / contentHeight, 1);
+                minimapViewport.style.height = `${viewportRatio * minimapHeight}px`;
+
+                let scrolled = -contentTop + (windowHeight / 2);
+                let progress = (-contentTop) / (contentHeight - windowHeight);
+                progress = Math.max(0, Math.min(progress, 1));
+
+                const maxTranslate = minimapHeight - minimapViewport.getBoundingClientRect().height;
+                const translateValue = progress * maxTranslate;
+
+                minimapViewport.style.transform = `translateY(${translateValue}px)`;
+            };
+
+            window.addEventListener('scroll', updateMinimap, { passive: true });
+            window.addEventListener('resize', updateMinimap);
+            setTimeout(updateMinimap, 100);
+        }
+
+        contentImages.forEach(img => {
+
+            img.setAttribute('data-cursor-text', 'Agrandir');
+
+            img.addEventListener('click', () => {
+                const lightbox = document.createElement('div');
+                lightbox.className = 'lightbox';
+
+                lightbox.setAttribute('data-cursor-text', 'Fermer');
+
+                const imgClone = document.createElement('img');
+                imgClone.src = (img as HTMLImageElement).src;
+
+                lightbox.appendChild(imgClone);
+                document.body.appendChild(lightbox);
+
+                document.dispatchEvent(new CustomEvent('dom-updated'));
+
+                requestAnimationFrame(() => {
+                    lightbox.classList.add('active');
+                });
+
+                lightbox.addEventListener('click', () => {
+                    lightbox.classList.remove('active');
+
+                    lightbox.dispatchEvent(new Event('mouseleave'));
+
+                    setTimeout(() => {
+                        lightbox.remove();
+                    }, 300);
+                });
+            });
+        });
+        document.dispatchEvent(new CustomEvent('dom-updated'));
+    });
+</script>

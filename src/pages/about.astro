@@ -1,7 +1,223 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { Image } from 'astro:assets';
+
+import clem from '../assets/images/about-clem.webp';
+import palette1 from "../assets/images/palette-1-1.webp";
 ---
 
 <Layout titre="À propos - Clément Torchiat" masquerFooter={false} typeHeader="alternatif">
-
+    <div class="about-container">
+        <div class="about-top">
+            <div class="top-content-container">
+                <div class="about-services">
+                    <div class="about">
+                        <p class="grey-subtitle">(À propos)</p>
+                        <p>
+                            Je suis <strong>Clément Torchiat</strong>, directeur artistique, UX/UI designer et développeur web. Passé par Peugeot Motocycles pour affûter ma vision produit, je façonne aujourd'hui des écosystèmes digitaux de A à Z.
+                            <br><br>
+                            Fasciné par le design global, nourri par la culture gaming et l'esthétique pop, j'aime donner vie à des projets atypiques et immersifs. Mon objectif est de créer des interfaces qui marquent les esprits et sortent de l'ordinaire.
+                        </p>
+                    </div>
+                    <div class="services">
+                        <p class="grey-subtitle">(Services)</p>
+                        <ul>
+                            <li>Site Complet</li>
+                            <li>Direction Créative</li>
+                            <li>Product Design</li>
+                            <li>Développement Web</li>
+                            <li>Charte Graphique</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="experience-container">
+                    <p class="grey-subtitle">(Expérience)</p>
+                    <div class="experience-subcontainer">
+                        <div class="experience-line">
+                            <p class="experience-years">2025-2026</p>
+                            <div class="experience-content">
+                                <p class="experience-content-title">Directeur artistique en freelance</p>
+                                <p class="experience-content-subtitle">UX/UI, branding et product design.</p>
+                            </div>
+                        </div>
+                        <div class="experience-line">
+                            <p class="experience-years">2022-2023</p>
+                            <div class="experience-content">
+                                <p class="experience-content-title">Alternant chef de projet web & UX/UI Designer</p>
+                                <p class="experience-content-subtitle">Peugeot Motocycles, Mandeure.</p>
+                            </div>
+                        </div>
+                        <div class="experience-line">
+                            <p class="experience-years">2022</p>
+                            <div class="experience-content">
+                                <p class="experience-content-title">Stage en UX/UI design & communication interne</p>
+                                <p class="experience-content-subtitle">Peugeot Motocycles, Mandeure.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="top-image">
+                <Image src={clem} alt="" />
+            </div>
+        </div>
+        <div class="about-bottom">
+            <p class="grey-subtitle">(Formation)</p>
+            <div class="experience-subcontainer">
+                <div class="experience-line">
+                    <p class="experience-years">2027</p>
+                    <div class="experience-content">
+                        <p class="experience-content-title">Master Technologies de l’Information - Produits et Services Multimédias</p>
+                        <p class="experience-content-subtitle">Université Marie et Louis Pasteur, (UFR STGI) Montbéliard, France.</p>
+                    </div>
+                </div>
+                <div class="experience-line">
+                    <p class="experience-years">2023</p>
+                    <div class="experience-content">
+                        <p class="experience-content-title">Licence Professionnelle Métiers du Numérique : Conception, Rédaction et Réalisation Web - Webdesign</p>
+                        <p class="experience-content-subtitle">Université Marie et Louis Pasteur, (UFR STGI) Montbéliard, France.</p>
+                    </div>
+                </div>
+                <div class="experience-line">
+                    <p class="experience-years">2022</p>
+                    <div class="experience-content">
+                        <p class="experience-content-title">DUT Métiers du Multimédia et de l’Internet</p>
+                        <p class="experience-content-subtitle">Université Marie et Louis Pasteur, (UFR STGI) Montbéliard, France.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </Layout>
+
+<style>
+    .grey-subtitle {
+        font-family: 'Jubilee', serif;
+        font-size: 15px;
+        line-height: 1.5;
+        font-weight: 500;
+        color: var(--light-grey);
+        margin-bottom: 8px;
+    }
+
+    .about-container {
+        display: flex;
+        flex-direction: column;
+        margin: 8rem 20px 64px;
+        gap: 48px;
+    }
+
+    .about-top {
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
+    .top-image {
+        display: none;
+    }
+
+    .top-content-container {
+        display: flex;
+        flex-direction: column;
+        gap: 48px;
+    }
+
+    .about-services {
+        display: flex;
+        flex-direction: column;
+        gap: 48px;
+    }
+
+    .services ul li {
+        font-family: 'Switzer', sans-serif;
+        font-size: 16px;
+        font-weight: 400;
+    }
+
+    .experience-subcontainer {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .experience-line {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .experience-years {
+        text-decoration: underline;
+        font-family: 'Jubilee', serif;
+        font-weight: 500;
+        font-size: 24px;
+    }
+
+    .experience-content {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .experience-content-title {
+        font-family: 'Jubilee', serif;
+        font-weight: 500;
+        font-size: 20px;
+    }
+
+    @media (min-width: 1024px) {
+        .about-container {
+            margin: 160px 30px 140px;
+        }
+
+        .about-top {
+            flex-direction: row;
+            gap: 8vw;
+        }
+
+        .top-content-container {
+            flex: 3;
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+        }
+
+        .top-image {
+            flex: 1;
+            display: flex;
+            aspect-ratio: 4 / 5;
+            overflow: hidden;
+        }
+
+        .top-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .about-services {
+            flex-direction: row;
+            gap: 8vw;
+        }
+
+        .about {
+            flex: 1;
+        }
+
+        .services {
+            width: max-content;
+            flex-shrink: 0;
+        }
+
+        .experience-line {
+            flex-direction: row;
+            gap: 8px;
+        }
+
+        .experience-years {
+            min-width: 160px;
+            flex-shrink: 0;
+        }
+    }
+</style>

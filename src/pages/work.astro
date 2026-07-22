@@ -1,36 +1,46 @@
 ---
-import slides from "../scripts/slides.js";
 import Layout from "../layouts/Layout.astro";
+import { getCollection } from 'astro:content';
+
+const projetsBruts = await getCollection('projets');
+const projets = projetsBruts.sort((a, b) => a.data.order - b.data.order);
+const slidesData = projets.map((projet) => ({
+    slideTitle: projet.data.title,
+    slideDescription: projet.data.description,
+    slideUrl: `/projets/${projet.id}`,
+    slideTags: projet.data.tags,
+    slideImg: projet.data.coverImage.src,
+}));
 ---
 
 <Layout titre="Projets - Clément Torchiat" masquerFooter={true} typeHeader="normal">
-    <div class="slider">
+    <div class="slider" data-slides={JSON.stringify(slidesData)}>
         <div class="slide">
-            <div class="slide-img" data-cursor-text="Voir le projet">
-                <img src={slides[0].slideImg} alt="">
-            </div>
+            <a href={slidesData[0].slideUrl} class="slide-img" data-cursor-text="Voir le projet">
+                <img src={slidesData[0].slideImg} alt="">
+            </a>
             <div class="slide-header">
                 <div class="slide-title">
-                    <h1>{slides[0].slideTitle}</h1>
+                    <h1>{slidesData[0].slideTitle}</h1>
                 </div>
                 <div class="slide-description">
-                    <p>{slides[0].slideDescription}</p>
+                    <p>{slidesData[0].slideDescription}</p>
                 </div>
                 <div class="slide-link">
-                    <a data-cursor-hover href={slides[0].slideUrl}>View Project</a>
+                    <a data-cursor-hover href={slidesData[0].slideUrl}>Voir le projet</a>
                 </div>
             </div>
             <div class="slide-info">
                 <div class="slide-tags">
-                    <p>Rôles</p>
-                    {slides[0].slideTags.map((tag) => (
+                    <p>Tags</p>
+                    {slidesData[0].slideTags.map((tag) => (
                             <p>{tag}</p>
                     ))}
                 </div>
-                <div class="slide-info-wrapper">
+                <div class="slide-index-wrapper">
                     <p id="slide-index">01</p>
                     <p>/</p>
-                    <p id="total-slide-count">{String(slides.length).padStart(2, "0")}</p>
+                    <p id="total-slide-count">{String(slidesData.length).padStart(2, "0")}</p>
                 </div>
             </div>
         </div>
@@ -55,15 +65,18 @@ import Layout from "../layouts/Layout.astro";
     }
 
     h1, p, a {
+        color: var(--white);
+    }
+
+    h1 {
         text-transform: uppercase;
-        color: #fff;
     }
 
     h1 {
         font-size: 5rem;
         font-weight: 500;
         letter-spacing: -0.1rem;
-        font-family: 'Jubilee', Serif;
+        font-family: 'Jubilee', serif;
     }
 
     p, a {
@@ -74,11 +87,15 @@ import Layout from "../layouts/Layout.astro";
         letter-spacing: -0.01rem;
     }
 
+    .slide-link a {
+        text-decoration: underline;
+    }
+
     .slider {
         position: relative;
         width: 100vw;
         height: 100svh;
-        background-color: #000;
+        background-color: var(--black);
         overflow: hidden;
     }
 
@@ -142,7 +159,9 @@ import Layout from "../layouts/Layout.astro";
     }
 
     .slide-tags p:first-child {
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+        font-size: 1rem;
     }
 
     .line, .word {
@@ -176,30 +195,22 @@ import Layout from "../layouts/Layout.astro";
 <script>
     import gsap from "gsap";
     import SplitType from "split-type";
-    import slides from "../scripts/slides.js";
 
-    // 1. On déclare la "télécommande" TOUT EN HAUT, en dehors de l'événement Astro.
-    // Ainsi, elle ne sera jamais réinitialisée en mémoire entre deux pages.
     let sliderEventsController;
 
     document.addEventListener("astro:page-load", () => {
-
-        // 2. LE GRAND MÉNAGE : Si on change de page, on appuie sur le bouton "Off"
-        // de la télécommande pour détruire tous les événements de scroll de la page précédente.
         if (sliderEventsController) {
             sliderEventsController.abort();
         }
 
-        // 3. SÉCURITÉ : On vérifie qu'on est bien sur la page "Work".
-        // Si le slider n'existe pas (ex: page d'accueil), on arrête le script immédiatement !
         const sliderElement = document.querySelector(".slider");
         if (!sliderElement) return;
 
-        // 4. On crée une nouvelle télécommande pour cette page spécifique
-        sliderEventsController = new AbortController();
-        const { signal } = sliderEventsController; // C'est le signal qu'on va lier aux événements
+        const slides = JSON.parse(sliderElement.dataset.slides);
 
-        // --- DÉBUT DE TA LOGIQUE CLASSIQUE ---
+        sliderEventsController = new AbortController();
+        const { signal } = sliderEventsController;
+
         const totalSlides = slides.length;
         let currentSlide = 1;
 
@@ -224,7 +235,8 @@ import Layout from "../layouts/Layout.astro";
             const slide = document.createElement("div");
             slide.className = "slide";
 
-            const slideImg = document.createElement("div");
+            const slideImg = document.createElement("a");
+            slideImg.href = slideData.slideUrl;
             slideImg.className = "slide-img";
             slideImg.setAttribute("data-cursor-text", "Voir le projet");
             const img = document.createElement("img");
@@ -251,7 +263,7 @@ import Layout from "../layouts/Layout.astro";
             slideLink.className = "slide-link";
             const a = document.createElement("a");
             a.href = slideData.slideUrl;
-            a.textContent = "View Project";
+            a.textContent = "Voir le projet";
             slideLink.appendChild(a);
 
             slideHeader.appendChild(slideTitle);
@@ -264,7 +276,7 @@ import Layout from "../layouts/Layout.astro";
             const slideTags = document.createElement("div");
             slideTags.className = "slide-tags";
             const tagsLabel = document.createElement("p");
-            tagsLabel.textContent = "Rôles";
+            tagsLabel.textContent = "Tags";
             slideTags.appendChild(tagsLabel);
 
             slideData.slideTags.forEach((tag) => {
@@ -302,7 +314,7 @@ import Layout from "../layouts/Layout.astro";
                 new SplitType(slideHeader, { types: 'words' });
             }
 
-            const slideContent = slide.querySelectorAll("p, a");
+            const slideContent = slide.querySelectorAll("p, a:not(.slide-img)");
             slideContent.forEach((element) => {
                 new SplitType(element, { types: 'lines' });
             });
@@ -452,9 +464,6 @@ import Layout from "../layouts/Layout.astro";
             lastScrollTime = now;
             animateSlide(direction);
         }
-
-        // --- 5. LIAISON DES ÉVÉNEMENTS AU SIGNAL ---
-        // On ajoute ", { signal }" ou ", { passive: false, signal }" à la fin de chaque événement.
 
         window.addEventListener("wheel", (e) => {
             e.preventDefault();

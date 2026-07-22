@@ -27,7 +27,7 @@
   font-style: normal;
 }
 
-@font-face {V
+@font-face {
   font-family: 'Switzer';
   src: url('../../fonts/Switzer-Bold.woff2') format('woff2');
   font-weight: 700;
@@ -109,7 +109,7 @@ a {
 }
 
 h1 {
-  font-family: 'Voyage', Serif;
+  font-family: 'Voyage', serif;
   font-size: 4rem;
   line-height: 4rem;
   color: var(--white);
@@ -125,7 +125,7 @@ h1 {
 }
 
 h2 {
-  font-family: 'Jubilee', Serif;
+  font-family: 'Jubilee', serif;
   font-size: 54px;
   line-height: 1;
   font-weight: 500;
@@ -141,7 +141,7 @@ h2 {
 }
 
 h3 {
-  font-family: 'Jubilee', Serif;
+  font-family: 'Jubilee', serif;
   font-size: 16px;
   line-height: 1;
   font-weight: 800;
@@ -155,7 +155,7 @@ p, a {
 }
 
 .grey-subtitle {
-  font-family: 'Jubilee', Serif;
+  font-family: 'Jubilee', serif;
   font-size: 15px;
   line-height: 1.5;
   font-weight: 500;
@@ -166,7 +166,6 @@ p, a {
   width: 100%;
   background-color: rgba(0, 0, 0, 0.3);
   justify-content: left;
-  padding-bottom: 44px;
   -webkit-tap-highlight-color: transparent;
   --border-radius: .4rem;
   align-items: center;
@@ -176,13 +175,11 @@ p, a {
   clip-path: inset(1px 1px 1px 1px round 8px);
   display: flex;
   overflow: hidden;
-  padding-left: 11px;
-  padding-right: 11px;
-  padding-top: 8px;
+  padding: 8px 11px 44px;
   position: relative;
   color: var(--white);
   cursor: pointer;
-  font-family: 'Jubilee', Serif;
+  font-family: 'Jubilee', serif;
   font-weight: 500;
   font-size: 18px;
   line-height: 15px;
@@ -254,4 +251,14 @@ p, a {
 .button-dot:hover .liquid-bg {
   transform: translateY(0);
   border-radius: 0;
+}
+
+.button-dot .hover-text {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .button-dot .hover-text {
+    display: block;
+  }
 }

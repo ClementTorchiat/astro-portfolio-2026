@@ -1,11 +1,24 @@
 ---
+import { getCollection } from 'astro:content';
 import Gallery from '../components/Gallery.jsx';
 import Layout from "../layouts/Layout.astro";
+
+const allProjects = await getCollection('galleryCollection');
+
+const galleryData = allProjects.map((gallery) => ({
+    id: gallery.id,
+    title: gallery.data.title,
+    subtitle: gallery.data.subtitle,
+    src: gallery.data.coverImage.src,
+    origWidth: gallery.data.coverImage.width,
+    origHeight: gallery.data.coverImage.height,
+    description: gallery.body
+}));
 ---
 
 <Layout titre="Galerie - Clément Torchiat" masquerFooter={true} typeHeader="alternatif">
     <div class="gallery-wrapper">
-        <Gallery client:only="react" />
+        <Gallery client:only="react" projects={galleryData} />
     </div>
 </Layout>
 

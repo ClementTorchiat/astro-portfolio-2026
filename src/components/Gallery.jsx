@@ -2,31 +2,56 @@ import React, { useEffect, useRef, useState } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import "./Gallery.css";
 
-// --- CONFIGURATION ---
 const CANVAS_SIZE = 4000;
 const CENTER = CANVAS_SIZE / 2;
 const MINIMAP_SIZE = 360;
 const IMG_WIDTH = 250;
 const GAP = 50;
 
-// --- 1. FAUSSES DONNÉES AVEC TITRES ---
-// Au lieu d'une simple liste de nombres, on crée des objets avec des titres.
-const mockData = Array.from({ length: 40 }).map((_, i) => ({
-    id: i,
-    title: `Projet Photographique N°${i + 1}`, // Exemple de titre
-    subtitle: "Direction Artistique" // Optionnel, pour faire joli
-}));
+function ZoomableImage({ src, alt }) {
+    const [position, setPosition] = useState({ x: 50, y: 50 });
+    const [isZoomed, setIsZoomed] = useState(false);
+    const containerRef = useRef(null);
 
+    const handleMouseMove = (e) => {
+        if (!containerRef.current) return;
+        const { left, top, width, height } = containerRef.current.getBoundingClientRect();
+        const x = ((e.clientX - left) / width) * 100;
+        const y = ((e.clientY - top) / height) * 100;
+        setPosition({ x, y });
+    };
 
-export default function App() {
+    return (
+        <div
+            className="zoom-image-container"
+            ref={containerRef}
+            onMouseEnter={() => setIsZoomed(true)}
+            onMouseLeave={() => setIsZoomed(false)}
+            onMouseMove={handleMouseMove}
+        >
+            <img
+                src={src}
+                alt={alt}
+                className="zoomable-image"
+                style={{
+                    transformOrigin: `${position.x}% ${position.y}%`,
+                    transform: isZoomed ? "scale(2.5)" : "scale(1)",
+                }}
+            />
+        </div>
+    );
+}
+
+export default function App({ projects = [] }) {
     const transformComponentRef = useRef(null);
     const [items, setItems] = useState([]);
     const [viewState, setViewState] = useState({ x: 0, y: 0, scale: 1 });
-    const [isDragging, setIsDragging] = useState(false);
     const [minScale, setMinScale] = useState(1);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const pointerPos = useRef({ x: 0, y: 0 });
 
-    // --- ALGO PLACEMENT (Inchangé) ---
     useEffect(() => {
+        if (!projects || projects.length === 0) return;
         const placedItems = [];
         const doesOverlap = (newItem, existingItems) => {
             for (const item of existingItems) {
@@ -40,13 +65,12 @@ export default function App() {
             return false;
         };
 
-        // On itère sur nos vraies données maintenant
-        mockData.forEach((dataItem) => {
+        projects.forEach((dataItem) => {
             let validPosition = false;
             let attempts = 0;
-            let x, y, w, h;
-            w = IMG_WIDTH;
-            h = Math.floor(Math.random() * (400 - 150) + 150);
+            let x, y;
+            let w = IMG_WIDTH;
+            let h = Math.floor((dataItem.origHeight / dataItem.origWidth) * w);
 
             while (!validPosition && attempts < 150) {
                 attempts++;
@@ -64,41 +88,38 @@ export default function App() {
                     validPosition = true;
                 }
             }
-
             if (validPosition) {
-                placedItems.push({
-                    ...dataItem, // On garde l'ID et le Titre
-                    src: `https://picsum.photos/${w}/${h}?random=${dataItem.id}`,
-                    width: w,
-                    height: h,
-                    x,
-                    y
-                });
+                placedItems.push({ ...dataItem, width: w, height: h, x, y });
             }
         });
         setItems(placedItems);
-    }, []);
+    }, [projects]);
 
-    // --- ZOOM LIMIT ---
     useEffect(() => {
         const calculateBounds = () => {
             const targetVisibleWidth = CANVAS_SIZE / 2;
             const calculatedMinScale = window.innerWidth / targetVisibleWidth;
             setMinScale(calculatedMinScale);
         };
-
         setTimeout(calculateBounds, 100);
-
         window.addEventListener('resize', calculateBounds);
         return () => window.removeEventListener('resize', calculateBounds);
     }, []);
 
-    const handleImageClick = (e, index) => {
-        if (isDragging) { e.preventDefault(); return; }
-        console.log("Nav vers", index);
+    const handlePointerDown = (e) => {
+        pointerPos.current = { x: e.clientX, y: e.clientY };
     };
 
-    // --- CALCULS MINIMAP & VISIBILITÉ ---
+    const handlePointerUp = (e, item) => {
+        const dx = Math.abs(e.clientX - pointerPos.current.x);
+        const dy = Math.abs(e.clientY - pointerPos.current.y);
+
+        if (dx < 5 && dy < 5) {
+            e.preventDefault();
+            setSelectedItem(item);
+        }
+    };
+
     const mapRatio = MINIMAP_SIZE / CANVAS_SIZE;
     const miniViewX = (-viewState.x / viewState.scale) * mapRatio;
     const miniViewY = (-viewState.y / viewState.scale) * mapRatio;
@@ -131,54 +152,70 @@ export default function App() {
                 wheel={{ step: 0.1 }}
                 pinch={{ step: 5 }}
                 panning={{ velocityDisabled: false, velocitySensitivity: 2 }}
-                onPanningStart={() => setIsDragging(true)}
-                onPanningStop={() => setTimeout(() => setIsDragging(false), 50)}
-
                 onPanning={(ref) => setViewState({ x: ref.state.positionX, y: ref.state.positionY, scale: ref.state.scale })}
                 onZooming={(ref) => setViewState({ x: ref.state.positionX, y: ref.state.positionY, scale: ref.state.scale })}
-                onTransformed={(ref) => {
-                    console.log("Transformation en cours !", ref.state.scale);
-                    setViewState({ x: ref.state.positionX, y: ref.state.positionY, scale: ref.state.scale });
-                }}
+                onTransformed={(ref) => setViewState({ x: ref.state.positionX, y: ref.state.positionY, scale: ref.state.scale })}
             >
                 <TransformComponent
                     wrapperStyle={{ width: "100%", height: "100%" }}
                     contentStyle={{ width: `${CANVAS_SIZE}px`, height: `${CANVAS_SIZE}px` }}
                 >
                     <div style={{ width: CANVAS_SIZE, height: CANVAS_SIZE, position: 'relative', backgroundColor: '#F8F8F8' }}>
-
                         {items.map((item) => (
                             <div
                                 key={item.id}
-                                className="gallery-item group" // Ajout de 'group' si on utilisait tailwind, inutile ici mais bonne pratique
+                                className="gallery-item group"
                                 style={{
-                                    left: item.x,
-                                    top: item.y,
-                                    width: item.width,
-                                    height: item.height,
+                                    left: item.x, top: item.y, width: item.width, height: item.height,
                                 }}
-                                onMouseUp={(e) => handleImageClick(e, item.id)}
+                                onPointerDown={handlePointerDown}
+                                onPointerUp={(e) => handlePointerUp(e, item)}
                             >
                                 <img src={item.src} alt={item.title} className="gallery-image" />
-
-                                {/* --- 2. NOUVELLE STRUCTURE OVERLAY --- */}
                                 <div className="image-overlay">
                                     <h3 className="overlay-title">{item.title}</h3>
-                                    {/* Petit sous-titre optionnel */}
                                     <p className="overlay-subtitle">{item.subtitle}</p>
                                 </div>
-
                             </div>
                         ))}
                     </div>
                 </TransformComponent>
             </TransformWrapper>
 
-            {/* Minimap (Inchangée) */}
-            <div
-                className="minimap-container"
-                style={{ width: MINIMAP_SIZE, height: MINIMAP_SIZE }}
-            >
+            {selectedItem && (
+                <div
+                    className="project-modal-overlay"
+                    onPointerDown={() => setSelectedItem(null)}
+                    style={{ cursor: 'pointer' }}
+                >
+                    <div className="project-modal-content">
+
+                        <div className="modal-left" style={{ cursor: 'auto' }}>
+
+                            <div onPointerDown={(e) => e.stopPropagation()} style={{ width: '100%', height: '100%' }}>
+                                <ZoomableImage src={selectedItem.src} alt={selectedItem.title} />
+                            </div>
+                        </div>
+
+                        <div className="modal-right" style={{ cursor: 'auto' }}>
+
+                            <div onPointerDown={(e) => e.stopPropagation()}>
+                                <h2 className="modal-title">{selectedItem.title}</h2>
+                                <h4 className="modal-subtitle">{selectedItem.subtitle}</h4>
+
+                                {selectedItem.description && (
+                                    <div className="modal-description">
+                                        {selectedItem.description}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            )}
+
+            <div className={`minimap-container ${selectedItem ? 'hidden' : ''}`} style={{ width: MINIMAP_SIZE, height: MINIMAP_SIZE }}>
                 {items.map((item) => {
                     const active = isItemVisible(item);
                     return (
@@ -186,23 +223,17 @@ export default function App() {
                             key={item.id}
                             className="minimap-dot"
                             style={{
-                                left: item.x * mapRatio,
-                                top: item.y * mapRatio,
-                                width: Math.max(2, item.width * mapRatio),
-                                height: Math.max(2, item.height * mapRatio),
-                                backgroundColor: active ? '#020202' : 'transparent',
-                                borderColor: '#020202',
+                                left: item.x * mapRatio, top: item.y * mapRatio,
+                                width: Math.max(2, item.width * mapRatio), height: Math.max(2, item.height * mapRatio),
+                                backgroundColor: active ? '#020202' : 'transparent', borderColor: '#020202',
                             }}
                         />
                     );
                 })}
-                <div
-                    className="minimap-viewport"
-                    style={{
-                        width: miniViewWidth,
-                        height: miniViewHeight,
-                        transform: `translate3d(${miniViewX}px, ${miniViewY}px, 0)`,
-                    }}
+                <div className="minimap-viewport" style={{
+                    width: miniViewWidth, height: miniViewHeight,
+                    transform: `translate3d(${miniViewX}px, ${miniViewY}px, 0)`,
+                }}
                 />
             </div>
         </div>

@@ -1,10 +1,9 @@
-/* src/App.css */
 body {
     margin: 0;
     padding: 0;
     overflow: hidden;
     background-color: #F8F8F8;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Un font plus sympa */
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 .gallery-container {
@@ -14,39 +13,29 @@ body {
     overflow: hidden;
 }
 
-/* Les images (conteneur parent) */
+
 .gallery-item {
     position: absolute;
     cursor: pointer;
     background-color: #eee;
-    overflow: hidden; /* Important pour que l'overlay ne dépasse pas */
+    overflow: hidden;
     box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-    /* On ajoute une transition sur le conteneur aussi pour l'ombre */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* L'image elle-même */
 .gallery-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
     pointer-events: none;
-    /* BONUS : Petit zoom fluide de l'image en arrière-plan */
     transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-/* --- OVERLAY HOVER EFFECT --- */
-
-/* Le calque noir par-dessus l'image */
-/* --- OVERLAY HOVER EFFECT --- */
-
-/* Le calque noir (FOND SEULEMENT) */
 .image-overlay {
     position: absolute;
     inset: 0;
-    background-color: rgba(0, 0, 0, 0.6); /* L'assombrissement */
+    background-color: rgba(0, 0, 0, 0.6);
 
-    /* Centrage du contenu */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -54,23 +43,17 @@ body {
     padding: 20px;
     text-align: center;
 
-    /* Animation : JUSTE L'OPACITÉ (pas de mouvement) */
     opacity: 0;
     transition: opacity 0.3s ease;
 }
 
-/* Le Texte (TITRE + SOUS-TITRE) */
 .overlay-title,
 .overlay-subtitle {
-    /* État de départ : légèrement plus bas et transparent */
     transform: translateY(20px);
     opacity: 0;
-
-    /* Animation du texte : il remonte et apparait */
     transition: transform 0.4s ease-out, opacity 0.4s ease-out;
 }
 
-/* Style typo (inchangé) */
 .overlay-title {
     color: var(--white);
     margin: 0 0 8px 0;
@@ -87,38 +70,29 @@ body {
     letter-spacing: 1px;
 }
 
-/* --- DÉCLENCHEURS AU SURVOL --- */
-
-/* 1. Le fond noir apparait (sans bouger) */
 .gallery-item:hover .image-overlay {
     opacity: 1;
 }
 
-/* 2. Le texte remonte et apparait */
 .gallery-item:hover .overlay-title,
 .gallery-item:hover .overlay-subtitle {
-    transform: translateY(0); /* Retour à la position normale */
+    transform: translateY(0);
     opacity: 1;
 }
 
-/* Petit délai pour le sous-titre (optionnel, pour un effet cascade) */
 .gallery-item:hover .overlay-subtitle {
     transition-delay: 0.05s;
 }
 
-/* 3. Zoom sur l'image derrière (inchangé) */
 .gallery-item:hover .gallery-image {
     transform: scale(1.05);
 }
 
-/* 4. Ombre globale (inchangé) */
 .gallery-item:hover {
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     z-index: 20;
 }
 
-
-/* --- MINIMAP (Inchangé) --- */
 .minimap-container {
     position: fixed;
     bottom: 30px;
@@ -129,10 +103,10 @@ body {
 
 .minimap-dot {
     position: absolute;
-    border: 1px solid #020202;
+    border: 1px solid var(--black);
     background-color: transparent;
     box-sizing: border-box;
-    transition: background-color 0.4s ease; /* Le fondu qu'on aimait bien */
+    transition: background-color 0.4s ease;
 }
 
 .minimap-viewport {
@@ -142,3 +116,127 @@ body {
     background-color: transparent;
     box-sizing: border-box;
 }
+
+.project-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeIn 0.3s forwards ease-out;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+.project-modal-content {
+    background-color: transparent;
+    width: 95%;
+    max-width: 1400px;
+    height: 85vh;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    box-shadow: none;
+    transform: translateY(30px) scale(0.98);
+    animation: slideUp 0.4s forwards cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@keyframes slideUp {
+    to { transform: translateY(0) scale(1); }
+}
+
+.modal-left {
+    flex: 1.2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.zoom-image-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: crosshair;
+    border-radius: 8px;
+}
+
+.zoomable-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.1s ease-out;
+    will-change: transform;
+}
+
+.modal-right {
+    flex: 1;
+    padding: 40px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: var(--white);
+}
+
+.modal-title {
+    font-size: 3.5rem;
+    color: var(--white);
+    margin: 0 0 10px 0;
+    line-height: 1.1;
+    font-family: 'Jubilee', serif;
+    font-weight: 500;
+}
+
+.modal-subtitle {
+    font-size: 1.1rem;
+    color: var(--white);
+    font-family: 'Switzer', sans-serif;
+    letter-spacing: 2px;
+    margin: 0 0 30px 0;
+    font-weight: bold;
+}
+
+.modal-description {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+    white-space: pre-wrap;
+    font-family: 'Switzer', sans-serif;
+}
+
+@media screen and (max-width: 768px) {
+    .project-modal-content {
+        flex-direction: column;
+        height: 100vh;
+        width: 100vw;
+        border-radius: 0;
+    }
+    .modal-left {
+        flex: 0.5;
+        padding: 40px 20px 0 20px;
+    }
+
+    .zoom-image-container {
+        cursor: default;
+        pointer-events: none;
+    }
+    .modal-right {
+        flex: 0.5;
+        padding: 30px;
+        justify-content: flex-start;
+    }
+    .modal-title { font-size: 2.2rem; }
+}
+

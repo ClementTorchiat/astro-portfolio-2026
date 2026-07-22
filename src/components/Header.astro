@@ -1,5 +1,5 @@
 ---
-// Header.astro
+
 ---
 
 <header class="site-header">
@@ -10,7 +10,6 @@
             </svg>
         </a>
 
-        <!-- Navigation Desktop -->
         <nav class="desktop-nav">
             <ul>
                 <div class="nav-indicator"></div>
@@ -22,7 +21,6 @@
             </ul>
         </nav>
 
-        <!-- Bouton Burger -->
         <button class="mobile-menu-btn" aria-label="Ouvrir le menu">
             <span class="line line-1"></span>
             <span class="line line-2"></span>
@@ -30,7 +28,6 @@
         </button>
     </div>
 
-    <!-- Navigation Mobile (Le fond noir qui tombe) -->
     <nav class="mobile-nav">
         <ul class="mobile-nav-links">
             <li><a href="/work">Projets</a></li>
@@ -71,7 +68,6 @@
         display: none;
     }
 
-    /* --- BOUTON BURGER --- */
     .mobile-menu-btn {
         display: flex;
         flex-direction: column;
@@ -97,7 +93,6 @@
         margin-left: 10%;
     }
 
-    /* Animation de la croix quand le menu est actif */
     .mobile-menu-btn.is-active .line-1 {
         transform: translateY(9px) rotate(45deg);
     }
@@ -114,7 +109,7 @@
         left: 0;
         width: 100%;
         height: 100vh;
-        background-color: rgba(139, 104, 79, 1);
+        background-color: var(--black);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -133,9 +128,9 @@
     }
 
     .mobile-nav-links a {
-        color: #fff;
+        color: var(--white);
         text-decoration: none;
-        font-family: 'Jubilee', Serif;
+        font-family: 'Jubilee', serif;
         font-size: 3rem;
         font-weight: 500;
         text-transform: uppercase;
@@ -146,7 +141,7 @@
             padding: 2rem 3rem;
         }
         .mobile-nav-links a {
-            font-size: 4rem; /* Encore plus grand sur tablette */
+            font-size: 4rem;
         }
     }
 
@@ -155,7 +150,6 @@
             display: none;
         }
 
-        /* On s'assure que le menu mobile disparaît complètement sur grand écran */
         .mobile-nav {
             display: none !important;
         }
@@ -221,10 +215,6 @@
     import gsap from "gsap";
 
     document.addEventListener("astro:page-load", () => {
-
-        /* ====================================================
-           1. LOGIQUE DE LA NAVIGATION DESKTOP (Pastille)
-           ==================================================== */
         const nav = document.querySelector('.desktop-nav ul');
         const indicator = document.querySelector('.nav-indicator');
         const items = document.querySelectorAll('.desktop-nav li');
@@ -272,9 +262,6 @@
             }
         }
 
-        /* ====================================================
-           2. LOGIQUE DU MENU MOBILE GSAP
-           ==================================================== */
         const burgerBtn = document.querySelector('.mobile-menu-btn');
         const mobileNav = document.querySelector('.mobile-nav');
         const mobileLinks = document.querySelectorAll('.mobile-nav-links li');
@@ -282,38 +269,33 @@
         if (burgerBtn && mobileNav) {
             let isMenuOpen = false;
 
-            // On prépare la Timeline GSAP (en pause par défaut)
             const tl = gsap.timeline({ paused: true });
-
-            // On place le menu au-dessus de l'écran pour commencer
             gsap.set(mobileNav, { yPercent: -100, autoAlpha: 1 });
 
-            // 1. Le fond noir descend
             tl.to(mobileNav, {
                 yPercent: 0,
                 duration: 0.7,
                 ease: "power4.inOut"
             })
-                // 2. Les liens arrivent du bas un par un
                 .fromTo(mobileLinks,
                     { y: 40, opacity: 0 },
                     { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: "power2.out" },
-                    "-=0.3" // Cette ligne fait démarrer les textes un peu avant que le fond noir n'ait fini de tomber
+                    "-=0.3"
                 );
 
-            // Gestion du clic sur le burger
+
             burgerBtn.addEventListener('click', () => {
                 isMenuOpen = !isMenuOpen;
                 burgerBtn.classList.toggle('is-active');
 
                 if (isMenuOpen) {
-                    tl.play(); // Joue l'animation
+                    tl.play();
                 } else {
-                    tl.reverse(); // Rembobine l'animation
+                    tl.reverse();
                 }
             });
 
-            // Fermer le menu si on clique sur un lien (très utile avec View Transitions !)
+
             mobileLinks.forEach(link => {
                 link.addEventListener('click', () => {
                     isMenuOpen = false;

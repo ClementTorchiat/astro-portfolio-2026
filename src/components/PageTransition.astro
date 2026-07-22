@@ -1,5 +1,5 @@
 ---
-// PageTransition.astro
+
 ---
 
 <script is:inline>
@@ -74,6 +74,8 @@
     import gsap from 'gsap';
     import { navigate } from 'astro:transitions/client';
 
+    let isTransitionListenerBound = false;
+
     document.addEventListener('astro:page-load', () => {
 
         if (document.documentElement.classList.contains('is-first-load')) {
@@ -101,17 +103,20 @@
                 });
         }
 
-        const links = document.querySelectorAll('a[href^="/"]');
+        if (!isTransitionListenerBound) {
+            document.addEventListener('click', (e) => {
+                const target = e.target as HTMLElement;
+                if (!target || typeof target.closest !== 'function') return;
 
-        links.forEach(link => {
-            if (link.dataset.transitionBound) return;
-            link.dataset.transitionBound = 'true';
+                const link = target.closest('a[href^="/"]');
+                if (!link) return;
 
-            link.addEventListener('click', (e) => {
-                if (e.ctrlKey || e.metaKey || e.target.target === '_blank') return;
+                if (e.ctrlKey || e.metaKey || (link as HTMLAnchorElement).target === '_blank') return;
 
                 e.preventDefault();
-                const targetUrl = link.href;
+                e.stopPropagation();
+
+                const targetUrl = (link as HTMLAnchorElement).href;
 
                 document.getElementById('transition-overlay').style.pointerEvents = 'auto';
 
@@ -147,7 +152,9 @@
                     })
                     .set('.panel', { x: '-100%' })
                     .set('#transition-overlay', { pointerEvents: 'none' });
-            });
-        });
+            }, { capture: true });
+
+            isTransitionListenerBound = true;
+        }
     });
 </script>
