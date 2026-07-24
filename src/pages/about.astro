@@ -221,3 +221,121 @@ import palette1 from "../assets/images/palette-1-1.webp";
         }
     }
 </style>
+
+<script>
+    // @ts-nocheck
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+    import SplitType from "split-type";
+    import Lenis from 'lenis';
+
+    gsap.registerPlugin(ScrollTrigger, SplitType);
+
+    document.addEventListener("astro:page-load", () => {
+        const lenis = new Lenis();
+
+        lenis.on('scroll', ScrollTrigger.update);
+
+        gsap.ticker.add((time) => {
+            lenis.raf(time * 1000);
+        });
+
+        gsap.ticker.lagSmoothing(0);
+
+        const aboutContainer = document.querySelector('.about-container');
+        if (!aboutContainer) return;
+
+        // 1. FONCTION DE PRÉPARATION (Split Reveal)
+        const prepareSplitReveal = (elements) => {
+            let allLines = [];
+            const els = Array.isArray(elements) || elements instanceof NodeList ? elements : [elements];
+
+            els.forEach(element => {
+                if (!element || window.getComputedStyle(element).display === 'none') return;
+                const split = new SplitType(element, { types: 'lines' });
+                split.lines.forEach((el) => {
+                    const wrapper = document.createElement('div');
+                    wrapper.style.overflow = 'hidden';
+                    wrapper.style.display = 'block';
+                    el.parentNode.insertBefore(wrapper, el);
+                    wrapper.appendChild(el);
+                });
+                gsap.set(split.lines, { y: "100%" });
+                allLines.push(...split.lines);
+            });
+            return allLines;
+        };
+
+        // 2. SÉLECTION ET PRÉPARATION DES ÉLÉMENTS
+        // Partie Haute (À propos, Services, Expérience top, Image)
+        const aboutTexts = document.querySelectorAll('.about p, .services p, .services li');
+        const expTopTexts = document.querySelectorAll('.top-content-container .experience-years, .top-content-container .experience-content p, .top-content-container .grey-subtitle');
+        const topImage = document.querySelector('.top-image img');
+
+        const linesAbout = prepareSplitReveal(aboutTexts);
+        const linesExpTop = prepareSplitReveal(expTopTexts);
+
+        if (topImage) {
+            gsap.set(topImage, { scale: 1.1, opacity: 0 });
+        }
+
+        // Partie Basse (Formation)
+        const bottomTexts = document.querySelectorAll('.about-bottom .grey-subtitle, .about-bottom .experience-years, .about-bottom .experience-content p');
+        const linesBottom = prepareSplitReveal(bottomTexts);
+
+        // 3. FONCTION D'ANIMATION D'ENTRÉE (Synchronisée avec la transition)
+        const playAboutIntro = () => {
+            const tlIntro = gsap.timeline();
+
+            tlIntro.to(linesAbout, {
+                y: "0%",
+                duration: 0.8,
+                stagger: 0.05,
+                ease: "power3.out"
+            })
+                .to(linesExpTop, {
+                    y: "0%",
+                    duration: 0.8,
+                    stagger: 0.05,
+                    ease: "power3.out"
+                }, "-=0.6");
+
+            if (topImage) {
+                tlIntro.to(topImage, {
+                    scale: 1,
+                    opacity: 1,
+                    duration: 1.2,
+                    ease: "power3.out"
+                }, "-=1.2");
+            }
+        };
+
+        // Gestion de la transition (même logique que l'accueil)
+        const overlay = document.getElementById('transition-overlay');
+        const isFirstLoad = document.documentElement.classList.contains('is-first-load');
+        const isTransitioning = overlay && overlay.style.pointerEvents === 'auto';
+
+        if (isFirstLoad || isTransitioning) {
+            window.addEventListener('transition-finished', playAboutIntro, { once: true });
+        } else {
+            playAboutIntro();
+        }
+
+        // 4. ANIMATION AU SCROLL POUR LA FORMATION
+        if (linesBottom.length > 0) {
+            ScrollTrigger.create({
+                trigger: ".about-bottom",
+                start: "top 85%",
+                onEnter: () => {
+                    gsap.to(linesBottom, {
+                        y: "0%",
+                        duration: 0.8,
+                        stagger: 0.05,
+                        ease: "power3.out"
+                    });
+                },
+                once: true
+            });
+        }
+    });
+</script>

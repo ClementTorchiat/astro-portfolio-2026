@@ -193,6 +193,7 @@ const slidesData = projets.map((projet) => ({
 </style>
 
 <script>
+    // @ts-nocheck
     import gsap from "gsap";
     import SplitType from "split-type";
 
@@ -214,9 +215,76 @@ const slidesData = projets.map((projet) => ({
         const totalSlides = slides.length;
         let currentSlide = 1;
 
-        let isAnimating = false;
-        let scrollAllowed = true;
+        // On bloque le scroll par défaut le temps de la transition
+        let isAnimating = true;
+        let scrollAllowed = false;
         let lastScrollTime = 0;
+
+        // --- NOUVEAU : GESTION DU PREMIER SLIDE ---
+        const initialSlide = document.querySelector(".slider .slide");
+
+        if (initialSlide) {
+            // On découpe le premier slide
+            splitText(initialSlide);
+
+            const words = initialSlide.querySelectorAll(".word");
+            const lines = initialSlide.querySelectorAll(".line");
+
+            // On cache les textes immédiatement
+            gsap.set([...words, ...lines], { y: "100%", force3D: true });
+
+            // L'animation d'entrée du premier slide
+            const playInitialAnimation = () => {
+                const tl = gsap.timeline({
+                    onComplete: () => {
+                        // On libère le scroll une fois l'animation finie
+                        isAnimating = false;
+                        scrollAllowed = true;
+                        lastScrollTime = Date.now();
+                        preloadAdjacentImages(1);
+                    }
+                });
+
+                const headerWords = initialSlide.querySelectorAll(".slide-title .word");
+                const tagLines = initialSlide.querySelectorAll(".slide-tags .line");
+                const indexLines = initialSlide.querySelectorAll(".slide-index-wrapper .line");
+                const descriptionLines = initialSlide.querySelectorAll(".slide-description .line");
+                const linkLines = initialSlide.querySelectorAll(".slide-link .line");
+
+                tl.to(headerWords, {
+                    y: "0%",
+                    duration: 1,
+                    ease: "power4.out",
+                    stagger: 0.1,
+                    force3D: true,
+                })
+                    .to([tagLines, indexLines, descriptionLines], {
+                        y: "0%",
+                        duration: 1,
+                        ease: "power4.out",
+                        stagger: 0.1,
+                        force3D: true,
+                    }, "-=0.75")
+                    .to(linkLines, {
+                        y: "0%",
+                        duration: 1,
+                        ease: "power4.out",
+                        force3D: true,
+                    }, "-=0.8");
+            };
+
+            // Écoute de la transition (même logique que tes autres pages)
+            const overlay = document.getElementById('transition-overlay');
+            const isFirstLoad = document.documentElement.classList.contains('is-first-load');
+            const isTransitioning = overlay && overlay.style.pointerEvents === 'auto';
+
+            if (isFirstLoad || isTransitioning) {
+                window.addEventListener('transition-finished', playInitialAnimation, { once: true });
+            } else {
+                playInitialAnimation();
+            }
+        }
+        // ------------------------------------------
 
         function preloadAdjacentImages(currentIndex) {
             const nextIndex = currentIndex === totalSlides ? 1 : currentIndex + 1;
@@ -496,6 +564,5 @@ const slidesData = projets.map((projet) => ({
         window.addEventListener("touchend", () => {
             isTouchActive = false;
         }, { signal });
-
     });
 </script>

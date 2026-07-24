@@ -293,7 +293,79 @@ const { Content } = await render(projet);
 </style>
 
 <script>
+    // @ts-nocheck
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+    import SplitType from "split-type";
+    import Lenis from 'lenis';
+
+    gsap.registerPlugin(ScrollTrigger, SplitType);
+
     document.addEventListener("astro:page-load", () => {
+
+        const lenis = new Lenis();
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time) => {
+            lenis.raf(time * 1000);
+        });
+        gsap.ticker.lagSmoothing(0);
+
+        const prepareSplitReveal = (elements) => {
+            let allLines = [];
+            const els = Array.isArray(elements) || elements instanceof NodeList ? elements : [elements];
+
+            els.forEach(element => {
+                if (!element || window.getComputedStyle(element).display === 'none') return;
+                const split = new SplitType(element, { types: 'lines' });
+                split.lines.forEach((el) => {
+                    const wrapper = document.createElement('div');
+                    wrapper.style.overflow = 'hidden';
+                    wrapper.style.display = 'block';
+                    el.parentNode.insertBefore(wrapper, el);
+                    wrapper.appendChild(el);
+                });
+                gsap.set(split.lines, { y: "100%" });
+                allLines.push(...split.lines);
+            });
+            return allLines;
+        };
+
+        const headerTexts = document.querySelectorAll('.col-info h1, .col-info p, .col-roles h3, .col-roles li, .col-client h3, .col-client p');
+        const linesHeader = prepareSplitReveal(headerTexts);
+        const minimapContainer = document.querySelector('.minimap-container');
+
+        if (minimapContainer) gsap.set(minimapContainer, { opacity: 0 });
+
+        const playProjectIntro = () => {
+            const tlIntro = gsap.timeline();
+
+            if(linesHeader.length > 0) {
+                tlIntro.to(linesHeader, {
+                    y: "0%",
+                    duration: 0.8,
+                    stagger: 0.02,
+                    ease: "power3.out"
+                });
+            }
+            if (minimapContainer) {
+                tlIntro.to(minimapContainer, {
+                    opacity: 1,
+                    duration: 1,
+                    ease: "power2.out"
+                }, "-=0.4");
+            }
+        };
+
+        const overlay = document.getElementById('transition-overlay');
+        const isFirstLoad = document.documentElement.classList.contains('is-first-load');
+        const isTransitioning = overlay && overlay.style.pointerEvents === 'auto';
+
+        if (isFirstLoad || isTransitioning) {
+            window.addEventListener('transition-finished', playProjectIntro, { once: true });
+        } else {
+            playProjectIntro();
+        }
+
         const contentImages = document.querySelectorAll('.project-content img');
         const minimapContent = document.querySelector('.minimap-content');
         const minimapViewport = document.querySelector('.minimap-viewport');
@@ -304,6 +376,8 @@ const { Content } = await render(projet);
             contentImages.forEach(img => {
                 const clone = img.cloneNode() as HTMLImageElement;
                 clone.removeAttribute('id');
+                clone.style.opacity = '1';
+                clone.style.transform = 'none';
                 minimapContent.appendChild(clone);
             });
 
@@ -316,7 +390,6 @@ const { Content } = await render(projet);
                 const viewportRatio = Math.min(windowHeight / contentHeight, 1);
                 minimapViewport.style.height = `${viewportRatio * minimapHeight}px`;
 
-                let scrolled = -contentTop + (windowHeight / 2);
                 let progress = (-contentTop) / (contentHeight - windowHeight);
                 progress = Math.max(0, Math.min(progress, 1));
 
@@ -332,13 +405,26 @@ const { Content } = await render(projet);
         }
 
         contentImages.forEach(img => {
+            gsap.set(img, { opacity: 0, y: 60 });
+
+            ScrollTrigger.create({
+                trigger: img,
+                start: "top 85%",
+                onEnter: () => {
+                    gsap.to(img, {
+                        opacity: 1,
+                        y: 0,
+                        duration: 1.2,
+                        ease: "power3.out"
+                    });
+                },
+                once: true
+            });
 
             img.setAttribute('data-cursor-text', 'Agrandir');
-
             img.addEventListener('click', () => {
                 const lightbox = document.createElement('div');
                 lightbox.className = 'lightbox';
-
                 lightbox.setAttribute('data-cursor-text', 'Fermer');
 
                 const imgClone = document.createElement('img');
@@ -346,7 +432,6 @@ const { Content } = await render(projet);
 
                 lightbox.appendChild(imgClone);
                 document.body.appendChild(lightbox);
-
                 document.dispatchEvent(new CustomEvent('dom-updated'));
 
                 requestAnimationFrame(() => {
@@ -355,15 +440,43 @@ const { Content } = await render(projet);
 
                 lightbox.addEventListener('click', () => {
                     lightbox.classList.remove('active');
-
                     lightbox.dispatchEvent(new Event('mouseleave'));
-
-                    setTimeout(() => {
-                        lightbox.remove();
-                    }, 300);
+                    setTimeout(() => { lightbox.remove(); }, 300);
                 });
             });
         });
+
+        const nextTexts = document.querySelectorAll('.next-project p, .next-project h2');
+        const nextImage = document.querySelector('.next-project img');
+
+        if (nextTexts.length > 0 && nextImage) {
+            const linesNext = prepareSplitReveal(nextTexts);
+
+            gsap.set(nextImage, { opacity: 0, scale: 0.95 });
+
+            ScrollTrigger.create({
+                trigger: ".next-project",
+                start: "top 80%",
+                onEnter: () => {
+                    const tlNext = gsap.timeline();
+
+                    tlNext.to(linesNext, {
+                        y: "0%",
+                        duration: 0.8,
+                        stagger: 0.1,
+                        ease: "power3.out"
+                    })
+                        .to(nextImage, {
+                            opacity: 1,
+                            scale: 1,
+                            duration: 1.2,
+                            ease: "power3.out"
+                        }, "-=0.6");
+                },
+                once: true
+            });
+        }
+
         document.dispatchEvent(new CustomEvent('dom-updated'));
     });
 </script>

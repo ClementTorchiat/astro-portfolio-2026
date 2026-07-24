@@ -71,6 +71,7 @@
 </style>
 
 <script>
+    // @ts-nocheck
     import gsap from 'gsap';
     import { navigate } from 'astro:transitions/client';
 
@@ -95,6 +96,9 @@
                     stagger: 0.075,
                     ease: 'power3.out'
                 })
+                .call(() => {
+                    window.dispatchEvent(new Event('transition-finished'));
+                }, [], "-=0.5")
                 .set('.panel', { x: '-100%' })
                 .set('#transition-overlay', { pointerEvents: 'none' })
                 .call(() => {
@@ -142,7 +146,10 @@
                         ease: 'power2.in'
                     })
                     .call(() => {
-                        navigate(targetUrl);
+                        tl.pause();
+                        navigate(targetUrl).then(() => {
+                            tl.play();
+                        });
                     })
                     .to('.panel', {
                         x: '100%',
@@ -150,6 +157,9 @@
                         stagger: 0.075,
                         ease: 'power3.out'
                     })
+                    .call(() => {
+                        window.dispatchEvent(new Event('transition-finished'));
+                    }, [], "-=0.5")
                     .set('.panel', { x: '-100%' })
                     .set('#transition-overlay', { pointerEvents: 'none' });
             }, { capture: true });

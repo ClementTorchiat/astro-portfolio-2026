@@ -49,18 +49,18 @@ import palette4 from '../assets/images/palette-1-4.webp';
 		<div class="work-projects-container">
 			<div class="work-projects-up">
 				<div class="project-wrapper">
-				<a class="project-image" data-cursor-text="Voir le projet">
-					<div class="video-container">
-						<video class="video" src="https://karim-saab.com/media/portfolio/home-casa.mp4" loop muted playsinline></video>
+					<a class="project-image" data-cursor-text="Voir le projet">
+						<div class="video-container">
+							<video class="video" src="https://karim-saab.com/media/portfolio/home-casa.mp4" loop muted playsinline></video>
+						</div>
+						<div class="image-split"></div>
+						<div class="blurred-background"></div>
+					</a>
+					<div class="project-info">
+						<h3>Casa Lunara</h3>
+						<p class="project-roles">Art Direction, UI/UX Design, Web Development</p>
 					</div>
-					<div class="image-split"></div>
-					<div class="blurred-background"></div>
-				</a>
-				<div class="project-info">
-					<h3>Casa Lunara</h3>
-					<p class="project-roles">Art Direction, UI/UX Design, Web Development</p>
 				</div>
-			</div>
 				<div class="project-wrapper">
 					<a class="project-image" data-cursor-text="Voir le projet">
 						<div class="video-container">
@@ -144,11 +144,16 @@ import palette4 from '../assets/images/palette-1-4.webp';
 					<div class="dark-overlay-palette"></div>
 					<h3 class="palette-title">Design UX/UI</h3>
 					<div class="palette-image"></div>
-					<div class="palette-bg-images">
-						<Image src={palette1} alt="" />
-						<Image src={palette2} alt="" />
-						<Image src={palette3} alt="" />
-						<Image src={palette4} alt="" />
+					<div class="palette-bg-ui">
+						<div class="ui-layer layer-1"></div>
+						<div class="ui-layer layer-2">
+							<div class="ui-skeleton header"></div>
+							<div class="ui-skeleton body"></div>
+						</div>
+						<div class="ui-layer layer-3">
+							<div class="ui-skeleton card"></div>
+							<div class="ui-skeleton button"></div>
+						</div>
 					</div>
 					<div class="palette-details-wrapper">
 						<div class="palette-details-container">
@@ -175,11 +180,15 @@ import palette4 from '../assets/images/palette-1-4.webp';
 					<div class="dark-overlay-palette"></div>
 					<h3 class="palette-title">Développement web</h3>
 					<div class="palette-image"></div>
-					<div class="palette-bg-images">
-						<Image src={palette1} alt="" />
-						<Image src={palette2} alt="" />
-						<Image src={palette3} alt="" />
-						<Image src={palette4} alt="" />
+					<div class="palette-bg-dev">
+						<div class="code-line"><span>import {"{"} Experience {"}"} from '@avenir';</span></div>
+						<div class="code-line"><span>const designer = new DA();</span></div>
+						<div class="code-line"><span>const developer = new Dev();</span></div>
+						<div class="code-line"><span>&nbsp;</span></div>
+						<div class="code-line"><span>function build(idea) {"{"}</span></div>
+						<div class="code-line"><span>&nbsp;&nbsp;return designer.sublime(idea)</span></div>
+						<div class="code-line"><span>&nbsp;&nbsp;&nbsp;&nbsp;.then(developer.code);</span></div>
+						<div class="code-line"><span>{"}"}</span></div>
 					</div>
 					<div class="palette-details-wrapper">
 						<div class="palette-details-container">
@@ -249,7 +258,7 @@ import palette4 from '../assets/images/palette-1-4.webp';
 		margin: 0;
 		line-height: 1.1;
 		font-weight: normal;
-		font-size: 4rem;
+		font-size: 16vw;
 	}
 
 	#hero .hero-title h1:nth-child(1) { align-self: flex-start; margin-left: 10%; }
@@ -473,13 +482,201 @@ import palette4 from '../assets/images/palette-1-4.webp';
 	#palette .palette-title-flex h2 { text-transform: uppercase; }
 	#palette .palette-title-flex p { display: none; }
 
+	.palette-wrapper {
+		width: 100%;
+		top: 0;
+	}
+
+	.palette-container {
+		width: 100%;
+		height: auto;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.palette {
+		flex-flow: column;
+		justify-content: center;
+		align-items: center;
+		width: 100%;
+		height: 60vh;
+		min-height: 400px;
+		display: flex;
+		position: relative;
+	}
+
+	.dark-overlay-palette {
+		z-index: 12;
+		opacity: 0;
+		background-image: linear-gradient(#00000080, #00000080);
+		width: 100%;
+		height: 100%;
+		display: block;
+		position: absolute;
+		inset: 0;
+	}
+
+	.palette-title {
+		z-index: 6;
+		color: var(--white);
+		text-transform: uppercase;
+		font-size: 27px;
+		line-height: 1;
+		font-weight: 500;
+		display: block;
+		position: relative;
+	}
+
+	.palette-title-flex {
+		padding-bottom: 32px !important;
+	}
+
+	.palette-title-flex p {
+		font-family: Jubilee, serif;
+		font-size: 64px;
+		font-weight: 100;
+		line-height: 1.4;
+	}
+
+	.palette-image {
+		z-index: 2;
+		background-position: 50%;
+		background-repeat: no-repeat;
+		background-size: cover;
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		inset: 0;
+		background-color: var(--white);
+	}
+
+	.palette1 .palette-image {
+		background-image: url(../assets/images/palette-1-bg.webp);
+	}
+
+	.palette2 .palette-image {
+		background-image: url(../assets/images/palette-2-bg.webp);
+	}
+
+	.palette3 .palette-image {
+		background-image: url(../assets/images/palette-3-bg.webp);
+	}
+
+	.palette-image::after {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background-image: inherit;
+		background-position: inherit;
+		background-repeat: inherit;
+		background-size: inherit;
+		background-color: inherit;
+		background-blend-mode: difference;
+		opacity: 0;
+		transition: opacity 0.5s ease;
+	}
+
+	.palette-bg-images {
+		z-index: 3;
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		inset: 0;
+		overflow: hidden;
+		display: none;
+	}
+
+	.palette-bg-images img {
+		z-index: 20;
+		display: inline-block;
+		position: absolute;
+		height: auto;
+		object-fit: cover;
+		opacity: 0;
+		transition: transform 0.6s ease-out, opacity 0.6s ease-out;
+	}
+
+	.palette-bg-images img:first-child {
+		width: 40%;
+		top: -10%;
+		left: -20%;
+		transform: translate(-20%, -20%);
+	}
+
+	.palette-bg-images img:nth-child(2) {
+		width: 26%;
+		top: 20%;
+		right: 2%;
+		transform: translate(20%, -10%);
+	}
+
+	.palette-bg-images img:nth-child(3) {
+		width: 43%;
+		bottom: 20%;
+		left: -9%;
+		transform: translate(-20%, 20%);
+	}
+
+	.palette-bg-images img:nth-child(4) {
+		width: 46%;
+		bottom: 1%;
+		right: -9%;
+		transform: translate(20%, 20%);
+	}
+
+	.palette-details-wrapper {
+		z-index: 3;
+		flex-flow: column;
+		width: 100%;
+		height: auto;
+		padding-top: 40px;
+		padding-bottom: 30px;
+		display: flex;
+		position: absolute;
+		inset: auto 0 0;
+		background: linear-gradient(to top, #3A2214cc, #3A221400);
+		opacity: 1;
+		transition: opacity 0.3s ease;
+	}
+
+	.palette-details-container {
+		z-index: 1;
+		flex-flow: column;
+		justify-content: flex-start;
+		align-items: center;
+		width: 100%;
+		height: auto;
+		padding-top: 0;
+		display: flex;
+		position: relative;
+	}
+
+	.palette-details {
+		z-index: 5;
+		margin-bottom: .5em;
+		justify-content: center;
+		align-items: center;
+		display: flex;
+		position: relative;
+	}
+
+	.palette-details p {
+		font-size: 1em;
+		line-height: 1.2;
+		font-family: 'Switzer', sans-serif;
+		font-weight: 400;
+		color: var(--white);
+		opacity: 1;
+		transform: translate3d(0px, 0em, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg);
+		transform-style: preserve-3d;
+	}
 
 	.scroll-container {
 		position: relative;
 		width: 100vw;
 		height: 100vh;
 		overflow: hidden;
-		background-color: #fff;
+		background-color: var(--white);
 	}
 
 	.image-reveal {
@@ -519,7 +716,7 @@ import palette4 from '../assets/images/palette-1-4.webp';
 		font-family: 'Switzer', sans-serif;
 		text-transform: uppercase;
 		font-weight: 700;
-		font-size: 74px;
+		font-size: 10vw;
 		line-height: 1;
 		letter-spacing: -5%;
 	}
@@ -529,7 +726,7 @@ import palette4 from '../assets/images/palette-1-4.webp';
 		opacity: 0;
 		z-index: 3;
 		font-family: "Voyage", serif;
-		font-size: 150px;
+		font-size: 20vw;
 		line-height: 1;
 	}
 
@@ -558,16 +755,8 @@ import palette4 from '../assets/images/palette-1-4.webp';
 		width: 320px;
 	}
 
-	.hero-section, .projects-section {
-		position: relative;
-		z-index: 10;
-		background-color: #fff;
-		width: 100vw;
-		min-height: 100vh;
-	}
-
 	@media (min-width: 1024px) {
-		#hero .hero-title h1 { font-size: 183px; line-height: 0.8; }
+		#hero .hero-title h1 { font-size: 11vw; line-height: 0.8; }
 		#hero .hero-title h1:nth-child(1) { margin-left: 15%; }
 		#hero .hero-title h1:nth-child(2) { margin-right: 20%; }
 		#hero .hero-title h1:nth-child(3) { margin-left: 25%; }
@@ -677,6 +866,7 @@ import palette4 from '../assets/images/palette-1-4.webp';
 			width: 100%;
 			height: 100vh;
 			display: flex;
+			flex-direction: row;
 		}
 
 		.palette {
@@ -768,6 +958,7 @@ import palette4 from '../assets/images/palette-1-4.webp';
 			position: absolute;
 			inset: 0;
 			overflow: hidden;
+			display: block;
 		}
 
 		.palette-bg-images img {
@@ -778,27 +969,6 @@ import palette4 from '../assets/images/palette-1-4.webp';
 			object-fit: cover;
 			opacity: 0;
 			transition: transform 0.6s ease-out, opacity 0.6s ease-out;
-		}
-
-		.palette:hover .palette-bg-images img {
-			opacity: 1;
-			transform: translate(0, 0);
-		}
-
-		.palette:hover .palette-bg-images img:first-child {
-			transition-delay: 0s;
-		}
-
-		.palette:hover .palette-bg-images img:nth-child(2) {
-			transition-delay: 0.1s;
-		}
-
-		.palette:hover .palette-bg-images img:nth-child(3) {
-			transition-delay: 0.2s;
-		}
-
-		.palette:hover .palette-bg-images img:nth-child(4) {
-			transition-delay: 0.3s;
 		}
 
 		.palette-bg-images img:first-child {
@@ -866,7 +1036,7 @@ import palette4 from '../assets/images/palette-1-4.webp';
 
 		.palette-details p {
 			font-size: 1em;
-			line-height: 1;
+			line-height: 1.2;
 			font-family: 'Switzer', sans-serif;
 			font-weight: 400;
 			color: var(--white);
@@ -883,22 +1053,160 @@ import palette4 from '../assets/images/palette-1-4.webp';
 			opacity: 1;
 		}
 
-		.palette:hover .palette-details-wrapper {
-			opacity: 1;
+		/* --- PALETTE 2 : UI LAYERS --- */
+		.palette-bg-ui {
+			position: absolute;
+			inset: 0;
+			z-index: 3;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			pointer-events: none;
+			perspective: 1000px; /* Nécessaire pour la 3D GSAP */
 		}
 
-		.palette:hover .palette-details-wrapper .palette-details-container .palette-details p {
-			opacity: 1;
-			transform: translate3d(0px, 0em, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg);
-			transform-style: preserve-3d;
+		.ui-layer {
+			position: absolute;
+			width: 240px;
+			height: 320px;
+			background: rgba(255, 255, 255, 0.03);
+			border: 1px solid rgba(255, 255, 255, 0.15);
+			border-radius: 12px;
+			backdrop-filter: blur(4px);
+			-webkit-backdrop-filter: blur(4px);
+			padding: 20px;
+			display: flex;
+			flex-direction: column;
+			gap: 15px;
+		}
+
+		/* Faux éléments d'interface à l'intérieur des calques */
+		.ui-skeleton { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
+		.ui-skeleton.header { width: 100%; height: 30px; }
+		.ui-skeleton.body { width: 100%; height: 100%; flex-grow: 1; }
+		.ui-skeleton.card { width: 60%; height: 80px; }
+		.ui-skeleton.button { width: 40%; height: 25px; border-radius: 15px; margin-top: auto; }
+
+		/* --- PALETTE 3 : DEV CODE --- */
+		.palette-bg-dev {
+			position: absolute;
+			inset: 0;
+			z-index: 3;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			padding-left: 15%;
+			pointer-events: none;
+			font-family: 'Courier New', Courier, monospace; /* Typo code */
+			font-size: 14px;
+			color: rgba(255, 255, 255, 0.4);
+			line-height: 1.6;
+		}
+
+		.code-line {
+			width: 100%;
+			display: block;
+		}
+
+		.code-line span {
+			display: inline-block;
+			overflow: hidden;
+			white-space: nowrap;
+			vertical-align: bottom; /* Empilement parfait de l'animation de width */
+		}
+
+		.scroll-container {
+			position: relative;
+			width: 100vw;
+			height: 100vh;
+			overflow: hidden;
+			background-color: #fff;
+		}
+
+		.image-reveal {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 2;
+			clip-path: circle(0% at 50% 50%);
+			background-color: var(--light-beige);
+			background-image: url('../assets/images/scroll-container-bg.webp');
+			background-size: cover;
+			background-position: center;
+		}
+
+		.text-layer {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			pointer-events: none;
+		}
+
+		.text-initial, .text-final {
+			position: absolute;
+			text-align: center;
+		}
+
+		.text-initial {
+			color: var(--black);
+			z-index: 1;
+			font-family: 'Switzer', sans-serif;
+			text-transform: uppercase;
+			font-weight: 700;
+			font-size: 74px;
+			line-height: 1;
+			letter-spacing: -5%;
+		}
+
+		.text-final {
+			color: var(--white);
+			opacity: 0;
+			z-index: 3;
+			font-family: "Voyage", serif;
+			font-size: 150px;
+			line-height: 1;
+		}
+
+		.floating-blur {
+			position: absolute;
+			z-index: 1;
+			filter: grayscale(100%) blur(6px);
+			opacity: 0.7;
+		}
+
+		.blur-1 {
+			top: 5%;
+			left: 10%;
+			width: 340px;
+		}
+
+		.blur-2 {
+			bottom: 5%;
+			right: 25%;
+			width: 220px;
+		}
+
+		.blur-3 {
+			top: 15%;
+			right: -5%;
+			width: 320px;
 		}
 	}
 </style>
 
 <script>
+	// @ts-nocheck
 	import { gsap } from "gsap";
 	import { ScrollTrigger } from "gsap/ScrollTrigger";
 	import SplitType from "split-type";
+	import Lenis from 'lenis';
 
 	gsap.registerPlugin(ScrollTrigger, SplitType);
 
@@ -938,6 +1246,246 @@ import palette4 from '../assets/images/palette-1-4.webp';
 	}, 0);
 
 	document.addEventListener("astro:page-load", () => {
+		const lenis = new Lenis();
+
+		lenis.on('scroll', ScrollTrigger.update);
+
+		gsap.ticker.add((time) => {
+			lenis.raf(time * 1000);
+		});
+
+		gsap.ticker.lagSmoothing(0);
+		const prepareSplitReveal = (element) => {
+			if (!element || window.getComputedStyle(element.parentElement).display === 'none') return [];
+			const split = new SplitType(element, { types: 'lines' });
+
+			split.lines.forEach((el) => {
+				const wrapper = document.createElement('div');
+				wrapper.style.overflow = 'hidden';
+				wrapper.style.display = 'block';
+				el.parentNode.insertBefore(wrapper, el);
+				wrapper.appendChild(el);
+			});
+
+			gsap.set(split.lines, { y: "100%" });
+			return split.lines;
+		};
+
+		const heroTitles = document.querySelectorAll('#hero .hero-title h1');
+		const heroLine = document.querySelector('.hero-line');
+		const textCenter = document.querySelector('.hero-bottom-center p');
+		const textLeft = document.querySelector('.hero-bottom-left p');
+		const textRight = document.querySelector('.hero-bottom-right p');
+
+		if (heroTitles.length > 0) {
+			const splitHero = new SplitType(heroTitles, { types: 'chars' });
+			gsap.set(splitHero.chars, { opacity: 0, x: 60, y: 60 });
+
+			gsap.set(heroLine, { scaleX: 0, transformOrigin: "center" });
+
+			const prepareLines = (element) => {
+				if (!element || window.getComputedStyle(element.parentElement).display === 'none') return [];
+
+				const split = new SplitType(element, { types: 'lines' });
+				split.lines.forEach((el) => {
+					const wrapper = document.createElement('div');
+					wrapper.style.overflow = 'hidden';
+					wrapper.style.display = 'block';
+					el.parentNode.insertBefore(wrapper, el);
+					wrapper.appendChild(el);
+				});
+				gsap.set(split.lines, { y: "100%" });
+				return split.lines;
+			};
+
+			const linesCenter = prepareLines(textCenter);
+			const linesSides = [
+				...prepareLines(textLeft),
+				...prepareLines(textRight)
+			];
+
+			const playHeroAnimation = () => {
+				const tlHero = gsap.timeline();
+
+				tlHero.to(splitHero.chars, {
+					opacity: 1,
+					x: 0,
+					y: 0,
+					duration: 1.2,
+					ease: "power3.out",
+					stagger: { amount: 1, from: "random" }
+				}, 0)
+
+					.to(heroLine, {
+						scaleX: 1,
+						duration: 2,
+						ease: "power3.inOut"
+					}, 0.3)
+
+					.to(linesCenter, {
+						y: "0%",
+						duration: 0.6,
+						stagger: 0.1,
+						ease: "power3.out"
+					}, 0.6)
+
+					.to(linesSides, {
+						y: "0%",
+						duration: 0.6,
+						stagger: 0.1,
+						ease: "power3.out"
+					}, 1.2);
+			};
+
+			// --- ANIMATION ABOUT ---
+			const aboutSubtitle = document.querySelector('#about .grey-subtitle');
+			const aboutDescription = document.querySelector('#about .about-description');
+
+			if (aboutSubtitle && aboutDescription) {
+				const linesSubtitle = prepareSplitReveal(aboutSubtitle);
+				const linesDescription = prepareSplitReveal(aboutDescription);
+
+				ScrollTrigger.create({
+					trigger: "#about",
+					start: "top 75%", // L'animation se lance quand le haut de la section atteint 75% de l'écran
+					onEnter: () => {
+						const tlAbout = gsap.timeline();
+
+						// 1. Le sous-titre "(À propos)" remonte
+						tlAbout.to(linesSubtitle, {
+							y: "0%",
+							duration: 0.6,
+							ease: "power3.out"
+						})
+
+							// 2. Les lignes de la description suivent avec un effet de cascade
+							.to(linesDescription, {
+								y: "0%",
+								duration: 0.8,
+								stagger: 0.1, // Délai entre chaque ligne
+								ease: "power3.out"
+							}, "-=0.4"); // Démarre un peu avant la fin du sous-titre
+					},
+					once: true // L'animation ne se joue qu'une seule fois
+				});
+			}
+			// -----------------------
+
+			// --- ANIMATION WORK ---
+			const workTitle = document.querySelector('#work .work-title-flex h2');
+			const workNum = document.querySelector('#work .work-title-flex p');
+			const workLine = document.querySelector('#work .work-line');
+			const workProjects = document.querySelectorAll('#work .project-wrapper');
+			const workBtn = document.querySelector('#work .button-dot');
+
+			if (workTitle) {
+				// 1. Préparation des éléments
+				const linesWorkTitle = prepareSplitReveal(workTitle);
+				const linesWorkNum = prepareSplitReveal(workNum);
+
+				// La ligne part de 0 et s'étendra vers la droite
+				gsap.set(workLine, { scaleX: 0, transformOrigin: "left" });
+
+				// Les projets et le bouton sont cachés
+				gsap.set(workProjects, { opacity: 0 });
+				if (workBtn) gsap.set(workBtn, { opacity: 0 });
+
+				// 2. Déclenchement au scroll
+				ScrollTrigger.create({
+					trigger: "#work",
+					start: "top 75%",
+					onEnter: () => {
+						const tlWork = gsap.timeline();
+
+						// A. Le h2 apparaît en Split Reveal
+						tlWork.to(linesWorkTitle, {
+							y: "0%",
+							duration: 0.6,
+							ease: "power3.out"
+						})
+
+							// B. La ligne se trace de gauche à droite
+							.to(workLine, {
+								scaleX: 1,
+								duration: 1.2,
+								ease: "power3.inOut"
+							}, "-=0.2") // Commence un peu avant la fin du h2
+
+							// C. Le (01) apparaît juste avant que la ligne soit finie
+							.to(linesWorkNum, {
+								y: "0%",
+								duration: 0.6,
+								ease: "power3.out"
+							}, "-=0.5")
+
+							// D. Apparition en fondu des projets et du bouton
+							.to([workProjects, workBtn], {
+								opacity: 1,
+								duration: 0.8,
+								stagger: 0.1, // Ils apparaissent l'un après l'autre
+								ease: "power2.out"
+							}, "-=0.2");
+					},
+					once: true
+				});
+			}
+			// ----------------------
+
+			// --- ANIMATION PALETTE (Partie 1) ---
+			const paletteTitle = document.querySelector('#palette .palette-title-flex h2');
+			const paletteNum = document.querySelector('#palette .palette-title-flex p');
+			const palettes = document.querySelectorAll('#palette .palette');
+
+			if (paletteTitle) {
+				const linesPaletteTitle = prepareSplitReveal(paletteTitle);
+				const linesPaletteNum = prepareSplitReveal(paletteNum);
+				gsap.set(palettes, { opacity: 0, y: 30 });
+
+				ScrollTrigger.create({
+					trigger: "#palette",
+					start: "top 75%",
+					onEnter: () => {
+						const tlPalette = gsap.timeline();
+
+						// A. Le h2 apparaît en Split Reveal
+						tlPalette.to(linesPaletteTitle, {
+							y: "0%",
+							duration: 0.6,
+							ease: "power3.out"
+						})
+
+							// B. Le (02) apparaît juste avant la fin du h2
+							.to(linesPaletteNum, {
+								y: "0%",
+								duration: 0.6,
+								ease: "power3.out"
+							}, "-=0.4")
+
+							// C. Apparition des palettes l'une après l'autre
+							.to(palettes, {
+								opacity: 1,
+								y: 0,
+								duration: 0.8,
+								stagger: 0.2, // Délai de 0.2s entre chaque palette
+								ease: "power3.out"
+							}, "-=0.2");
+					},
+					once: true
+				});
+			}
+// ----------------------
+
+			const overlay = document.getElementById('transition-overlay');
+			const isFirstLoad = document.documentElement.classList.contains('is-first-load');
+			const isTransitioning = overlay && overlay.style.pointerEvents === 'auto';
+
+			if (isFirstLoad || isTransitioning) {
+				window.addEventListener('transition-finished', playHeroAnimation, { once: true });
+			} else {
+				playHeroAnimation();
+			}
+		}
+
 		let mm = gsap.matchMedia();
 
 		mm.add("(min-width: 1024px)", () => {
@@ -968,24 +1516,34 @@ import palette4 from '../assets/images/palette-1-4.webp';
 				const xTo = gsap.quickTo(videoContainer, "x", { duration: 0.4, ease: "power3.out" });
 				const yTo = gsap.quickTo(videoContainer, "y", { duration: 0.4, ease: "power3.out" });
 
-				const hoverTl = gsap.timeline({ paused: true })
+				const textTl = gsap.timeline({ paused: true })
+					.to(split.lines, { y: "0%", duration: 0.4, stagger: 0.05, ease: "power3.out" });
+
+				const videoTl = gsap.timeline({ paused: true })
 					.to(blurBg, { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 0)
-					.to(videoContainer, { opacity: 1, scale: 1, duration: 0.5, ease: "power3.out" }, 0)
-					.to(split.lines, { y: "0%", duration: 0.4, stagger: 0.05, ease: "power3.out" }, 0);
+					.to(videoContainer, { opacity: 1, scale: 1, duration: 0.5, ease: "power3.out" }, 0);
 
 				project.addEventListener("mouseenter", () => {
-					hoverTl.play();
-					if (video) video.play().catch(() => {});
+					textTl.play();
 				});
 
 				project.addEventListener("mouseleave", () => {
-					hoverTl.reverse();
-					if (video) gsap.delayedCall(hoverTl.duration(), () => video.pause());
+					textTl.reverse();
+				});
+
+				projectImage.addEventListener("mouseenter", () => {
+					videoTl.play();
+					if (video) video.play().catch(() => {});
+				});
+
+				projectImage.addEventListener("mouseleave", () => {
+					videoTl.reverse();
+					if (video) gsap.delayedCall(videoTl.duration(), () => video.pause());
 					xTo(0);
 					yTo(0);
 				});
 
-				project.addEventListener("mousemove", (e) => {
+				projectImage.addEventListener("mousemove", (e) => {
 					const rect = projectImage.getBoundingClientRect();
 					const centerX = rect.left + rect.width / 2;
 					const centerY = rect.top + rect.height / 2;
@@ -997,6 +1555,98 @@ import palette4 from '../assets/images/palette-1-4.webp';
 					yTo(moveY);
 				});
 			});
+
+			// --- HOVER PALETTES (Desktop) ---
+			const hoverPalettes = document.querySelectorAll('.palette');
+
+			hoverPalettes.forEach((palette) => {
+				const detailsWrapper = palette.querySelector('.palette-details-wrapper');
+				const detailLines = palette.querySelectorAll('.palette-details p');
+
+				// On s'assure que l'état initial est bien défini pour GSAP
+				gsap.set(detailsWrapper, { opacity: 0 });
+				gsap.set(detailLines, { y: "100%", opacity: 0 });
+
+				// Timeline universelle pour les détails (Split Reveal)
+				const tlHover = gsap.timeline({ paused: true });
+
+				tlHover.to(detailsWrapper, {
+					opacity: 1,
+					duration: 0.3,
+					ease: "power2.out"
+				})
+					.to(detailLines, {
+						y: "0%",
+						opacity: 1,
+						duration: 0.4,
+						stagger: 0.05, // L'effet d'apparition ligne par ligne
+						ease: "power3.out"
+					}, "-=0.15");
+
+				// Timeline spécifique pour la Palette 1 (les 4 images)
+				let tlImages, tlUI, tlDev;
+				if (palette.classList.contains('palette1')) {
+					const bgImages = palette.querySelectorAll('.palette-bg-images img');
+					tlImages = gsap.timeline({ paused: true });
+					tlImages.to(bgImages, {
+						opacity: 1,
+						x: 0,
+						y: 0,
+						duration: 0.6,
+						stagger: 0.1,
+						ease: "back.out(1.2)"
+					});
+				}
+				// 📐 PALETTE 2 : Calques Figma Isométriques
+				else if (palette.classList.contains('palette2')) {
+					const uiLayers = palette.querySelectorAll('.ui-layer');
+
+					// État initial 3D (couché et invisible)
+					gsap.set(uiLayers, { opacity: 0, rotationX: 60, rotationZ: -45, y: 50 });
+
+					tlUI = gsap.timeline({ paused: true });
+					tlUI.to(uiLayers, {
+						opacity: 1,
+						// On décale chaque calque sur X et Y pour créer la profondeur isométrique
+						x: (index) => index * -35,
+						y: (index) => index * -45,
+						duration: 0.6,
+						stagger: 0.15,
+						ease: "power3.out"
+					});
+				}
+				// 💻 PALETTE 3 : Code "Machine à écrire"
+				else if (palette.classList.contains('palette3')) {
+					const codeSpans = palette.querySelectorAll('.code-line span');
+
+					// On réduit la largeur à 0 pour masquer le texte
+					gsap.set(codeSpans, { width: "0%" });
+
+					tlDev = gsap.timeline({ paused: true });
+					tlDev.to(codeSpans, {
+						width: "100%",
+						duration: 0.8,
+						stagger: 0.15,
+						ease: "steps(20)" // Crée l'effet saccadé d'une machine à écrire/terminal
+					});
+				}
+
+				// Écouteurs d'événements
+				palette.addEventListener('mouseenter', () => {
+					tlHover.play();
+					if (tlImages) tlImages.timeScale(1).play();
+					if (tlUI) tlUI.timeScale(1).play();
+					if (tlDev) tlDev.timeScale(1).play();
+				});
+
+				palette.addEventListener('mouseleave', () => {
+					tlHover.reverse();
+					if (tlImages) tlImages.timeScale(4).reverse();
+					if (tlUI) tlUI.timeScale(3).reverse(); // Un peu moins rapide pour que la 3D reste jolie
+					if (tlDev) tlDev.timeScale(5).reverse(); // Effacement très rapide du code
+				});
+			});
+			// --------------------------------
 		});
 	});
 </script>
