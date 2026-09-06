@@ -13,34 +13,40 @@ const slidesData = projets.map((projet) => ({
 }));
 ---
 
-<Layout titre="Projets - Clément Torchiat" masquerFooter={true} typeHeader="normal">
-    <div class="slider" data-slides={JSON.stringify(slidesData)}>
-        <div class="slide">
-            <a href={slidesData[0].slideUrl} class="slide-img" data-cursor-text="Voir le projet">
-                <img src={slidesData[0].slideImg} alt="">
-            </a>
-            <div class="slide-header">
-                <div class="slide-title">
-                    <h1>{slidesData[0].slideTitle}</h1>
+<Layout 
+    titre="Projets - Clément Torchiat" 
+    description="Découvrez mes projets de direction artistique, design d'interfaces et développement web."
+    masquerFooter={true} 
+    typeHeader="normal">
+    <div class="work-page">
+        <div class="slider" data-slides={JSON.stringify(slidesData)}>
+            <div class="slide">
+                <a href={slidesData[0].slideUrl} class="slide-img" data-cursor-text="Voir le projet">
+                    <img src={slidesData[0].slideImg} alt={`Image de couverture du projet ${slidesData[0].slideTitle}`}>
+                </a>
+                <div class="slide-header">
+                    <div class="slide-title">
+                        <h1>{slidesData[0].slideTitle}</h1>
+                    </div>
+                    <div class="slide-description">
+                        <p>{slidesData[0].slideDescription}</p>
+                    </div>
+                    <div class="slide-link">
+                        <a data-cursor-hover href={slidesData[0].slideUrl}>Voir le projet</a>
+                    </div>
                 </div>
-                <div class="slide-description">
-                    <p>{slidesData[0].slideDescription}</p>
-                </div>
-                <div class="slide-link">
-                    <a data-cursor-hover href={slidesData[0].slideUrl}>Voir le projet</a>
-                </div>
-            </div>
-            <div class="slide-info">
-                <div class="slide-tags">
-                    <p>Tags</p>
-                    {slidesData[0].slideTags.map((tag) => (
-                            <p>{tag}</p>
-                    ))}
-                </div>
-                <div class="slide-index-wrapper">
-                    <p id="slide-index">01</p>
-                    <p>/</p>
-                    <p id="total-slide-count">{String(slidesData.length).padStart(2, "0")}</p>
+                <div class="slide-info">
+                    <div class="slide-tags">
+                        <p>Tags</p>
+                        {slidesData[0].slideTags.map((tag) => (
+                                <p>{tag}</p>
+                        ))}
+                    </div>
+                    <div class="slide-index-wrapper">
+                        <p id="slide-index">01</p>
+                        <p>/</p>
+                        <p id="total-slide-count">{String(slidesData.length).padStart(2, "0")}</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -48,38 +54,35 @@ const slidesData = projets.map((projet) => ({
 </Layout>
 
 <style is:global>
-    * {
+    .work-page * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
     }
 
-    body {
+    .work-page {
         font-family: 'Switzer', sans-serif;
     }
 
-    img {
+    .work-page img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
 
-    h1, p, a {
+    .work-page h1, .work-page p, .work-page a {
         color: var(--white);
     }
 
-    h1 {
+    .work-page h1 {
         text-transform: uppercase;
-    }
-
-    h1 {
         font-size: 5rem;
         font-weight: 500;
         letter-spacing: -0.1rem;
         font-family: 'Jubilee', serif;
     }
 
-    p, a {
+    .work-page p, .work-page a {
         text-decoration: none;
         font-family: 'Switzer', sans-serif;
         font-size: 0.9rem;
@@ -87,11 +90,11 @@ const slidesData = projets.map((projet) => ({
         letter-spacing: -0.01rem;
     }
 
-    .slide-link a {
+    .work-page .slide-link a {
         text-decoration: underline;
     }
 
-    .slider {
+    .work-page .slider {
         position: relative;
         width: 100vw;
         height: 100svh;
@@ -99,7 +102,7 @@ const slidesData = projets.map((projet) => ({
         overflow: hidden;
     }
 
-    .slide, .slide-img {
+    .work-page .slide, .work-page .slide-img {
         position: absolute;
         top: 0;
         left: 0;
@@ -107,13 +110,13 @@ const slidesData = projets.map((projet) => ({
         height: 100svh;
     }
 
-    .slide-index-wrapper {
+    .work-page .slide-index-wrapper {
         display: flex;
         flex-direction: row;
         gap: 4px;
     }
 
-    .slide-header {
+    .work-page .slide-header {
         position: absolute;
         bottom: 2rem;
         left: 50%;
@@ -127,13 +130,13 @@ const slidesData = projets.map((projet) => ({
         z-index: 1;
     }
 
-    .slide-description {
+    .work-page .slide-description {
         width: 60%;
         text-align: center;
         margin-bottom: 1rem;
     }
 
-    .slide-info {
+    .work-page .slide-info {
         position: absolute;
         left: 0;
         bottom: 2rem;
@@ -144,49 +147,49 @@ const slidesData = projets.map((projet) => ({
         align-items: flex-end;
     }
 
-    .slide-tags {
+    .work-page .slide-tags {
         display: flex;
         flex-direction: column;
     }
 
-    .slide-info-wrapper {
+    .work-page .slide-info-wrapper {
         display: flex;
     }
 
-    .slide-info-wrapper p {
+    .work-page .slide-info-wrapper p {
         text-align: center;
         width: 2rem;
     }
 
-    .slide-tags p:first-child {
+    .work-page .slide-tags p:first-child {
         margin-bottom: 0.5rem;
         font-weight: 700;
         font-size: 1rem;
     }
 
-    .line, .word {
+    .work-page .line, .work-page .word {
         position: relative;
         display: inline-block;
     }
 
     @media (max-width: 1000px) {
-        h1 {
+        .work-page h1 {
             font-size: 2rem;
             letter-spacing: 0;
         }
 
-        p {
+        .work-page p {
             font-size: 0.8rem;
         }
 
-        .slide-header {
+        .work-page .slide-header {
             top: 50%;
             bottom: unset;
             transform: translate(-50%, -50%);
             width: 90%;
         }
 
-        .slide-description {
+        .work-page .slide-description {
             width: 100%;
         }
     }
@@ -215,29 +218,23 @@ const slidesData = projets.map((projet) => ({
         const totalSlides = slides.length;
         let currentSlide = 1;
 
-        // On bloque le scroll par défaut le temps de la transition
         let isAnimating = true;
         let scrollAllowed = false;
         let lastScrollTime = 0;
 
-        // --- NOUVEAU : GESTION DU PREMIER SLIDE ---
         const initialSlide = document.querySelector(".slider .slide");
 
         if (initialSlide) {
-            // On découpe le premier slide
             splitText(initialSlide);
 
             const words = initialSlide.querySelectorAll(".word");
             const lines = initialSlide.querySelectorAll(".line");
 
-            // On cache les textes immédiatement
             gsap.set([...words, ...lines], { y: "100%", force3D: true });
 
-            // L'animation d'entrée du premier slide
             const playInitialAnimation = () => {
                 const tl = gsap.timeline({
                     onComplete: () => {
-                        // On libère le scroll une fois l'animation finie
                         isAnimating = false;
                         scrollAllowed = true;
                         lastScrollTime = Date.now();
@@ -273,7 +270,6 @@ const slidesData = projets.map((projet) => ({
                     }, "-=0.8");
             };
 
-            // Écoute de la transition (même logique que tes autres pages)
             const overlay = document.getElementById('transition-overlay');
             const isFirstLoad = document.documentElement.classList.contains('is-first-load');
             const isTransitioning = overlay && overlay.style.pointerEvents === 'auto';
@@ -284,7 +280,6 @@ const slidesData = projets.map((projet) => ({
                 playInitialAnimation();
             }
         }
-        // ------------------------------------------
 
         function preloadAdjacentImages(currentIndex) {
             const nextIndex = currentIndex === totalSlides ? 1 : currentIndex + 1;
@@ -309,7 +304,7 @@ const slidesData = projets.map((projet) => ({
             slideImg.setAttribute("data-cursor-text", "Voir le projet");
             const img = document.createElement("img");
             img.src = slideData.slideImg;
-            img.alt = "";
+            img.alt = `Image de couverture du projet ${slideData.slideTitle}`;
             slideImg.appendChild(img);
 
             const slideHeader = document.createElement("div");

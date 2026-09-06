@@ -8,18 +8,17 @@
 </div>
 
 <style>
-    :global(*),
-    :global(*::before),
-    :global(*::after) {
-        cursor: none !important;
+    @media (hover: hover) and (pointer: fine) {
+        :global(*),
+        :global(*::before),
+        :global(*::after) {
+            cursor: none !important;
+        }
     }
 
-    @media (pointer: coarse) {
+    @media (hover: none), (pointer: coarse) {
         .cursor-wrapper {
             display: none !important;
-        }
-        :global(body) {
-            cursor: auto;
         }
     }
 
@@ -70,8 +69,22 @@
 
 <script>
     let rafId;
+    let cleanupFuncs = [];
+
+    function cleanupCursor() {
+        if (rafId) {
+            cancelAnimationFrame(rafId);
+            rafId = null;
+        }
+        cleanupFuncs.forEach(fn => fn());
+        cleanupFuncs = [];
+    }
 
     function initCursor() {
+        cleanupCursor();
+
+        if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
         const cursor = document.getElementById('custom-cursor');
         const blob = cursor?.querySelector('.cursor-blob') as HTMLElement;
         const textEl = cursor?.querySelector('.cursor-text') as HTMLElement;
@@ -87,7 +100,7 @@
         let hasMoved = false;
         let magneticTarget = null;
 
-        window.addEventListener('mousemove', (e) => {
+        const onMouseMove = (e) => {
             if (!hasMoved) {
                 pos.x = e.clientX;
                 pos.y = e.clientY;
@@ -95,50 +108,60 @@
             }
             mouse.x = e.clientX;
             mouse.y = e.clientY;
-        });
-
-        document.addEventListener('mouseleave', () => {
-            cursor.style.opacity = '0';
-        });
-
-        document.addEventListener('mouseenter', () => {
-            cursor.style.opacity = '1';
-        });
-
-        const setupHoverElements = () => {
-            const interactives = document.querySelectorAll('[data-cursor-text], [data-magnetic], [data-cursor-hover]');
-
-            interactives.forEach(el => {
-                el.addEventListener('mouseenter', () => {
-                    isHovering = true;
-                    targetScale = 0.5;
-
-                    if (el.hasAttribute('data-cursor-text')) {
-                        targetScale = 1;
-                        textEl.textContent = el.getAttribute('data-cursor-text');
-                        textEl.style.opacity = '1';
-                    }
-
-                    if (el.hasAttribute('data-magnetic')) {
-                        magneticTarget = el;
-                        targetScale = el.hasAttribute('data-cursor-text') ? 1 : 0.6;
-                    }
-                });
-
-                el.addEventListener('mouseleave', () => {
-                    isHovering = false;
-                    targetScale = 0.2;
-                    textEl.style.opacity = '0';
-
-                    if (magneticTarget) {
-                        magneticTarget.style.transform = `translate(0px, 0px)`;
-                        magneticTarget = null;
-                    }
-                });
-            });
         };
+        window.addEventListener('mousemove', onMouseMove);
+        cleanupFuncs.push(() => window.removeEventListener('mousemove', onMouseMove));
 
-        setupHoverElements();
+        const onMouseLeaveDoc = () => {
+            cursor.style.opacity = '0';
+        };
+        document.addEventListener('mouseleave', onMouseLeaveDoc);
+        cleanupFuncs.push(() => document.removeEventListener('mouseleave', onMouseLeaveDoc));
+
+        const onMouseEnterDoc = () => {
+            cursor.style.opacity = '1';
+        };
+        document.addEventListener('mouseenter', onMouseEnterDoc);
+        cleanupFuncs.push(() => document.removeEventListener('mouseenter', onMouseEnterDoc));
+
+        const interactives = document.querySelectorAll('[data-cursor-text], [data-magnetic], [data-cursor-hover]');
+        
+        interactives.forEach(el => {
+            const onMouseEnter = () => {
+                isHovering = true;
+                targetScale = 0.5;
+
+                if (el.hasAttribute('data-cursor-text')) {
+                    targetScale = 1;
+                    textEl.textContent = el.getAttribute('data-cursor-text');
+                    textEl.style.opacity = '1';
+                }
+
+                if (el.hasAttribute('data-magnetic')) {
+                    magneticTarget = el;
+                    targetScale = el.hasAttribute('data-cursor-text') ? 1 : 0.6;
+                }
+            };
+
+            const onMouseLeave = () => {
+                isHovering = false;
+                targetScale = 0.2;
+                textEl.style.opacity = '0';
+
+                if (magneticTarget) {
+                    magneticTarget.style.transform = `translate(0px, 0px)`;
+                    magneticTarget = null;
+                }
+            };
+
+            el.addEventListener('mouseenter', onMouseEnter);
+            el.addEventListener('mouseleave', onMouseLeave);
+
+            cleanupFuncs.push(() => {
+                el.removeEventListener('mouseenter', onMouseEnter);
+                el.removeEventListener('mouseleave', onMouseLeave);
+            });
+        });
 
         function render() {
             const lerp = 0.15;
@@ -191,7 +214,6 @@
             rafId = requestAnimationFrame(render);
         }
 
-        if (rafId) cancelAnimationFrame(rafId);
         rafId = requestAnimationFrame(render);
     }
     document.addEventListener('dom-updated', () => {
@@ -199,4 +221,5 @@
     });
 
     document.addEventListener('astro:page-load', initCursor);
+    document.addEventListener('astro:before-swap', cleanupCursor);
 </script>

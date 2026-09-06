@@ -9,25 +9,65 @@ import CustomCursor from '../components/CustomCursor.astro';
 
 interface Props {
 	titre: string;
+	description?: string;
+	image?: string;
 	masquerFooter?: boolean;
 	typeHeader?: 'normal' | 'alternatif';
 }
 
 const {
 	titre,
+	description = "Portfolio de Clément Torchiat, développeur.",
+	image = "/favicon.svg",
 	masquerFooter = false,
 	typeHeader = 'normal'
 } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="fr">
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width" />
 	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 	<meta name="generator" content={Astro.generator} />
 	<title>{titre}</title>
+	
+	<!-- SEO Metadata -->
+	<meta name="description" content={description} />
+	
+	<!-- OpenGraph / Facebook -->
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content={titre} />
+	<meta property="og:description" content={description} />
+	<meta property="og:image" content={new URL(image, Astro.url)} />
+	
+	<!-- Twitter -->
+	<meta property="twitter:card" content="summary_large_image" />
+	<meta property="twitter:title" content={titre} />
+	<meta property="twitter:description" content={description} />
+	<meta property="twitter:image" content={new URL(image, Astro.url)} />
+	
+	<!-- Font Preloading (Point 3) -->
+	<link rel="preload" href="/fonts/voyage-regular.otf" as="font" type="font/otf" crossorigin="anonymous" />
+	<link rel="preload" href="/fonts/OTJubilee-SapphireMedium.otf" as="font" type="font/otf" crossorigin="anonymous" />
+	<link rel="preload" href="/fonts/Switzer-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+	<link rel="preload" href="/fonts/Switzer-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+
+	<!-- JSON-LD SEO -->
+	<script type="application/ld+json" set:html={JSON.stringify({
+		"@context": "https://schema.org",
+		"@type": "Person",
+		"name": "Clément Torchiat",
+		"jobTitle": "Développeur",
+		"url": Astro.url.origin,
+		"image": new URL(image, Astro.url).toString(),
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": Astro.url.href
+		}
+	})} />
+
 	<ClientRouter />
 </head>
 	<body>

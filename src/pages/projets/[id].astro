@@ -1,9 +1,9 @@
 ---
-import { getCollection, render } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
 
 export async function getStaticPaths() {
-    const projetsBruts = await getCollection('projets');
+    const projetsBruts = await getCollection("projets");
     const projets = projetsBruts.sort((a, b) => a.data.order - b.data.order);
 
     return projets.map((projet, index) => {
@@ -20,9 +20,12 @@ const { projet, nextProject } = Astro.props;
 const { Content } = await render(projet);
 ---
 
-<Layout titre={`${projet.data.title} - Clément Torchiat`} masquerFooter={false} typeHeader="alternatif">
+<Layout
+    titre={`${projet.data.title} - Clément Torchiat`}
+    masquerFooter={false}
+    typeHeader="alternatif"
+>
     <main class="project-page">
-
         <header class="project-header">
             <div class="col-info">
                 <h1>{projet.data.title}</h1>
@@ -31,9 +34,7 @@ const { Content } = await render(projet);
             <div class="col-roles">
                 <h3>RÔLES :</h3>
                 <ul>
-                    {projet.data.tags.map(tag => (
-                            <li>{tag}</li>
-                    ))}
+                    {projet.data.tags.map((tag) => <li>{tag}</li>)}
                 </ul>
             </div>
             <div class="col-client">
@@ -62,12 +63,11 @@ const { Content } = await render(projet);
             <h2>{nextProject.data.title}</h2>
             <a href={`/projets/${nextProject.id}`} data-cursor-text="Voir">
                 <img
-                        src={nextProject.data.coverImage.src}
-                        alt={`Projet ${nextProject.data.title}`}
+                    src={nextProject.data.coverImage.src}
+                    alt={`Projet ${nextProject.data.title}`}
                 />
             </a>
         </section>
-
     </main>
 </Layout>
 
@@ -94,7 +94,7 @@ const { Content } = await render(projet);
     }
 
     .col-info h1 {
-        font-family: 'Jubilee', serif;
+        font-family: "Jubilee", serif;
         font-size: 3rem;
         text-transform: uppercase;
         margin-bottom: 1rem;
@@ -107,8 +107,9 @@ const { Content } = await render(projet);
         max-width: 90%;
     }
 
-    .col-roles h3, .col-client h3 {
-        font-family: 'Switzer', sans-serif;
+    .col-roles h3,
+    .col-client h3 {
+        font-family: "Switzer", sans-serif;
         font-weight: 700;
         font-size: 0.9rem;
         text-transform: uppercase;
@@ -120,11 +121,12 @@ const { Content } = await render(projet);
         padding: 0;
     }
 
-    .col-roles li, .col-client p {
+    .col-roles li,
+    .col-client p {
         font-size: 0.9rem;
         font-weight: 500;
         line-height: 1.6;
-        font-family: 'Switzer', sans-serif;
+        font-family: "Switzer", sans-serif;
     }
 
     .project-body {
@@ -149,7 +151,7 @@ const { Content } = await render(projet);
 
     .minimap-container {
         position: fixed;
-        top: 260px;
+        top: 220px;
         right: 10%;
         width: 80px;
         display: flex;
@@ -159,20 +161,29 @@ const { Content } = await render(projet);
 
     .minimap {
         position: relative;
-        width: 120px;
     }
 
     .minimap-content {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
+        /* Wrapper for scaled clone */
+    }
+
+    /* Transform text elements into skeleton blocks for the minimap */
+    .minimap-content :global(p),
+    .minimap-content :global(h1),
+    .minimap-content :global(h2),
+    .minimap-content :global(h3),
+    .minimap-content :global(li) {
+        color: transparent !important;
+        background-color: #e6e6e6 !important;
+        border-radius: 4px;
+        line-height: 1;
     }
 
     .minimap-content :global(img) {
         width: 100%;
         height: auto;
         display: block;
-        opacity: 0.8;
+        opacity: 1 !important;
     }
 
     .minimap-viewport {
@@ -181,7 +192,7 @@ const { Content } = await render(projet);
         left: -4px;
         width: calc(100% + 8px);
         height: 50px;
-        border: 2px solid #1A1A1A;
+        border: 2px solid #1a1a1a;
         pointer-events: none;
         z-index: 2;
         transition: transform 0.1s ease-out;
@@ -209,7 +220,7 @@ const { Content } = await render(projet);
     }
 
     .next-project h2 {
-        font-family: 'Jubilee', serif;
+        font-family: "Jubilee", serif;
         font-size: 4rem;
         text-transform: uppercase;
         margin-bottom: 2rem;
@@ -235,9 +246,9 @@ const { Content } = await render(projet);
     }
 
     :global(.site-footer) {
-        position: relative ;
-        z-index: 20 ;
-        background-color: var(--white) ;
+        position: relative;
+        z-index: 20;
+        background-color: var(--white);
     }
 
     :global(.lightbox) {
@@ -261,7 +272,7 @@ const { Content } = await render(projet);
         object-fit: contain;
         transform: scale(0.95);
         transition: transform 0.3s ease;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
     }
 
     :global(.lightbox.active) {
@@ -297,30 +308,52 @@ const { Content } = await render(projet);
     import { gsap } from "gsap";
     import { ScrollTrigger } from "gsap/ScrollTrigger";
     import SplitType from "split-type";
-    import Lenis from 'lenis';
+    import Lenis from "lenis";
 
     gsap.registerPlugin(ScrollTrigger, SplitType);
 
+    let abortController;
+
     document.addEventListener("astro:page-load", () => {
+        if (abortController) abortController.abort();
+        abortController = new AbortController();
+        const { signal } = abortController;
 
         const lenis = new Lenis();
-        lenis.on('scroll', ScrollTrigger.update);
-        gsap.ticker.add((time) => {
+        lenis.on("scroll", ScrollTrigger.update);
+
+        const tickerFn = (time) => {
             lenis.raf(time * 1000);
-        });
+        };
+        gsap.ticker.add(tickerFn);
         gsap.ticker.lagSmoothing(0);
+
+        const cleanupId = () => {
+            lenis.destroy();
+            gsap.ticker.remove(tickerFn);
+            ScrollTrigger.getAll().forEach((t) => t.kill());
+            document.removeEventListener("astro:before-swap", cleanupId);
+        };
+        document.addEventListener("astro:before-swap", cleanupId);
 
         const prepareSplitReveal = (elements) => {
             let allLines = [];
-            const els = Array.isArray(elements) || elements instanceof NodeList ? elements : [elements];
+            const els =
+                Array.isArray(elements) || elements instanceof NodeList
+                    ? elements
+                    : [elements];
 
-            els.forEach(element => {
-                if (!element || window.getComputedStyle(element).display === 'none') return;
-                const split = new SplitType(element, { types: 'lines' });
+            els.forEach((element) => {
+                if (
+                    !element ||
+                    window.getComputedStyle(element).display === "none"
+                )
+                    return;
+                const split = new SplitType(element, { types: "lines" });
                 split.lines.forEach((el) => {
-                    const wrapper = document.createElement('div');
-                    wrapper.style.overflow = 'hidden';
-                    wrapper.style.display = 'block';
+                    const wrapper = document.createElement("div");
+                    wrapper.style.overflow = "hidden";
+                    wrapper.style.display = "block";
                     el.parentNode.insertBefore(wrapper, el);
                     wrapper.appendChild(el);
                 });
@@ -330,81 +363,173 @@ const { Content } = await render(projet);
             return allLines;
         };
 
-        const headerTexts = document.querySelectorAll('.col-info h1, .col-info p, .col-roles h3, .col-roles li, .col-client h3, .col-client p');
+        const headerTexts = document.querySelectorAll(
+            ".col-info h1, .col-info p, .col-roles h3, .col-roles li, .col-client h3, .col-client p",
+        );
         const linesHeader = prepareSplitReveal(headerTexts);
-        const minimapContainer = document.querySelector('.minimap-container');
+        const minimapContainer = document.querySelector(".minimap-container");
 
         if (minimapContainer) gsap.set(minimapContainer, { opacity: 0 });
 
         const playProjectIntro = () => {
             const tlIntro = gsap.timeline();
 
-            if(linesHeader.length > 0) {
+            if (linesHeader.length > 0) {
                 tlIntro.to(linesHeader, {
                     y: "0%",
                     duration: 0.8,
                     stagger: 0.02,
-                    ease: "power3.out"
+                    ease: "power3.out",
                 });
             }
             if (minimapContainer) {
-                tlIntro.to(minimapContainer, {
-                    opacity: 1,
-                    duration: 1,
-                    ease: "power2.out"
-                }, "-=0.4");
+                tlIntro.to(
+                    minimapContainer,
+                    {
+                        opacity: 1,
+                        duration: 1,
+                        ease: "power2.out",
+                    },
+                    "-=0.4",
+                );
             }
         };
 
-        const overlay = document.getElementById('transition-overlay');
-        const isFirstLoad = document.documentElement.classList.contains('is-first-load');
-        const isTransitioning = overlay && overlay.style.pointerEvents === 'auto';
+        const overlay = document.getElementById("transition-overlay");
+        const isFirstLoad =
+            document.documentElement.classList.contains("is-first-load");
+        const isTransitioning =
+            overlay && overlay.style.pointerEvents === "auto";
 
         if (isFirstLoad || isTransitioning) {
-            window.addEventListener('transition-finished', playProjectIntro, { once: true });
+            window.addEventListener("transition-finished", playProjectIntro, {
+                once: true,
+                signal,
+            });
         } else {
             playProjectIntro();
         }
 
-        const contentImages = document.querySelectorAll('.project-content img');
-        const minimapContent = document.querySelector('.minimap-content');
-        const minimapViewport = document.querySelector('.minimap-viewport');
-        const projectContent = document.querySelector('.project-content');
+        const contentImages = document.querySelectorAll(".project-content img");
+        const minimapContent = document.querySelector(".minimap-content");
+        const minimapViewport = document.querySelector(".minimap-viewport");
+        const projectHeader = document.querySelector(".project-header");
+        const projectContent = document.querySelector(".project-content");
+        const minimap = document.querySelector(".minimap");
+        const projectPage = document.querySelector(".project-page");
 
-        if (minimapContent && minimapViewport && contentImages.length > 0) {
-            minimapContent.innerHTML = '';
-            contentImages.forEach(img => {
-                const clone = img.cloneNode() as HTMLImageElement;
-                clone.removeAttribute('id');
-                clone.style.opacity = '1';
-                clone.style.transform = 'none';
-                minimapContent.appendChild(clone);
+        if (
+            minimapContent &&
+            minimapViewport &&
+            projectContent &&
+            projectHeader &&
+            minimap &&
+            projectPage
+        ) {
+            minimapContent.innerHTML = "";
+
+            // Container to hold spacer + header + content
+            const cloneContainer = document.createElement("div");
+
+            // Simulate the 150px top padding of the page
+            const spacer = document.createElement("div");
+            spacer.style.height = "150px";
+            cloneContainer.appendChild(spacer);
+
+            const headerClone = projectHeader.cloneNode(true);
+            const contentClone = projectContent.cloneNode(true);
+
+            // "Cheat" by forcing the cloned content to take full width
+            // so it aligns with the full-width header, eliminating the right-side gap.
+            contentClone.style.width = "100%";
+
+            cloneContainer.appendChild(headerClone);
+            cloneContainer.appendChild(contentClone);
+
+            // Clean up the clone to remove IDs and GSAP styles
+            const allElements = cloneContainer.querySelectorAll("*");
+            allElements.forEach((el) => {
+                el.removeAttribute("id");
+                el.removeAttribute("data-cursor-text");
+                el.style.opacity = "1";
+                el.style.transform = "none";
             });
+            cloneContainer.style.opacity = "1";
+            cloneContainer.style.transform = "none";
+
+            minimapContent.appendChild(cloneContainer);
 
             const updateMinimap = () => {
-                const contentHeight = projectContent.getBoundingClientRect().height;
+                if (projectContent.getBoundingClientRect().width === 0) return;
+
+                const pageRect = projectPage.getBoundingClientRect();
+                const contentRect = projectContent.getBoundingClientRect();
+                const headerRect = projectHeader.getBoundingClientRect();
                 const windowHeight = window.innerHeight;
-                const contentTop = projectContent.getBoundingClientRect().top;
-                const minimapHeight = minimapContent.getBoundingClientRect().height;
 
-                const viewportRatio = Math.min(windowHeight / contentHeight, 1);
-                minimapViewport.style.height = `${viewportRatio * minimapHeight}px`;
+                const totalWidth = headerRect.width;
 
-                let progress = (-contentTop) / (contentHeight - windowHeight);
-                progress = Math.max(0, Math.min(progress, 1));
+                // Set width before measuring so layout can flow and images can stretch
+                minimapContent.style.width = `${totalWidth}px`;
+                const cloneHeight = cloneContainer.offsetHeight;
 
-                const maxTranslate = minimapHeight - minimapViewport.getBoundingClientRect().height;
+                // Restrict minimap height to prevent overflow
+                const maxMinimapHeight = windowHeight - 320;
+                const maxMinimapWidth = 100;
+
+                const scaleX = maxMinimapWidth / totalWidth;
+                const scaleY = maxMinimapHeight / cloneHeight;
+                const scale = Math.min(scaleX, Math.min(scaleY, 1));
+
+                // Scale the clone
+                minimapContent.style.position = "absolute";
+                minimapContent.style.top = "0";
+                minimapContent.style.left = "0";
+                minimapContent.style.transformOrigin = "top left";
+                minimapContent.style.transform = `scale(${scale})`;
+
+                // Size the minimap wrapper
+                minimap.style.width = `${totalWidth * scale}px`;
+                minimap.style.height = `${cloneHeight * scale}px`;
+
+                // Update the viewport indicator size
+                const viewportHeight = windowHeight * scale;
+                minimapViewport.style.height = `${viewportHeight}px`;
+                minimapViewport.style.width = `calc(100% + 4px)`;
+                minimapViewport.style.left = `-2px`;
+                minimapViewport.style.top = `0px`;
+
+                // Calculate progress against the real page bounds
+                const realTotalHeight = contentRect.bottom - pageRect.top;
+                const maxRealScroll = realTotalHeight - windowHeight;
+
+                let progress = 0;
+                if (maxRealScroll > 0) {
+                    progress = -pageRect.top / maxRealScroll;
+                    progress = Math.max(0, Math.min(progress, 1));
+                }
+
+                // Map progress to the stretched clone's height
+                const maxTranslate = Math.max(
+                    0,
+                    cloneHeight * scale - viewportHeight,
+                );
                 const translateValue = progress * maxTranslate;
 
                 minimapViewport.style.transform = `translateY(${translateValue}px)`;
             };
 
-            window.addEventListener('scroll', updateMinimap, { passive: true });
-            window.addEventListener('resize', updateMinimap);
+            window.addEventListener("scroll", updateMinimap, {
+                passive: true,
+                signal,
+            });
+            window.addEventListener("resize", updateMinimap, { signal });
+
             setTimeout(updateMinimap, 100);
+            setTimeout(updateMinimap, 1000); // Safety update after images fully load
         }
 
-        contentImages.forEach(img => {
+        contentImages.forEach((img) => {
             gsap.set(img, { opacity: 0, y: 60 });
 
             ScrollTrigger.create({
@@ -415,39 +540,43 @@ const { Content } = await render(projet);
                         opacity: 1,
                         y: 0,
                         duration: 1.2,
-                        ease: "power3.out"
+                        ease: "power3.out",
                     });
                 },
-                once: true
+                once: true,
             });
 
-            img.setAttribute('data-cursor-text', 'Agrandir');
-            img.addEventListener('click', () => {
-                const lightbox = document.createElement('div');
-                lightbox.className = 'lightbox';
-                lightbox.setAttribute('data-cursor-text', 'Fermer');
+            img.setAttribute("data-cursor-text", "Agrandir");
+            img.addEventListener("click", () => {
+                const lightbox = document.createElement("div");
+                lightbox.className = "lightbox";
+                lightbox.setAttribute("data-cursor-text", "Fermer");
 
-                const imgClone = document.createElement('img');
+                const imgClone = document.createElement("img");
                 imgClone.src = (img as HTMLImageElement).src;
 
                 lightbox.appendChild(imgClone);
                 document.body.appendChild(lightbox);
-                document.dispatchEvent(new CustomEvent('dom-updated'));
+                document.dispatchEvent(new CustomEvent("dom-updated"));
 
                 requestAnimationFrame(() => {
-                    lightbox.classList.add('active');
+                    lightbox.classList.add("active");
                 });
 
-                lightbox.addEventListener('click', () => {
-                    lightbox.classList.remove('active');
-                    lightbox.dispatchEvent(new Event('mouseleave'));
-                    setTimeout(() => { lightbox.remove(); }, 300);
+                lightbox.addEventListener("click", () => {
+                    lightbox.classList.remove("active");
+                    lightbox.dispatchEvent(new Event("mouseleave"));
+                    setTimeout(() => {
+                        lightbox.remove();
+                    }, 300);
                 });
             });
         });
 
-        const nextTexts = document.querySelectorAll('.next-project p, .next-project h2');
-        const nextImage = document.querySelector('.next-project img');
+        const nextTexts = document.querySelectorAll(
+            ".next-project p, .next-project h2",
+        );
+        const nextImage = document.querySelector(".next-project img");
 
         if (nextTexts.length > 0 && nextImage) {
             const linesNext = prepareSplitReveal(nextTexts);
@@ -460,23 +589,28 @@ const { Content } = await render(projet);
                 onEnter: () => {
                     const tlNext = gsap.timeline();
 
-                    tlNext.to(linesNext, {
-                        y: "0%",
-                        duration: 0.8,
-                        stagger: 0.1,
-                        ease: "power3.out"
-                    })
-                        .to(nextImage, {
-                            opacity: 1,
-                            scale: 1,
-                            duration: 1.2,
-                            ease: "power3.out"
-                        }, "-=0.6");
+                    tlNext
+                        .to(linesNext, {
+                            y: "0%",
+                            duration: 0.8,
+                            stagger: 0.1,
+                            ease: "power3.out",
+                        })
+                        .to(
+                            nextImage,
+                            {
+                                opacity: 1,
+                                scale: 1,
+                                duration: 1.2,
+                                ease: "power3.out",
+                            },
+                            "-=0.6",
+                        );
                 },
-                once: true
+                once: true,
             });
         }
 
-        document.dispatchEvent(new CustomEvent('dom-updated'));
+        document.dispatchEvent(new CustomEvent("dom-updated"));
     });
 </script>

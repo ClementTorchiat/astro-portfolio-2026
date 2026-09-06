@@ -8,7 +8,11 @@ import palette3 from '../assets/images/palette-1-3.webp';
 import palette4 from '../assets/images/palette-1-4.webp';
 ---
 
-<Layout titre="Clément Torchiat: Directeur artstique & Développeur web" masquerFooter={false} typeHeader="normal">
+<Layout 
+	titre="Clément Torchiat: Directeur artistique & Développeur web" 
+	description="Je suis Clément. En alliant design d'interface et ingénierie web, je donne vie à des expériences digitales pensées pour connecter profondément les utilisateurs à votre univers."
+	masquerFooter={false} 
+	typeHeader="normal">
 	<section id="hero">
 		<div class="hero-background-image"></div>
 		<div class="hero-title">
@@ -293,7 +297,6 @@ import palette4 from '../assets/images/palette-1-4.webp';
 		left: 0;
 		right: 0;
 		height: 145px;
-		/* #7B5136 avec 60% d'opacité = #7B513699 */
 		background: linear-gradient(to top, #7B513699, #7B513600);
 		z-index: -1;
 		pointer-events: none;
@@ -1053,7 +1056,6 @@ import palette4 from '../assets/images/palette-1-4.webp';
 			opacity: 1;
 		}
 
-		/* --- PALETTE 2 : UI LAYERS --- */
 		.palette-bg-ui {
 			position: absolute;
 			inset: 0;
@@ -1062,7 +1064,7 @@ import palette4 from '../assets/images/palette-1-4.webp';
 			justify-content: center;
 			align-items: center;
 			pointer-events: none;
-			perspective: 1000px; /* Nécessaire pour la 3D GSAP */
+			perspective: 1000px;
 		}
 
 		.ui-layer {
@@ -1080,14 +1082,12 @@ import palette4 from '../assets/images/palette-1-4.webp';
 			gap: 15px;
 		}
 
-		/* Faux éléments d'interface à l'intérieur des calques */
 		.ui-skeleton { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
 		.ui-skeleton.header { width: 100%; height: 30px; }
 		.ui-skeleton.body { width: 100%; height: 100%; flex-grow: 1; }
 		.ui-skeleton.card { width: 60%; height: 80px; }
 		.ui-skeleton.button { width: 40%; height: 25px; border-radius: 15px; margin-top: auto; }
 
-		/* --- PALETTE 3 : DEV CODE --- */
 		.palette-bg-dev {
 			position: absolute;
 			inset: 0;
@@ -1097,7 +1097,7 @@ import palette4 from '../assets/images/palette-1-4.webp';
 			justify-content: center;
 			padding-left: 15%;
 			pointer-events: none;
-			font-family: 'Courier New', Courier, monospace; /* Typo code */
+			font-family: 'Courier New', Courier, monospace;
 			font-size: 14px;
 			color: rgba(255, 255, 255, 0.4);
 			line-height: 1.6;
@@ -1112,7 +1112,7 @@ import palette4 from '../assets/images/palette-1-4.webp';
 			display: inline-block;
 			overflow: hidden;
 			white-space: nowrap;
-			vertical-align: bottom; /* Empilement parfait de l'animation de width */
+			vertical-align: bottom;
 		}
 
 		.scroll-container {
@@ -1337,7 +1337,6 @@ import palette4 from '../assets/images/palette-1-4.webp';
 					}, 1.2);
 			};
 
-			// --- ANIMATION ABOUT ---
 			const aboutSubtitle = document.querySelector('#about .grey-subtitle');
 			const aboutDescription = document.querySelector('#about .about-description');
 
@@ -1347,31 +1346,27 @@ import palette4 from '../assets/images/palette-1-4.webp';
 
 				ScrollTrigger.create({
 					trigger: "#about",
-					start: "top 75%", // L'animation se lance quand le haut de la section atteint 75% de l'écran
+					start: "top 75%",
 					onEnter: () => {
 						const tlAbout = gsap.timeline();
 
-						// 1. Le sous-titre "(À propos)" remonte
 						tlAbout.to(linesSubtitle, {
 							y: "0%",
 							duration: 0.6,
 							ease: "power3.out"
 						})
 
-							// 2. Les lignes de la description suivent avec un effet de cascade
 							.to(linesDescription, {
 								y: "0%",
 								duration: 0.8,
-								stagger: 0.1, // Délai entre chaque ligne
+								stagger: 0.1,
 								ease: "power3.out"
-							}, "-=0.4"); // Démarre un peu avant la fin du sous-titre
+							}, "-=0.4");
 					},
-					once: true // L'animation ne se joue qu'une seule fois
+					once: true
 				});
 			}
-			// -----------------------
 
-			// --- ANIMATION WORK ---
 			const workTitle = document.querySelector('#work .work-title-flex h2');
 			const workNum = document.querySelector('#work .work-title-flex p');
 			const workLine = document.querySelector('#work .work-line');
@@ -1379,59 +1374,49 @@ import palette4 from '../assets/images/palette-1-4.webp';
 			const workBtn = document.querySelector('#work .button-dot');
 
 			if (workTitle) {
-				// 1. Préparation des éléments
 				const linesWorkTitle = prepareSplitReveal(workTitle);
 				const linesWorkNum = prepareSplitReveal(workNum);
 
-				// La ligne part de 0 et s'étendra vers la droite
 				gsap.set(workLine, { scaleX: 0, transformOrigin: "left" });
 
-				// Les projets et le bouton sont cachés
 				gsap.set(workProjects, { opacity: 0 });
 				if (workBtn) gsap.set(workBtn, { opacity: 0 });
 
-				// 2. Déclenchement au scroll
 				ScrollTrigger.create({
 					trigger: "#work",
 					start: "top 75%",
 					onEnter: () => {
 						const tlWork = gsap.timeline();
 
-						// A. Le h2 apparaît en Split Reveal
 						tlWork.to(linesWorkTitle, {
 							y: "0%",
 							duration: 0.6,
 							ease: "power3.out"
 						})
 
-							// B. La ligne se trace de gauche à droite
 							.to(workLine, {
 								scaleX: 1,
 								duration: 1.2,
 								ease: "power3.inOut"
-							}, "-=0.2") // Commence un peu avant la fin du h2
+							}, "-=0.2")
 
-							// C. Le (01) apparaît juste avant que la ligne soit finie
 							.to(linesWorkNum, {
 								y: "0%",
 								duration: 0.6,
 								ease: "power3.out"
 							}, "-=0.5")
 
-							// D. Apparition en fondu des projets et du bouton
 							.to([workProjects, workBtn], {
 								opacity: 1,
 								duration: 0.8,
-								stagger: 0.1, // Ils apparaissent l'un après l'autre
+								stagger: 0.1,
 								ease: "power2.out"
 							}, "-=0.2");
 					},
 					once: true
 				});
 			}
-			// ----------------------
 
-			// --- ANIMATION PALETTE (Partie 1) ---
 			const paletteTitle = document.querySelector('#palette .palette-title-flex h2');
 			const paletteNum = document.querySelector('#palette .palette-title-flex p');
 			const palettes = document.querySelectorAll('#palette .palette');
@@ -1447,33 +1432,29 @@ import palette4 from '../assets/images/palette-1-4.webp';
 					onEnter: () => {
 						const tlPalette = gsap.timeline();
 
-						// A. Le h2 apparaît en Split Reveal
 						tlPalette.to(linesPaletteTitle, {
 							y: "0%",
 							duration: 0.6,
 							ease: "power3.out"
 						})
 
-							// B. Le (02) apparaît juste avant la fin du h2
 							.to(linesPaletteNum, {
 								y: "0%",
 								duration: 0.6,
 								ease: "power3.out"
 							}, "-=0.4")
 
-							// C. Apparition des palettes l'une après l'autre
 							.to(palettes, {
 								opacity: 1,
 								y: 0,
 								duration: 0.8,
-								stagger: 0.2, // Délai de 0.2s entre chaque palette
+								stagger: 0.2,
 								ease: "power3.out"
 							}, "-=0.2");
 					},
 					once: true
 				});
 			}
-// ----------------------
 
 			const overlay = document.getElementById('transition-overlay');
 			const isFirstLoad = document.documentElement.classList.contains('is-first-load');
@@ -1556,18 +1537,15 @@ import palette4 from '../assets/images/palette-1-4.webp';
 				});
 			});
 
-			// --- HOVER PALETTES (Desktop) ---
 			const hoverPalettes = document.querySelectorAll('.palette');
 
 			hoverPalettes.forEach((palette) => {
 				const detailsWrapper = palette.querySelector('.palette-details-wrapper');
 				const detailLines = palette.querySelectorAll('.palette-details p');
 
-				// On s'assure que l'état initial est bien défini pour GSAP
 				gsap.set(detailsWrapper, { opacity: 0 });
 				gsap.set(detailLines, { y: "100%", opacity: 0 });
 
-				// Timeline universelle pour les détails (Split Reveal)
 				const tlHover = gsap.timeline({ paused: true });
 
 				tlHover.to(detailsWrapper, {
@@ -1579,11 +1557,10 @@ import palette4 from '../assets/images/palette-1-4.webp';
 						y: "0%",
 						opacity: 1,
 						duration: 0.4,
-						stagger: 0.05, // L'effet d'apparition ligne par ligne
+						stagger: 0.05,
 						ease: "power3.out"
 					}, "-=0.15");
 
-				// Timeline spécifique pour la Palette 1 (les 4 images)
 				let tlImages, tlUI, tlDev;
 				if (palette.classList.contains('palette1')) {
 					const bgImages = palette.querySelectorAll('.palette-bg-images img');
@@ -1597,17 +1574,15 @@ import palette4 from '../assets/images/palette-1-4.webp';
 						ease: "back.out(1.2)"
 					});
 				}
-				// 📐 PALETTE 2 : Calques Figma Isométriques
 				else if (palette.classList.contains('palette2')) {
 					const uiLayers = palette.querySelectorAll('.ui-layer');
 
-					// État initial 3D (couché et invisible)
+
 					gsap.set(uiLayers, { opacity: 0, rotationX: 60, rotationZ: -45, y: 50 });
 
 					tlUI = gsap.timeline({ paused: true });
 					tlUI.to(uiLayers, {
 						opacity: 1,
-						// On décale chaque calque sur X et Y pour créer la profondeur isométrique
 						x: (index) => index * -35,
 						y: (index) => index * -45,
 						duration: 0.6,
@@ -1615,11 +1590,9 @@ import palette4 from '../assets/images/palette-1-4.webp';
 						ease: "power3.out"
 					});
 				}
-				// 💻 PALETTE 3 : Code "Machine à écrire"
 				else if (palette.classList.contains('palette3')) {
 					const codeSpans = palette.querySelectorAll('.code-line span');
 
-					// On réduit la largeur à 0 pour masquer le texte
 					gsap.set(codeSpans, { width: "0%" });
 
 					tlDev = gsap.timeline({ paused: true });
@@ -1627,11 +1600,11 @@ import palette4 from '../assets/images/palette-1-4.webp';
 						width: "100%",
 						duration: 0.8,
 						stagger: 0.15,
-						ease: "steps(20)" // Crée l'effet saccadé d'une machine à écrire/terminal
+						ease: "steps(20)"
 					});
 				}
 
-				// Écouteurs d'événements
+
 				palette.addEventListener('mouseenter', () => {
 					tlHover.play();
 					if (tlImages) tlImages.timeScale(1).play();
@@ -1642,11 +1615,10 @@ import palette4 from '../assets/images/palette-1-4.webp';
 				palette.addEventListener('mouseleave', () => {
 					tlHover.reverse();
 					if (tlImages) tlImages.timeScale(4).reverse();
-					if (tlUI) tlUI.timeScale(3).reverse(); // Un peu moins rapide pour que la 3D reste jolie
-					if (tlDev) tlDev.timeScale(5).reverse(); // Effacement très rapide du code
+					if (tlUI) tlUI.timeScale(3).reverse();
+					if (tlDev) tlDev.timeScale(5).reverse();
 				});
 			});
-			// --------------------------------
 		});
 	});
 </script>

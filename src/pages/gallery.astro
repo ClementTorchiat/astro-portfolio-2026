@@ -1,29 +1,54 @@
 ---
 import { getCollection } from 'astro:content';
+import { getImage } from 'astro:assets';
 import Gallery from '../components/Gallery.jsx';
 import Layout from "../layouts/Layout.astro";
 
 const allProjects = await getCollection('galleryCollection');
 
-const galleryData = allProjects.map((gallery) => ({
-    id: gallery.id,
-    title: gallery.data.title,
-    subtitle: gallery.data.subtitle,
-    src: gallery.data.coverImage.src,
-    origWidth: gallery.data.coverImage.width,
-    origHeight: gallery.data.coverImage.height,
-    description: gallery.body
+const galleryData = await Promise.all(allProjects.map(async (gallery) => {
+    const optimizedThumb = await getImage({ src: gallery.data.coverImage, format: 'webp', width: 800 });
+    const optimizedFull = await getImage({ src: gallery.data.coverImage, format: 'webp', width: 2000 });
+    
+    return {
+        id: gallery.id,
+        title: gallery.data.title,
+        subtitle: gallery.data.subtitle,
+        src: optimizedThumb.src,
+        fullSrc: optimizedFull.src,
+        origWidth: gallery.data.coverImage.width,
+        origHeight: gallery.data.coverImage.height,
+        description: gallery.body
+    };
 }));
 ---
 
-<Layout titre="Galerie - Clément Torchiat" masquerFooter={true} typeHeader="alternatif">
+<Layout 
+    titre="Galerie - Clément Torchiat" 
+    description="Explorez ma galerie de créations et d'expérimentations visuelles."
+    masquerFooter={true} 
+    typeHeader="alternatif">
     <div class="gallery-wrapper">
         <Gallery client:only="react" projects={galleryData} />
     </div>
 </Layout>
 
+<script>
+    document.addEventListener('astro:page-load', () => {
+        if (document.querySelector('.gallery-wrapper')) {
+            document.documentElement.classList.add('no-scroll');
+            document.body.classList.add('no-scroll');
+        }
+    });
+
+    document.addEventListener('astro:before-swap', () => {
+        document.documentElement.classList.remove('no-scroll');
+        document.body.classList.remove('no-scroll');
+    });
+</script>
+
 <style is:global>
-    body, html {
+    html.no-scroll, body.no-scroll {
         overflow: hidden !important;
     }
 

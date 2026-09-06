@@ -42,13 +42,44 @@ function ZoomableImage({ src, alt }) {
     );
 }
 
-export default function App({ projects = [] }) {
+class ErrorBoundary extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { hasError: false, error: null, info: null };
+    }
+    static getDerivedStateFromError(error) {
+        return { hasError: true, error };
+    }
+    componentDidCatch(error, info) {
+        this.setState({ info });
+    }
+    render() {
+        if (this.state.hasError) {
+            return <div style={{ padding: 50, color: 'red', zIndex: 9999, position: 'relative' }}>
+                <h2>React Crashed!</h2>
+                <pre>{this.state.error?.toString()}</pre>
+                <pre>{this.state.info?.componentStack}</pre>
+            </div>;
+        }
+        return this.props.children;
+    }
+}
+
+export default function GalleryWrapper(props) {
+    return <ErrorBoundary><App {...props} /></ErrorBoundary>;
+}
+
+function App({ projects = [] }) {
     const transformComponentRef = useRef(null);
     const [items, setItems] = useState([]);
-    const [viewState, setViewState] = useState({ x: 0, y: 0, scale: 1 });
     const [minScale, setMinScale] = useState(1);
     const [selectedItem, setSelectedItem] = useState(null);
     const pointerPos = useRef({ x: 0, y: 0 });
+    const viewStateRef = useRef({ positionX: 0, positionY: 0, scale: 1 });
+    
+    // Refs for direct DOM updates (60fps performance without React re-renders)
+    const minimapViewportRef = useRef(null);
+    const minimapDotsRef = useRef(new Map());
 
     useEffect(() => {
         if (!projects || projects.length === 0) return;
@@ -106,6 +137,44 @@ export default function App({ projects = [] }) {
         return () => window.removeEventListener('resize', calculateBounds);
     }, []);
 
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (selectedItem || !transformComponentRef.current) return;
+            
+            // Zooming
+            if (e.key === '+' || e.key === '=') {
+                transformComponentRef.current.zoomIn(0.5);
+                return;
+            }
+            if (e.key === '-') {
+                transformComponentRef.current.zoomOut(0.5);
+                return;
+            }
+
+            // Panning
+            const step = 200;
+            const { positionX, positionY, scale } = viewStateRef.current;
+            
+            // Prevent default scrolling for arrows so the whole page doesn't jump
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                e.preventDefault();
+            }
+
+            if (e.key === 'ArrowUp') {
+                transformComponentRef.current.setTransform(positionX, positionY + step, scale, 200);
+            } else if (e.key === 'ArrowDown') {
+                transformComponentRef.current.setTransform(positionX, positionY - step, scale, 200);
+            } else if (e.key === 'ArrowLeft') {
+                transformComponentRef.current.setTransform(positionX + step, positionY, scale, 200);
+            } else if (e.key === 'ArrowRight') {
+                transformComponentRef.current.setTransform(positionX - step, positionY, scale, 200);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown, { passive: false });
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [selectedItem]);
+
     const handlePointerDown = (e) => {
         pointerPos.current = { x: e.clientX, y: e.clientY };
     };
@@ -121,26 +190,48 @@ export default function App({ projects = [] }) {
     };
 
     const mapRatio = MINIMAP_SIZE / CANVAS_SIZE;
-    const miniViewX = (-viewState.x / viewState.scale) * mapRatio;
-    const miniViewY = (-viewState.y / viewState.scale) * mapRatio;
-    const miniViewWidth = (window.innerWidth / viewState.scale) * mapRatio;
-    const miniViewHeight = (window.innerHeight / viewState.scale) * mapRatio;
 
-    const isItemVisible = (item) => {
-        const viewportX = -viewState.x / viewState.scale;
-        const viewportY = -viewState.y / viewState.scale;
-        const viewportW = window.innerWidth / viewState.scale;
-        const viewportH = window.innerHeight / viewState.scale;
-        return (
-            item.x < viewportX + viewportW &&
-            item.x + item.width > viewportX &&
-            item.y < viewportY + viewportH &&
-            item.y + item.height > viewportY
-        );
+    const updateMinimap = (state) => {
+        if (state) {
+            viewStateRef.current = state;
+        }
+        const { positionX: x, positionY: y, scale } = viewStateRef.current;
+        
+        const viewportX = -x / scale;
+        const viewportY = -y / scale;
+        const viewportW = window.innerWidth / scale;
+        const viewportH = window.innerHeight / scale;
+
+        if (minimapViewportRef.current) {
+            minimapViewportRef.current.style.transform = `translate3d(${viewportX * mapRatio}px, ${viewportY * mapRatio}px, 0)`;
+            minimapViewportRef.current.style.width = `${viewportW * mapRatio}px`;
+            minimapViewportRef.current.style.height = `${viewportH * mapRatio}px`;
+        }
+
+        items.forEach(item => {
+            const dot = minimapDotsRef.current.get(item.id);
+            if (dot) {
+                const active = (
+                    item.x < viewportX + viewportW &&
+                    item.x + item.width > viewportX &&
+                    item.y < viewportY + viewportH &&
+                    item.y + item.height > viewportY
+                );
+                dot.style.backgroundColor = active ? '#020202' : 'transparent';
+            }
+        });
     };
 
+    useEffect(() => {
+        if (items.length > 0 && transformComponentRef.current) {
+            updateMinimap(viewStateRef.current);
+        }
+    }, [items]);
+
+    const containerRef = useRef(null);
+
     return (
-        <div className="gallery-container">
+        <div className="gallery-container" ref={containerRef}>
             <TransformWrapper
                 ref={transformComponentRef}
                 initialScale={1.5}
@@ -152,15 +243,20 @@ export default function App({ projects = [] }) {
                 wheel={{ step: 0.1 }}
                 pinch={{ step: 5 }}
                 panning={{ velocityDisabled: false, velocitySensitivity: 2 }}
-                onPanning={(ref) => setViewState({ x: ref.state.positionX, y: ref.state.positionY, scale: ref.state.scale })}
-                onZooming={(ref) => setViewState({ x: ref.state.positionX, y: ref.state.positionY, scale: ref.state.scale })}
-                onTransformed={(ref) => setViewState({ x: ref.state.positionX, y: ref.state.positionY, scale: ref.state.scale })}
+                onPanningStart={() => containerRef.current?.classList.add('is-interacting')}
+                onPanningStop={() => containerRef.current?.classList.remove('is-interacting')}
+                onZoomStart={() => containerRef.current?.classList.add('is-interacting')}
+                onZoomStop={() => containerRef.current?.classList.remove('is-interacting')}
+                onPanning={(ref) => updateMinimap(ref.state)}
+                onZooming={(ref) => updateMinimap(ref.state)}
+                onTransformed={(ref) => updateMinimap(ref.state)}
+                onInit={(ref) => updateMinimap(ref.state)}
             >
                 <TransformComponent
                     wrapperStyle={{ width: "100%", height: "100%" }}
-                    contentStyle={{ width: `${CANVAS_SIZE}px`, height: `${CANVAS_SIZE}px` }}
+                    contentStyle={{ width: `${CANVAS_SIZE}px`, height: `${CANVAS_SIZE}px`, willChange: "transform" }}
                 >
-                    <div style={{ width: CANVAS_SIZE, height: CANVAS_SIZE, position: 'relative', backgroundColor: '#F8F8F8' }}>
+                    <div style={{ width: CANVAS_SIZE, height: CANVAS_SIZE, position: 'relative', backgroundColor: '#F8F8F8', willChange: 'transform', transform: 'translateZ(0)' }}>
                         {items.map((item) => (
                             <div
                                 key={item.id}
@@ -168,10 +264,28 @@ export default function App({ projects = [] }) {
                                 style={{
                                     left: item.x, top: item.y, width: item.width, height: item.height,
                                 }}
+                                tabIndex={0}
+                                role="button"
+                                aria-label={`Voir le projet ${item.title}`}
                                 onPointerDown={handlePointerDown}
                                 onPointerUp={(e) => handlePointerUp(e, item)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        setSelectedItem(item);
+                                    }
+                                }}
+                                onFocus={() => {
+                                    if (transformComponentRef.current) {
+                                        const { scale } = viewStateRef.current;
+                                        // Center the newly focused item on screen
+                                        const targetX = -(item.x + item.width / 2) * scale + window.innerWidth / 2;
+                                        const targetY = -(item.y + item.height / 2) * scale + window.innerHeight / 2;
+                                        transformComponentRef.current.setTransform(targetX, targetY, scale, 300);
+                                    }
+                                }}
                             >
-                                <img src={item.src} alt={item.title} className="gallery-image" />
+                                <img src={item.src} alt={item.title} className="gallery-image" decoding="async" loading="lazy" />
                                 <div className="image-overlay">
                                     <h3 className="overlay-title">{item.title}</h3>
                                     <p className="overlay-subtitle">{item.subtitle}</p>
@@ -193,7 +307,7 @@ export default function App({ projects = [] }) {
                         <div className="modal-left" style={{ cursor: 'auto' }}>
 
                             <div onPointerDown={(e) => e.stopPropagation()} style={{ width: '100%', height: '100%' }}>
-                                <ZoomableImage src={selectedItem.src} alt={selectedItem.title} />
+                                <ZoomableImage src={selectedItem.fullSrc || selectedItem.src} alt={selectedItem.title} />
                             </div>
                         </div>
 
@@ -217,24 +331,20 @@ export default function App({ projects = [] }) {
 
             <div className={`minimap-container ${selectedItem ? 'hidden' : ''}`} style={{ width: MINIMAP_SIZE, height: MINIMAP_SIZE }}>
                 {items.map((item) => {
-                    const active = isItemVisible(item);
                     return (
                         <div
                             key={item.id}
+                            ref={(el) => minimapDotsRef.current.set(item.id, el)}
                             className="minimap-dot"
                             style={{
                                 left: item.x * mapRatio, top: item.y * mapRatio,
                                 width: Math.max(2, item.width * mapRatio), height: Math.max(2, item.height * mapRatio),
-                                backgroundColor: active ? '#020202' : 'transparent', borderColor: '#020202',
+                                backgroundColor: 'transparent', borderColor: '#020202',
                             }}
                         />
                     );
                 })}
-                <div className="minimap-viewport" style={{
-                    width: miniViewWidth, height: miniViewHeight,
-                    transform: `translate3d(${miniViewX}px, ${miniViewY}px, 0)`,
-                }}
-                />
+                <div ref={minimapViewportRef} className="minimap-viewport" />
             </div>
         </div>
     );

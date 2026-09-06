@@ -2,11 +2,14 @@
 import Layout from "../layouts/Layout.astro";
 import { Image } from 'astro:assets';
 
-import clem from '../assets/images/about-clem.webp';
 import palette1 from "../assets/images/palette-1-1.webp";
 ---
 
-<Layout titre="À propos - Clément Torchiat" masquerFooter={false} typeHeader="alternatif">
+<Layout 
+    titre="À propos - Clément Torchiat" 
+    description="Directeur artistique, UX/UI designer et développeur web. Découvrez mon parcours, mes expériences et ma formation."
+    masquerFooter={false} 
+    typeHeader="alternatif">
     <div class="about-container">
         <div class="about-top">
             <div class="top-content-container">
@@ -57,8 +60,20 @@ import palette1 from "../assets/images/palette-1-1.webp";
                     </div>
                 </div>
             </div>
-            <div class="top-image">
-                <Image src={clem} alt="" />
+            <div class="top-spacer">
+                <div class="about-visual">
+                    <div class="cube-scene">
+                        <div class="cube">
+                            <div class="cube-core"></div>
+                            <div class="cube-face front"></div>
+                            <div class="cube-face back"></div>
+                            <div class="cube-face right"></div>
+                            <div class="cube-face left"></div>
+                            <div class="cube-face top"></div>
+                            <div class="cube-face bottom"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="about-bottom">
@@ -112,8 +127,68 @@ import palette1 from "../assets/images/palette-1-1.webp";
         flex-direction: column-reverse;
     }
 
-    .top-image {
+    .top-spacer {
         display: none;
+    }
+
+    .about-visual {
+        width: 100%;
+        aspect-ratio: 4 / 5;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        perspective: 1000px;
+        transform: translateX(-15%);
+    }
+
+    .cube-scene {
+        width: 100%;
+        height: 100%;
+        perspective: 1000px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .cube {
+        width: 140px;
+        height: 140px;
+        position: relative;
+        transform-style: preserve-3d;
+        transform: rotateX(-20deg) rotateY(-45deg);
+    }
+
+    .cube-face {
+        position: absolute;
+        width: 140px;
+        height: 140px;
+        background: rgba(0, 0, 0, 0.02);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+
+    .cube-face.front  { transform: rotateY(  0deg) translateZ(70px); }
+    .cube-face.right  { transform: rotateY( 90deg) translateZ(70px); }
+    .cube-face.back   { transform: rotateY(180deg) translateZ(70px); }
+    .cube-face.left   { transform: rotateY(-90deg) translateZ(70px); }
+    .cube-face.top    { transform: rotateX( 90deg) translateZ(70px); }
+    .cube-face.bottom { transform: rotateX(-90deg) translateZ(70px); }
+
+    .cube-core {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 32px;
+        height: 32px;
+        background: var(--black);
+        border-radius: 50%;
+        transform: translate(-50%, -50%) translateZ(0);
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
     }
 
     .top-content-container {
@@ -182,18 +257,9 @@ import palette1 from "../assets/images/palette-1-1.webp";
             gap: 48px;
         }
 
-        .top-image {
+        .top-spacer {
             flex: 1;
-            display: flex;
-            aspect-ratio: 4 / 5;
-            overflow: hidden;
-        }
-
-        .top-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
+            display: block;
         }
 
         .about-services {
@@ -231,21 +297,34 @@ import palette1 from "../assets/images/palette-1-1.webp";
 
     gsap.registerPlugin(ScrollTrigger, SplitType);
 
+    let abortController;
+
     document.addEventListener("astro:page-load", () => {
+        if (abortController) abortController.abort();
+        abortController = new AbortController();
+        const { signal } = abortController;
+
         const lenis = new Lenis();
 
         lenis.on('scroll', ScrollTrigger.update);
 
-        gsap.ticker.add((time) => {
+        const tickerFn = (time) => {
             lenis.raf(time * 1000);
-        });
-
+        };
+        gsap.ticker.add(tickerFn);
         gsap.ticker.lagSmoothing(0);
+
+        const cleanupAbout = () => {
+            lenis.destroy();
+            gsap.ticker.remove(tickerFn);
+            ScrollTrigger.getAll().forEach(t => t.kill());
+            document.removeEventListener('astro:before-swap', cleanupAbout);
+        };
+        document.addEventListener('astro:before-swap', cleanupAbout);
 
         const aboutContainer = document.querySelector('.about-container');
         if (!aboutContainer) return;
 
-        // 1. FONCTION DE PRÉPARATION (Split Reveal)
         const prepareSplitReveal = (elements) => {
             let allLines = [];
             const els = Array.isArray(elements) || elements instanceof NodeList ? elements : [elements];
@@ -266,24 +345,20 @@ import palette1 from "../assets/images/palette-1-1.webp";
             return allLines;
         };
 
-        // 2. SÉLECTION ET PRÉPARATION DES ÉLÉMENTS
-        // Partie Haute (À propos, Services, Expérience top, Image)
         const aboutTexts = document.querySelectorAll('.about p, .services p, .services li');
         const expTopTexts = document.querySelectorAll('.top-content-container .experience-years, .top-content-container .experience-content p, .top-content-container .grey-subtitle');
-        const topImage = document.querySelector('.top-image img');
+        const aboutVisualContainer = document.querySelector('.about-visual');
 
         const linesAbout = prepareSplitReveal(aboutTexts);
         const linesExpTop = prepareSplitReveal(expTopTexts);
 
-        if (topImage) {
-            gsap.set(topImage, { scale: 1.1, opacity: 0 });
+        if (aboutVisualContainer) {
+            gsap.set(aboutVisualContainer, { opacity: 0, scale: 0.95 });
         }
 
-        // Partie Basse (Formation)
         const bottomTexts = document.querySelectorAll('.about-bottom .grey-subtitle, .about-bottom .experience-years, .about-bottom .experience-content p');
         const linesBottom = prepareSplitReveal(bottomTexts);
 
-        // 3. FONCTION D'ANIMATION D'ENTRÉE (Synchronisée avec la transition)
         const playAboutIntro = () => {
             const tlIntro = gsap.timeline();
 
@@ -300,28 +375,26 @@ import palette1 from "../assets/images/palette-1-1.webp";
                     ease: "power3.out"
                 }, "-=0.6");
 
-            if (topImage) {
-                tlIntro.to(topImage, {
-                    scale: 1,
+            if (aboutVisualContainer) {
+                tlIntro.to(aboutVisualContainer, {
                     opacity: 1,
+                    scale: 1,
                     duration: 1.2,
                     ease: "power3.out"
                 }, "-=1.2");
             }
         };
 
-        // Gestion de la transition (même logique que l'accueil)
         const overlay = document.getElementById('transition-overlay');
         const isFirstLoad = document.documentElement.classList.contains('is-first-load');
         const isTransitioning = overlay && overlay.style.pointerEvents === 'auto';
 
         if (isFirstLoad || isTransitioning) {
-            window.addEventListener('transition-finished', playAboutIntro, { once: true });
+            window.addEventListener('transition-finished', playAboutIntro, { once: true, signal });
         } else {
             playAboutIntro();
         }
 
-        // 4. ANIMATION AU SCROLL POUR LA FORMATION
         if (linesBottom.length > 0) {
             ScrollTrigger.create({
                 trigger: ".about-bottom",
@@ -336,6 +409,30 @@ import palette1 from "../assets/images/palette-1-1.webp";
                 },
                 once: true
             });
+        }
+
+        const cube = document.querySelector('.cube');
+        const core = document.querySelector('.cube-core');
+        
+        if (cube) {
+            gsap.to(cube, {
+                rotationX: "+=360",
+                rotationY: "+=360",
+                duration: 20,
+                repeat: -1,
+                ease: "none"
+            });
+            
+            if (core) {
+                gsap.to(core, {
+                    scale: 1.6,
+                    opacity: 0.8,
+                    duration: 2,
+                    yoyo: true,
+                    repeat: -1,
+                    ease: "sine.inOut"
+                });
+            }
         }
     });
 </script>
