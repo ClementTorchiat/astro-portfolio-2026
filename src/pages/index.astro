@@ -109,7 +109,8 @@ const projectVideos: Record<string, string> = {
 						<h3>
 							<a
 								href={`/projets/${projets[0].id}`}
-								data-cursor-hover>{projets[0].data.title}</a>
+								data-cursor-hover>{projets[0].data.title}</a
+							>
 						</h3>
 						<p class="project-roles">
 							{projets[0].data.tags.join(", ")}
@@ -143,7 +144,8 @@ const projectVideos: Record<string, string> = {
 						<h3>
 							<a
 								href={`/projets/${projets[1].id}`}
-								data-cursor-hover>{projets[1].data.title}</a>
+								data-cursor-hover>{projets[1].data.title}</a
+							>
 						</h3>
 						<p class="project-roles">
 							{projets[1].data.tags.join(", ")}
@@ -180,7 +182,8 @@ const projectVideos: Record<string, string> = {
 						<h3>
 							<a
 								href={`/projets/${projets[2].id}`}
-								data-cursor-hover>{projets[2].data.title}</a>
+								data-cursor-hover>{projets[2].data.title}</a
+							>
 						</h3>
 						<p class="project-roles">
 							{projets[2].data.tags.join(", ")}
@@ -280,7 +283,8 @@ const projectVideos: Record<string, string> = {
 					<div class="palette-bg-dev">
 						<div class="code-line">
 							<span
-								>import {"{"} Experience {"}"} from '@avenir';</span>
+								>import {"{"} Experience {"}"} from '@avenir';</span
+							>
 						</div>
 						<div class="code-line">
 							<span>const designer = new DA();</span>
@@ -294,11 +298,13 @@ const projectVideos: Record<string, string> = {
 						</div>
 						<div class="code-line">
 							<span
-								>&nbsp;&nbsp;return designer.sublime(idea)</span>
+								>&nbsp;&nbsp;return designer.sublime(idea)</span
+							>
 						</div>
 						<div class="code-line">
 							<span
-								>&nbsp;&nbsp;&nbsp;&nbsp;.then(developer.code);</span>
+								>&nbsp;&nbsp;&nbsp;&nbsp;.then(developer.code);</span
+							>
 						</div>
 						<div class="code-line"><span>{"}"}</span></div>
 					</div>
@@ -504,6 +510,7 @@ const projectVideos: Record<string, string> = {
 
 	#work .work-title-flex h2 {
 		text-transform: uppercase;
+		line-height: 1.15;
 	}
 	#work .work-title-flex p {
 		display: none;
@@ -619,7 +626,7 @@ const projectVideos: Record<string, string> = {
 	}
 	#work .project-info p {
 		margin-top: 5px;
-		line-height: 1;
+		line-height: 1.15;
 	}
 	#work .button-dot {
 		width: 50%;
