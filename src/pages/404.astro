@@ -1,0 +1,114 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout
+    titre="404 — Page introuvable | Clément Torchiat"
+    description="La page que vous recherchez semble introuvable ou a été déplacée."
+    noindex={true}
+    masquerFooter={false}
+    typeHeader="alternatif"
+>
+    <div class="error-page">
+        <div class="error-content">
+            <span class="error-badge">(404 — Erreur)</span>
+            <h1 class="error-title">Page introuvable</h1>
+            <p class="error-desc">
+                La page à laquelle vous tentez d'accéder n'existe pas ou a été
+                déplacée vers un autre univers.
+            </p>
+        </div>
+    </div>
+</Layout>
+
+<style>
+    .error-page {
+        min-height: 100svh;
+        background-color: var(--white);
+        color: var(--black);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        padding: clamp(100px, 15vh, 160px) clamp(20px, 4vw, 48px) 32px;
+        box-sizing: border-box;
+        text-align: center;
+    }
+
+    .error-content {
+        max-width: 680px;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .error-badge {
+        font-family: "Jubilee", serif;
+        font-size: 15px;
+        color: var(--light-grey);
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+
+    .error-title {
+        font-family: "Voyage", serif;
+        font-size: clamp(54px, 8vw, 110px);
+        font-weight: 400;
+        line-height: 0.95;
+        color: var(--black);
+        margin: 0;
+    }
+
+    .error-desc {
+        font-family: "Switzer", sans-serif;
+        font-size: clamp(16px, 1.8vw, 20px);
+        color: var(--dark-grey);
+        max-width: 520px;
+        line-height: 1.5;
+        margin: 8px 0 24px;
+    }
+
+    .error-actions {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+        max-width: 440px;
+    }
+
+    .error-actions .button-dot {
+        flex: 1;
+        min-width: 190px;
+        background-color: var(--black);
+        color: var(--white);
+        border: 1px solid var(--black);
+    }
+
+    .error-actions .button-dot.button-secondary {
+        background-color: transparent;
+        color: var(--black);
+        border: 1px solid var(--black);
+    }
+
+    .error-actions .button-dot.button-secondary .hover-text {
+        color: var(--white);
+    }
+
+    .error-actions .button-dot.button-secondary:after {
+        background-color: var(--black);
+    }
+
+    .error-actions .button-dot.button-secondary:hover:after {
+        background-color: var(--white);
+    }
+
+    .error-footer p {
+        font-family: "Switzer", sans-serif;
+        font-size: 13px;
+        color: var(--light-grey);
+        margin: 0;
+    }
+</style>

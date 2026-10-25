@@ -206,9 +206,17 @@ const slidesData = projets.map((projet) => ({
 
     let sliderEventsController;
 
+    document.addEventListener("astro:before-swap", () => {
+        if (sliderEventsController) {
+            sliderEventsController.abort();
+            sliderEventsController = null;
+        }
+    });
+
     document.addEventListener("astro:page-load", () => {
         if (sliderEventsController) {
             sliderEventsController.abort();
+            sliderEventsController = null;
         }
 
         const sliderElement = document.querySelector(".slider");

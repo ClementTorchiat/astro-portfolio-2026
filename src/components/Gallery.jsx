@@ -82,6 +82,18 @@ function App({ projects = [] }) {
     const minimapDotsRef = useRef(new Map());
 
     useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === "Escape") {
+                setSelectedItem(null);
+            }
+        };
+        if (selectedItem) {
+            window.addEventListener("keydown", handleKeyDown);
+            return () => window.removeEventListener("keydown", handleKeyDown);
+        }
+    }, [selectedItem]);
+
+    useEffect(() => {
         if (!projects || projects.length === 0) return;
         const placedItems = [];
         const doesOverlap = (newItem, existingItems) => {

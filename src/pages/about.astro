@@ -304,6 +304,9 @@ import palette1 from "../assets/images/palette-1-1.webp";
     let abortController;
 
     document.addEventListener("astro:page-load", () => {
+        const aboutContainer = document.querySelector('.about-container');
+        if (!aboutContainer) return;
+
         if (abortController) abortController.abort();
         abortController = new AbortController();
         const { signal } = abortController;
@@ -325,9 +328,6 @@ import palette1 from "../assets/images/palette-1-1.webp";
             document.removeEventListener('astro:before-swap', cleanupAbout);
         };
         document.addEventListener('astro:before-swap', cleanupAbout);
-
-        const aboutContainer = document.querySelector('.about-container');
-        if (!aboutContainer) return;
 
         const prepareSplitReveal = (elements) => {
             let allLines = [];

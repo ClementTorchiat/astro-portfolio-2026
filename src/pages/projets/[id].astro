@@ -414,6 +414,9 @@ const { Content } = await render(projet);
     let abortController;
 
     document.addEventListener("astro:page-load", () => {
+        const projectPage = document.querySelector(".project-page");
+        if (!projectPage) return;
+
         if (abortController) abortController.abort();
         abortController = new AbortController();
         const { signal } = abortController;
@@ -564,7 +567,6 @@ const { Content } = await render(projet);
         const projectHeader = document.querySelector(".project-header");
         const projectContent = document.querySelector(".project-content");
         const minimap = document.querySelector(".minimap");
-        const projectPage = document.querySelector(".project-page");
 
         if (
             minimapContent &&
