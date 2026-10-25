@@ -1,11 +1,25 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
 
 import palette1 from '../assets/images/palette-1-1.webp';
 import palette2 from '../assets/images/palette-1-2.webp';
 import palette3 from '../assets/images/palette-1-3.webp';
 import palette4 from '../assets/images/palette-1-4.webp';
+
+import lofiVideo from '../assets/projects/lofi-coffee-video.webm';
+import minimumVideo from '../assets/projects/minimum-video.webm';
+import guobaVideo from '../assets/projects/guoba-video.webm';
+
+const projetsBruts = await getCollection('projets');
+const projets = projetsBruts.sort((a, b) => a.data.order - b.data.order);
+
+const projectVideos: Record<string, string> = {
+	'lofi-coffee': lofiVideo,
+	'minimum': minimumVideo,
+	'guoba': guobaVideo,
+};
 ---
 
 <Layout 
@@ -53,45 +67,45 @@ import palette4 from '../assets/images/palette-1-4.webp';
 		<div class="work-projects-container">
 			<div class="work-projects-up">
 				<div class="project-wrapper">
-					<a class="project-image" data-cursor-text="Voir le projet">
+					<a href={`/projets/${projets[0].id}`} class="project-image" data-cursor-text="Voir le projet">
 						<div class="video-container">
-							<video class="video" src="https://karim-saab.com/media/portfolio/home-casa.mp4" loop muted playsinline></video>
+							<video class="video" src={projectVideos[projets[0].id]} loop muted playsinline preload="auto"></video>
 						</div>
-						<div class="image-split"></div>
+						<div class="image-split" style={`background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url(${projets[0].data.coverImage.src});`}></div>
 						<div class="blurred-background"></div>
 					</a>
 					<div class="project-info">
-						<h3>Casa Lunara</h3>
-						<p class="project-roles">Art Direction, UI/UX Design, Web Development</p>
+						<h3><a href={`/projets/${projets[0].id}`} data-cursor-hover>{projets[0].data.title}</a></h3>
+						<p class="project-roles">{projets[0].data.tags.join(', ')}</p>
 					</div>
 				</div>
 				<div class="project-wrapper">
-					<a class="project-image" data-cursor-text="Voir le projet">
+					<a href={`/projets/${projets[1].id}`} class="project-image" data-cursor-text="Voir le projet">
 						<div class="video-container">
-							<video class="video" src="https://karim-saab.com/media/portfolio/home-casa.mp4" loop muted playsinline></video>
+							<video class="video" src={projectVideos[projets[1].id]} loop muted playsinline preload="auto"></video>
 						</div>
-						<div class="image-split"></div>
+						<div class="image-split" style={`background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url(${projets[1].data.coverImage.src});`}></div>
 						<div class="blurred-background"></div>
 					</a>
 					<div class="project-info">
-						<h3>Casa Lunara</h3>
-						<p class="project-roles">Art Direction, UI/UX Design, Web Development</p>
+						<h3><a href={`/projets/${projets[1].id}`} data-cursor-hover>{projets[1].data.title}</a></h3>
+						<p class="project-roles">{projets[1].data.tags.join(', ')}</p>
 					</div>
 				</div>
 			</div>
 			<div class="work-projects-down">
 				<div class="project-space"></div>
 				<div class="project-wrapper">
-					<a class="project-image" data-cursor-text="Voir le projet">
+					<a href={`/projets/${projets[2].id}`} class="project-image" data-cursor-text="Voir le projet">
 						<div class="video-container">
-							<video class="video" src="https://karim-saab.com/media/portfolio/home-casa.mp4" loop muted playsinline></video>
+							<video class="video" src={projectVideos[projets[2].id]} loop muted playsinline preload="auto"></video>
 						</div>
-						<div class="image-split"></div>
+						<div class="image-split" style={`background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url(${projets[2].data.coverImage.src});`}></div>
 						<div class="blurred-background"></div>
 					</a>
 					<div class="project-info">
-						<h3>Casa Lunara</h3>
-						<p class="project-roles">Art Direction, UI/UX Design, Web Development</p>
+						<h3><a href={`/projets/${projets[2].id}`} data-cursor-hover>{projets[2].data.title}</a></h3>
+						<p class="project-roles">{projets[2].data.tags.join(', ')}</p>
 					</div>
 				</div>
 				<a href="/work" class="button-dot" data-cursor-hover>
@@ -422,37 +436,20 @@ import palette4 from '../assets/images/palette-1-4.webp';
 		left: 50%;
 		opacity: 0;
 		pointer-events: none;
-	}
-
-	#work .video-scale-wrapper {
-		width: 100%;
-		height: 100%;
 		border-radius: 8px;
 		overflow: hidden;
-		opacity: 0;
-		visibility: hidden;
-		will-change: transform, opacity;
-	}
-
-	#work .video-subcontainer {
-		height: 100%;
-		width: 100%;
-		background-size: cover;
-		background-repeat: no-repeat;
-		background-position: center;
-		position: relative;
-		z-index: -3;
+		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 	}
 
 	#work .video {
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
+		display: block;
 	}
 
 	#work .image-split {
 		z-index: 3;
-		background-image: linear-gradient(#0000001a, #0000001a), url(https://karim-saab.com/images/Frame-358_1.webp);
 		background-position: 0 0, 50%;
 		background-repeat: repeat, no-repeat;
 		background-size: auto, cover;
@@ -477,6 +474,13 @@ import palette4 from '../assets/images/palette-1-4.webp';
 	}
 
 	#work .project-info { margin-top: 4px; padding-top: 8px; }
+	#work .project-info h3 a {
+		font-family: inherit;
+		font-size: inherit;
+		font-weight: inherit;
+		line-height: inherit;
+		color: inherit;
+	}
 	#work .project-info p { margin-top: 5px; line-height: 1; }
 	#work .button-dot { width: 50%; margin-top: 49px; margin-left: auto; margin-right: auto; }
 
@@ -1469,6 +1473,27 @@ import palette4 from '../assets/images/palette-1-4.webp';
 
 		let mm = gsap.matchMedia();
 
+		const cleanupIndex = () => {
+			lenis.destroy();
+			gsap.ticker.remove(tickerFn);
+			mm.revert();
+			ScrollTrigger.getAll().forEach((t) => t.kill());
+			document.removeEventListener("astro:before-swap", cleanupIndex);
+		};
+		document.addEventListener("astro:before-swap", cleanupIndex);
+
+		const allWorkProjects = document.querySelectorAll("#work .project-wrapper");
+		allWorkProjects.forEach((project) => {
+			project.addEventListener("click", (e) => {
+				if (!e.target.closest("a")) {
+					const link = project.querySelector("a.project-image");
+					if (link && link.href) {
+						link.click();
+					}
+				}
+			});
+		});
+
 		mm.add("(min-width: 1024px)", () => {
 			const projects = document.querySelectorAll(".project-wrapper");
 
@@ -1480,6 +1505,8 @@ import palette4 from '../assets/images/palette-1-4.webp';
 				const rolesText = project.querySelector(".project-roles");
 
 				if (!rolesText || !videoContainer || !projectImage) return;
+
+				if (video) video.muted = true;
 
 				const split = new SplitType(rolesText, { types: 'lines' });
 
@@ -1512,14 +1539,21 @@ import palette4 from '../assets/images/palette-1-4.webp';
 					textTl.reverse();
 				});
 
+				let pauseCall = null;
+
 				projectImage.addEventListener("mouseenter", () => {
+					if (pauseCall) pauseCall.kill();
 					videoTl.play();
-					if (video) video.play().catch(() => {});
+					if (video) {
+						video.play().catch(() => {});
+					}
 				});
 
 				projectImage.addEventListener("mouseleave", () => {
 					videoTl.reverse();
-					if (video) gsap.delayedCall(videoTl.duration(), () => video.pause());
+					if (video) {
+						pauseCall = gsap.delayedCall(videoTl.duration(), () => video.pause());
+					}
 					xTo(0);
 					yTo(0);
 				});
