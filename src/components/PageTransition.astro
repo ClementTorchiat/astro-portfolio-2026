@@ -3,8 +3,8 @@
 ---
 
 <script is:inline>
-    if (!sessionStorage.getItem('introPlayed')) {
-        document.documentElement.classList.add('is-first-load');
+    if (!sessionStorage.getItem("introPlayed")) {
+        document.documentElement.classList.add("is-first-load");
     }
 </script>
 
@@ -49,10 +49,12 @@
         gap: 0.5rem;
         font-size: 3rem;
         font-family: serif;
-        color: #1A1A1A;
+        color: #1a1a1a;
     }
 
-    .word-mask { overflow: hidden; }
+    .word-mask {
+        overflow: hidden;
+    }
     .word {
         display: inline-block;
         transform: translateY(100%);
@@ -72,97 +74,117 @@
 
 <script>
     // @ts-nocheck
-    import gsap from 'gsap';
-    import { navigate } from 'astro:transitions/client';
+    import gsap from "gsap";
+    import { navigate } from "astro:transitions/client";
 
     let isTransitionListenerBound = false;
 
-    document.addEventListener('astro:page-load', () => {
-
-        if (document.documentElement.classList.contains('is-first-load')) {
+    document.addEventListener("astro:page-load", () => {
+        if (document.documentElement.classList.contains("is-first-load")) {
             const introTl = gsap.timeline();
 
             introTl
                 .to({}, { duration: 0.8 })
-                .to('.word', {
-                    y: '100%',
+                .to(".word", {
+                    y: "100%",
                     duration: 0.4,
                     stagger: 0.1,
-                    ease: 'power2.in'
+                    ease: "power2.in",
                 })
-                .to('.panel', {
-                    x: '100%',
+                .to(".panel", {
+                    x: "100%",
                     duration: 1,
                     stagger: 0.075,
-                    ease: 'power3.out'
+                    ease: "power3.out",
                 })
+                .call(
+                    () => {
+                        window.dispatchEvent(new Event("transition-finished"));
+                    },
+                    [],
+                    "-=0.5",
+                )
+                .set(".panel", { x: "-100%" })
+                .set("#transition-overlay", { pointerEvents: "none" })
                 .call(() => {
-                    window.dispatchEvent(new Event('transition-finished'));
-                }, [], "-=0.5")
-                .set('.panel', { x: '-100%' })
-                .set('#transition-overlay', { pointerEvents: 'none' })
-                .call(() => {
-                    document.documentElement.classList.remove('is-first-load');
-                    sessionStorage.setItem('introPlayed', 'true');
+                    document.documentElement.classList.remove("is-first-load");
+                    sessionStorage.setItem("introPlayed", "true");
                 });
         }
 
         if (!isTransitionListenerBound) {
-            document.addEventListener('click', (e) => {
-                const target = e.target as HTMLElement;
-                if (!target || typeof target.closest !== 'function') return;
+            document.addEventListener(
+                "click",
+                (e) => {
+                    const target = e.target as HTMLElement;
+                    if (!target || typeof target.closest !== "function") return;
 
-                const link = target.closest('a[href^="/"]');
-                if (!link) return;
+                    const link = target.closest('a[href^="/"]');
+                    if (!link) return;
 
-                if (e.ctrlKey || e.metaKey || (link as HTMLAnchorElement).target === '_blank') return;
+                    if (
+                        e.ctrlKey ||
+                        e.metaKey ||
+                        (link as HTMLAnchorElement).target === "_blank"
+                    )
+                        return;
 
-                e.preventDefault();
-                e.stopPropagation();
+                    e.preventDefault();
+                    e.stopPropagation();
 
-                const targetUrl = (link as HTMLAnchorElement).href;
+                    const targetUrl = (link as HTMLAnchorElement).href;
 
-                document.getElementById('transition-overlay').style.pointerEvents = 'auto';
+                    document.getElementById(
+                        "transition-overlay",
+                    ).style.pointerEvents = "auto";
 
-                const tl = gsap.timeline();
+                    const tl = gsap.timeline();
 
-                tl.to('.panel', {
-                    x: '0%',
-                    duration: 1,
-                    stagger: 0.075,
-                    ease: 'power3.in'
-                })
-                    .to('.word', {
-                        y: '0%',
-                        duration: 0.4,
-                        stagger: 0.1,
-                        ease: 'power2.in'
-                    })
-                    .to({}, { duration: 0.5 })
-                    .to('.word', {
-                        y: '100%',
-                        duration: 0.4,
-                        stagger: 0.1,
-                        ease: 'power2.in'
-                    })
-                    .call(() => {
-                        tl.pause();
-                        navigate(targetUrl).then(() => {
-                            tl.play();
-                        });
-                    })
-                    .to('.panel', {
-                        x: '100%',
+                    tl.to(".panel", {
+                        x: "0%",
                         duration: 1,
                         stagger: 0.075,
-                        ease: 'power3.out'
+                        ease: "power3.in",
                     })
-                    .call(() => {
-                        window.dispatchEvent(new Event('transition-finished'));
-                    }, [], "-=0.5")
-                    .set('.panel', { x: '-100%' })
-                    .set('#transition-overlay', { pointerEvents: 'none' });
-            }, { capture: true });
+                        .to(".word", {
+                            y: "0%",
+                            duration: 0.4,
+                            stagger: 0.1,
+                            ease: "power2.in",
+                        })
+                        .to({}, { duration: 0.5 })
+                        .to(".word", {
+                            y: "100%",
+                            duration: 0.4,
+                            stagger: 0.1,
+                            ease: "power2.in",
+                        })
+                        .call(() => {
+                            tl.pause();
+                            navigate(targetUrl).then(() => {
+                                tl.play();
+                            });
+                        })
+                        .to(".panel", {
+                            x: "100%",
+                            duration: 1,
+                            stagger: 0.075,
+                            ease: "power3.out",
+                        })
+                        .call(
+                            () => {
+                                window.dispatchEvent(
+                                    new Event("transition-finished"),
+                                );
+                            },
+                            [],
+                            "-=0.5",
+                        )
+                        .set(".panel", { x: "-100%" })
+                        .set("#transition-overlay", { pointerEvents: "none" });
+                },
+                { capture: true },
+            );
 
             isTransitionListenerBound = true;
         }

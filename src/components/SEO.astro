@@ -23,12 +23,20 @@ interface Props {
   publishedTime?: string | Date;
   tags?: string[];
   noindex?: boolean;
-  schemaType?: 'WebPage' | 'WebSite' | 'AboutPage' | 'ContactPage' | 'CollectionPage' | 'CreativeWork';
+  schemaType?:
+    | "WebPage"
+    | "WebSite"
+    | "AboutPage"
+    | "ContactPage"
+    | "CollectionPage"
+    | "CreativeWork";
   breadcrumb?: BreadcrumbItem[];
   projectData?: ProjectData;
 }
 
-const siteUrl = Astro.site ? Astro.site.href.replace(/\/$/, '') : 'https://clement-torchiat.fr';
+const siteUrl = Astro.site
+  ? Astro.site.href.replace(/\/$/, "")
+  : "https://clement-torchiat.fr";
 const canonicalURL = new URL(Astro.url.pathname, siteUrl).href;
 
 const {
@@ -49,56 +57,55 @@ const {
     "React",
     "GSAP",
     "Design Graphique",
-    "Portfolio 2026"
+    "Portfolio 2026",
   ],
   noindex = false,
   schemaType = "WebPage",
   breadcrumb = [],
-  projectData
+  projectData,
 } = Astro.props;
 
 // Résolution de l'URL absolue de l'image
-const ogImageUrl = image.startsWith('http://') || image.startsWith('https://')
-  ? image
-  : new URL(image.startsWith('/') ? image : `/${image}`, siteUrl).href;
+const ogImageUrl =
+  image.startsWith("http://") || image.startsWith("https://")
+    ? image
+    : new URL(image.startsWith("/") ? image : `/${image}`, siteUrl).href;
 
-const defaultKeywords = tags.join(', ');
+const defaultKeywords = tags.join(", ");
 
 // Construction du fil d'Ariane Schema.org
-const breadcrumbItems = [
-  { name: 'Accueil', path: '/' },
-  ...breadcrumb
-];
+const breadcrumbItems = [{ name: "Accueil", path: "/" }, ...breadcrumb];
 
 const breadcrumbSchema = {
   "@type": "BreadcrumbList",
   "@id": `${canonicalURL}#breadcrumb`,
-  "itemListElement": breadcrumbItems.map((item, index) => ({
+  itemListElement: breadcrumbItems.map((item, index) => ({
     "@type": "ListItem",
-    "position": index + 1,
-    "name": item.name,
-    "item": new URL(item.path, siteUrl).href
-  }))
+    position: index + 1,
+    name: item.name,
+    item: new URL(item.path, siteUrl).href,
+  })),
 };
 
 // Schéma Person (Clément Torchiat)
 const personSchema = {
   "@type": "Person",
   "@id": `${siteUrl}/#person`,
-  "name": "Clément Torchiat",
-  "alternateName": ["Clem", "Clement Torchiat"],
-  "url": siteUrl,
-  "image": `${siteUrl}/og-image.png`,
-  "email": "mailto:clement.torchiat@gmail.com",
-  "jobTitle": ["Directeur Artistique", "UX/UI Designer", "Développeur Web"],
-  "description": "Directeur artistique, designer d'interfaces et ingénieur web créatif.",
-  "sameAs": [
+  name: "Clément Torchiat",
+  alternateName: ["Clem", "Clement Torchiat"],
+  url: siteUrl,
+  image: `${siteUrl}/og-image.png`,
+  email: "mailto:clement.torchiat@gmail.com",
+  jobTitle: ["Directeur Artistique", "UX/UI Designer", "Développeur Web"],
+  description:
+    "Directeur artistique, designer d'interfaces et ingénieur web créatif.",
+  sameAs: [
     "https://www.linkedin.com/in/cl%C3%A9ment-torchiat-1965b71bb/",
     "https://github.com/ClementTorchiat",
     "https://www.behance.net/clementtorchiat",
-    "https://dribbble.com/clement_torchiat"
+    "https://dribbble.com/clement_torchiat",
   ],
-  "knowsAbout": [
+  knowsAbout: [
     "Direction Artistique",
     "UI/UX Design",
     "Développement Web Front-End",
@@ -107,32 +114,33 @@ const personSchema = {
     "React",
     "GSAP & Animations Web",
     "Motion Design",
-    "Design System"
-  ]
+    "Design System",
+  ],
 };
 
 // Schéma WebSite
 const websiteSchema = {
   "@type": "WebSite",
   "@id": `${siteUrl}/#website`,
-  "url": siteUrl,
-  "name": "Clément Torchiat — Portfolio",
-  "description": "Portfolio officiel de Clément Torchiat : Directeur Artistique, UX/UI Designer & Développeur Web.",
-  "publisher": { "@id": `${siteUrl}/#person` },
-  "inLanguage": "fr-FR"
+  url: siteUrl,
+  name: "Clément Torchiat — Portfolio",
+  description:
+    "Portfolio officiel de Clément Torchiat : Directeur Artistique, UX/UI Designer & Développeur Web.",
+  publisher: { "@id": `${siteUrl}/#person` },
+  inLanguage: "fr-FR",
 };
 
 // Schéma WebPage ou dérivé
 const webPageSchema: Record<string, any> = {
   "@type": schemaType,
   "@id": `${canonicalURL}#webpage`,
-  "url": canonicalURL,
-  "name": titre,
-  "description": description,
-  "isPartOf": { "@id": `${siteUrl}/#website` },
-  "about": { "@id": `${siteUrl}/#person` },
-  "inLanguage": "fr-FR",
-  "breadcrumb": { "@id": `${canonicalURL}#breadcrumb` }
+  url: canonicalURL,
+  name: titre,
+  description: description,
+  isPartOf: { "@id": `${siteUrl}/#website` },
+  about: { "@id": `${siteUrl}/#person` },
+  inLanguage: "fr-FR",
+  breadcrumb: { "@id": `${canonicalURL}#breadcrumb` },
 };
 
 // Graph JSON-LD complet
@@ -140,7 +148,7 @@ const jsonLdGraph: any[] = [
   personSchema,
   websiteSchema,
   webPageSchema,
-  breadcrumbSchema
+  breadcrumbSchema,
 ];
 
 // Schéma CreativeWork si projet
@@ -148,16 +156,16 @@ if (projectData) {
   jsonLdGraph.push({
     "@type": "CreativeWork",
     "@id": `${canonicalURL}#project`,
-    "headline": projectData.title,
-    "name": projectData.title,
-    "description": projectData.description,
-    "creator": { "@id": `${siteUrl}/#person` },
-    "image": ogImageUrl,
-    "dateCreated": projectData.year ? String(projectData.year) : undefined,
-    "keywords": projectData.tags ? projectData.tags.join(', ') : undefined,
-    "url": canonicalURL,
-    "mainEntityOfPage": canonicalURL,
-    ...(projectData.link ? { "sameAs": projectData.link } : {})
+    headline: projectData.title,
+    name: projectData.title,
+    description: projectData.description,
+    creator: { "@id": `${siteUrl}/#person` },
+    image: ogImageUrl,
+    dateCreated: projectData.year ? String(projectData.year) : undefined,
+    keywords: projectData.tags ? projectData.tags.join(", ") : undefined,
+    url: canonicalURL,
+    mainEntityOfPage: canonicalURL,
+    ...(projectData.link ? { sameAs: projectData.link } : {}),
   });
 }
 ---
@@ -173,14 +181,22 @@ if (projectData) {
 <link rel="canonical" href={canonicalURL} />
 
 <!-- Indexation & Robots -->
-{noindex ? (
-  <meta name="robots" content="noindex, nofollow" />
-) : (
-  <>
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-    <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-  </>
-)}
+{
+  noindex ? (
+    <meta name="robots" content="noindex, nofollow" />
+  ) : (
+    <>
+      <meta
+        name="robots"
+        content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+      />
+      <meta
+        name="googlebot"
+        content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+      />
+    </>
+  )
+}
 
 <!-- Open Graph / Facebook / LinkedIn / Discord / WhatsApp -->
 <meta property="og:site_name" content="Clément Torchiat — Portfolio" />
@@ -195,16 +211,27 @@ if (projectData) {
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 
-{article && (
-  <>
-    <meta property="article:author" content="Clément Torchiat" />
-    <meta property="article:section" content="Design & Développement Web" />
-    {publishedTime && <meta property="article:published_time" content={typeof publishedTime === 'string' ? publishedTime : publishedTime.toISOString()} />}
-    {tags.map((tag) => (
-      <meta property="article:tag" content={tag} />
-    ))}
-  </>
-)}
+{
+  article && (
+    <>
+      <meta property="article:author" content="Clément Torchiat" />
+      <meta property="article:section" content="Design & Développement Web" />
+      {publishedTime && (
+        <meta
+          property="article:published_time"
+          content={
+            typeof publishedTime === "string"
+              ? publishedTime
+              : publishedTime.toISOString()
+          }
+        />
+      )}
+      {tags.map((tag) => (
+        <meta property="article:tag" content={tag} />
+      ))}
+    </>
+  )
+}
 
 <!-- Twitter / X Cards -->
 <meta name="twitter:card" content="summary_large_image" />
@@ -218,7 +245,7 @@ if (projectData) {
 <meta name="theme-color" content="#F1EADE" />
 <meta name="msapplication-TileColor" content="#F1EADE" />
 <meta name="apple-mobile-web-app-title" content="Clément Torchiat" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="format-detection" content="telephone=no" />
 
@@ -231,7 +258,10 @@ if (projectData) {
 <link rel="sitemap" href="/sitemap-index.xml" />
 
 <!-- Données Structurées JSON-LD Schema.org (@graph) -->
-<script type="application/ld+json" set:html={JSON.stringify({
-  "@context": "https://schema.org",
-  "@graph": jsonLdGraph
-})} />
+<script
+  type="application/ld+json"
+  set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": jsonLdGraph,
+  })}
+/>

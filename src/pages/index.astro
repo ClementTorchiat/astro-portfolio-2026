@@ -1,35 +1,40 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { Image } from 'astro:assets';
-import { getCollection } from 'astro:content';
+import Layout from "../layouts/Layout.astro";
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
 
-import palette1 from '../assets/images/palette-1-1.webp';
-import palette2 from '../assets/images/palette-1-2.webp';
-import palette3 from '../assets/images/palette-1-3.webp';
-import palette4 from '../assets/images/palette-1-4.webp';
+import palette1 from "../assets/images/palette-1-1.webp";
+import palette2 from "../assets/images/palette-1-2.webp";
+import palette3 from "../assets/images/palette-1-3.webp";
+import palette4 from "../assets/images/palette-1-4.webp";
 
-import lofiVideo from '../assets/projects/lofi-coffee-video.webm';
-import minimumVideo from '../assets/projects/minimum-video.webm';
-import guobaVideo from '../assets/projects/guoba-video.webm';
+import portrait1 from "../assets/images/portrait-1.webp";
+import portrait2 from "../assets/images/portrait-2.webp";
+import portrait3 from "../assets/images/portrait-3.webp";
 
-const projetsBruts = await getCollection('projets');
+import lofiVideo from "../assets/projects/lofi-coffee-video.webm";
+import minimumVideo from "../assets/projects/minimum-video.webm";
+import guobaVideo from "../assets/projects/guoba-video.webm";
+
+const projetsBruts = await getCollection("projets");
 const projets = projetsBruts.sort((a, b) => a.data.order - b.data.order);
 
 const projectVideos: Record<string, string> = {
-	'lofi-coffee': lofiVideo,
-	'minimum': minimumVideo,
-	'guoba': guobaVideo,
+	"lofi-coffee": lofiVideo,
+	minimum: minimumVideo,
+	guoba: guobaVideo,
 };
 ---
 
-<Layout 
-	titre="Clément Torchiat — Directeur Artistique & Développeur Web" 
+<Layout
+	titre="Clément Torchiat — Directeur Artistique & Développeur Web"
 	description="Portfolio de Clément Torchiat. En alliant design d'interface UX/UI et ingénierie web, je conçois des expériences digitales immersives, sensibles et sur-mesure."
 	image="/og-image.png"
 	imageAlt="Clément Torchiat — Portfolio 2026 : Directeur Artistique & Développeur Web"
 	schemaType="WebSite"
-	masquerFooter={false} 
-	typeHeader="normal">
+	masquerFooter={false}
+	typeHeader="normal"
+>
 	<section id="hero">
 		<div class="hero-background-image"></div>
 		<div class="hero-title">
@@ -45,7 +50,11 @@ const projectVideos: Record<string, string> = {
 					<p>Directeur artistique</p>
 				</div>
 				<div class="hero-bottom-center">
-					<p>Je suis un designer passionné qui façonne méticuleusement des expériences numériques d'une qualité et d'un impact inégalés.</p>
+					<p>
+						Je suis un designer passionné qui façonne
+						méticuleusement des expériences numériques d'une qualité
+						et d'un impact inégalés.
+					</p>
 				</div>
 				<div class="hero-bottom-right">
 					<p>Développeur web</p>
@@ -56,7 +65,11 @@ const projectVideos: Record<string, string> = {
 	<section id="about">
 		<div class="about-container">
 			<p class="grey-subtitle">(À propos)</p>
-			<p class="about-description">Je suis Clément. En alliant design d'interface et ingénierie web, je donne vie à des expériences digitales pensées pour connecter profondément les utilisateurs à votre univers.</p>
+			<p class="about-description">
+				Je suis Clément. En alliant design d'interface et ingénierie
+				web, je donne vie à des expériences digitales pensées pour
+				connecter profondément les utilisateurs à votre univers.
+			</p>
 		</div>
 	</section>
 	<section id="work">
@@ -70,45 +83,108 @@ const projectVideos: Record<string, string> = {
 		<div class="work-projects-container">
 			<div class="work-projects-up">
 				<div class="project-wrapper">
-					<a href={`/projets/${projets[0].id}`} class="project-image" data-cursor-text="Voir le projet">
+					<a
+						href={`/projets/${projets[0].id}`}
+						class="project-image"
+						data-cursor-text="Voir le projet"
+						aria-label={`Voir le projet ${projets[0].data.title}`}
+					>
 						<div class="video-container">
-							<video class="video" src={projectVideos[projets[0].id]} loop muted playsinline preload="auto"></video>
+							<video
+								class="video"
+								src={projectVideos[projets[0].id]}
+								loop
+								muted
+								playsinline
+								preload="none"></video>
 						</div>
-						<div class="image-split" style={`background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url(${projets[0].data.coverImage.src});`}></div>
+						<div
+							class="image-split"
+							style={`background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url(${projets[0].data.coverImage.src});`}
+						>
+						</div>
 						<div class="blurred-background"></div>
 					</a>
 					<div class="project-info">
-						<h3><a href={`/projets/${projets[0].id}`} data-cursor-hover>{projets[0].data.title}</a></h3>
-						<p class="project-roles">{projets[0].data.tags.join(', ')}</p>
+						<h3>
+							<a
+								href={`/projets/${projets[0].id}`}
+								data-cursor-hover>{projets[0].data.title}</a>
+						</h3>
+						<p class="project-roles">
+							{projets[0].data.tags.join(", ")}
+						</p>
 					</div>
 				</div>
 				<div class="project-wrapper">
-					<a href={`/projets/${projets[1].id}`} class="project-image" data-cursor-text="Voir le projet">
+					<a
+						href={`/projets/${projets[1].id}`}
+						class="project-image"
+						data-cursor-text="Voir le projet"
+						aria-label={`Voir le projet ${projets[1].data.title}`}
+					>
 						<div class="video-container">
-							<video class="video" src={projectVideos[projets[1].id]} loop muted playsinline preload="auto"></video>
+							<video
+								class="video"
+								src={projectVideos[projets[1].id]}
+								loop
+								muted
+								playsinline
+								preload="none"></video>
 						</div>
-						<div class="image-split" style={`background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url(${projets[1].data.coverImage.src});`}></div>
+						<div
+							class="image-split"
+							style={`background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url(${projets[1].data.coverImage.src});`}
+						>
+						</div>
 						<div class="blurred-background"></div>
 					</a>
 					<div class="project-info">
-						<h3><a href={`/projets/${projets[1].id}`} data-cursor-hover>{projets[1].data.title}</a></h3>
-						<p class="project-roles">{projets[1].data.tags.join(', ')}</p>
+						<h3>
+							<a
+								href={`/projets/${projets[1].id}`}
+								data-cursor-hover>{projets[1].data.title}</a>
+						</h3>
+						<p class="project-roles">
+							{projets[1].data.tags.join(", ")}
+						</p>
 					</div>
 				</div>
 			</div>
 			<div class="work-projects-down">
 				<div class="project-space"></div>
 				<div class="project-wrapper">
-					<a href={`/projets/${projets[2].id}`} class="project-image" data-cursor-text="Voir le projet">
+					<a
+						href={`/projets/${projets[2].id}`}
+						class="project-image"
+						data-cursor-text="Voir le projet"
+						aria-label={`Voir le projet ${projets[2].data.title}`}
+					>
 						<div class="video-container">
-							<video class="video" src={projectVideos[projets[2].id]} loop muted playsinline preload="auto"></video>
+							<video
+								class="video"
+								src={projectVideos[projets[2].id]}
+								loop
+								muted
+								playsinline
+								preload="none"></video>
 						</div>
-						<div class="image-split" style={`background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url(${projets[2].data.coverImage.src});`}></div>
+						<div
+							class="image-split"
+							style={`background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url(${projets[2].data.coverImage.src});`}
+						>
+						</div>
 						<div class="blurred-background"></div>
 					</a>
 					<div class="project-info">
-						<h3><a href={`/projets/${projets[2].id}`} data-cursor-hover>{projets[2].data.title}</a></h3>
-						<p class="project-roles">{projets[2].data.tags.join(', ')}</p>
+						<h3>
+							<a
+								href={`/projets/${projets[2].id}`}
+								data-cursor-hover>{projets[2].data.title}</a>
+						</h3>
+						<p class="project-roles">
+							{projets[2].data.tags.join(", ")}
+						</p>
 					</div>
 				</div>
 				<a href="/work" class="button-dot" data-cursor-hover>
@@ -202,13 +278,28 @@ const projectVideos: Record<string, string> = {
 					<h3 class="palette-title">Développement web</h3>
 					<div class="palette-image"></div>
 					<div class="palette-bg-dev">
-						<div class="code-line"><span>import {"{"} Experience {"}"} from '@avenir';</span></div>
-						<div class="code-line"><span>const designer = new DA();</span></div>
-						<div class="code-line"><span>const developer = new Dev();</span></div>
+						<div class="code-line">
+							<span
+								>import {"{"} Experience {"}"} from '@avenir';</span>
+						</div>
+						<div class="code-line">
+							<span>const designer = new DA();</span>
+						</div>
+						<div class="code-line">
+							<span>const developer = new Dev();</span>
+						</div>
 						<div class="code-line"><span>&nbsp;</span></div>
-						<div class="code-line"><span>function build(idea) {"{"}</span></div>
-						<div class="code-line"><span>&nbsp;&nbsp;return designer.sublime(idea)</span></div>
-						<div class="code-line"><span>&nbsp;&nbsp;&nbsp;&nbsp;.then(developer.code);</span></div>
+						<div class="code-line">
+							<span>function build(idea) {"{"}</span>
+						</div>
+						<div class="code-line">
+							<span
+								>&nbsp;&nbsp;return designer.sublime(idea)</span>
+						</div>
+						<div class="code-line">
+							<span
+								>&nbsp;&nbsp;&nbsp;&nbsp;.then(developer.code);</span>
+						</div>
 						<div class="code-line"><span>{"}"}</span></div>
 					</div>
 					<div class="palette-details-wrapper">
@@ -238,15 +329,35 @@ const projectVideos: Record<string, string> = {
 	<section class="scroll-container">
 		<div class="bg-white"></div>
 		<div class="text-layer text-back">
-			<h1 class="text-initial">Dans un monde<br>bruyant et<br>monochrome</h1>
+			<h1 class="text-initial">
+				Dans un monde<br />bruyant et<br />monochrome
+			</h1>
 		</div>
 		<div class="image-reveal"></div>
 		<div class="text-layer text-front">
-			<h1 class="text-final">Soyez<br><span>l'exception</span></h1>
+			<h1 class="text-final">Soyez<br /><span>l'exception</span></h1>
 		</div>
-		<img src="https://images.unsplash.com/photo-1580106815433-a5b1d1d53d85?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="floating-blur blur-1" alt="Portrait 1">
-		<img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=400&auto=format&fit=crop" class="floating-blur blur-2" alt="Portrait 2">
-		<img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=400&auto=format&fit=crop" class="floating-blur blur-3" alt="Portrait 3">
+		<Image
+			src={portrait1}
+			class="floating-blur blur-1"
+			alt="Portrait artistique 1"
+			loading="lazy"
+			decoding="async"
+		/>
+		<Image
+			src={portrait2}
+			class="floating-blur blur-2"
+			alt="Portrait artistique 2"
+			loading="lazy"
+			decoding="async"
+		/>
+		<Image
+			src={portrait3}
+			class="floating-blur blur-3"
+			alt="Portrait artistique 3"
+			loading="lazy"
+			decoding="async"
+		/>
 	</section>
 </Layout>
 
@@ -282,9 +393,18 @@ const projectVideos: Record<string, string> = {
 		font-size: 16vw;
 	}
 
-	#hero .hero-title h1:nth-child(1) { align-self: flex-start; margin-left: 10%; }
-	#hero .hero-title h1:nth-child(2) { align-self: flex-end; margin-right: 10%; }
-	#hero .hero-title h1:nth-child(3) { align-self: flex-start; margin-left: 15%; }
+	#hero .hero-title h1:nth-child(1) {
+		align-self: flex-start;
+		margin-left: 10%;
+	}
+	#hero .hero-title h1:nth-child(2) {
+		align-self: flex-end;
+		margin-right: 10%;
+	}
+	#hero .hero-title h1:nth-child(3) {
+		align-self: flex-start;
+		margin-left: 15%;
+	}
 
 	#hero .hero-bottom-container {
 		z-index: 11;
@@ -314,7 +434,7 @@ const projectVideos: Record<string, string> = {
 		left: 0;
 		right: 0;
 		height: 145px;
-		background: linear-gradient(to top, #7B513699, #7B513600);
+		background: linear-gradient(to top, #7b513699, #7b513600);
 		z-index: -1;
 		pointer-events: none;
 	}
@@ -329,7 +449,9 @@ const projectVideos: Record<string, string> = {
 	}
 
 	#hero .hero-bottom-left,
-	#hero .hero-bottom-right { display: none; }
+	#hero .hero-bottom-right {
+		display: none;
+	}
 
 	#hero .hero-bottom-center {
 		font-size: 15px;
@@ -337,7 +459,9 @@ const projectVideos: Record<string, string> = {
 		text-align: center;
 	}
 
-	#hero .hero-bottom-center p { color: var(--white); }
+	#hero .hero-bottom-center p {
+		color: var(--white);
+	}
 
 	#about {
 		z-index: 4;
@@ -378,8 +502,12 @@ const projectVideos: Record<string, string> = {
 		padding-bottom: 20px;
 	}
 
-	#work .work-title-flex h2 { text-transform: uppercase; }
-	#work .work-title-flex p { display: none; }
+	#work .work-title-flex h2 {
+		text-transform: uppercase;
+	}
+	#work .work-title-flex p {
+		display: none;
+	}
 
 	#work .work-line {
 		background-color: var(--light-grey);
@@ -453,7 +581,9 @@ const projectVideos: Record<string, string> = {
 
 	#work .image-split {
 		z-index: 3;
-		background-position: 0 0, 50%;
+		background-position:
+			0 0,
+			50%;
 		background-repeat: repeat, no-repeat;
 		background-size: auto, cover;
 		justify-content: center;
@@ -476,7 +606,10 @@ const projectVideos: Record<string, string> = {
 		pointer-events: none;
 	}
 
-	#work .project-info { margin-top: 4px; padding-top: 8px; }
+	#work .project-info {
+		margin-top: 4px;
+		padding-top: 8px;
+	}
 	#work .project-info h3 a {
 		font-family: inherit;
 		font-size: inherit;
@@ -484,13 +617,33 @@ const projectVideos: Record<string, string> = {
 		line-height: inherit;
 		color: inherit;
 	}
-	#work .project-info p { margin-top: 5px; line-height: 1; }
-	#work .button-dot { width: 50%; margin-top: 49px; margin-left: auto; margin-right: auto; }
+	#work .project-info p {
+		margin-top: 5px;
+		line-height: 1;
+	}
+	#work .button-dot {
+		width: 50%;
+		margin-top: 49px;
+		margin-left: auto;
+		margin-right: auto;
+	}
 
-	#palette .palette-title-container { padding-left: 20px; padding-right: 20px; }
-	#palette .palette-title-flex { justify-content: space-between; align-items: flex-end; display: flex; padding-bottom: 20px; }
-	#palette .palette-title-flex h2 { text-transform: uppercase; }
-	#palette .palette-title-flex p { display: none; }
+	#palette .palette-title-container {
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+	#palette .palette-title-flex {
+		justify-content: space-between;
+		align-items: flex-end;
+		display: flex;
+		padding-bottom: 20px;
+	}
+	#palette .palette-title-flex h2 {
+		text-transform: uppercase;
+	}
+	#palette .palette-title-flex p {
+		display: none;
+	}
 
 	.palette-wrapper {
 		width: 100%;
@@ -603,7 +756,9 @@ const projectVideos: Record<string, string> = {
 		height: auto;
 		object-fit: cover;
 		opacity: 0;
-		transition: transform 0.6s ease-out, opacity 0.6s ease-out;
+		transition:
+			transform 0.6s ease-out,
+			opacity 0.6s ease-out;
 	}
 
 	.palette-bg-images img:first-child {
@@ -644,7 +799,7 @@ const projectVideos: Record<string, string> = {
 		display: flex;
 		position: absolute;
 		inset: auto 0 0;
-		background: linear-gradient(to top, #3A2214cc, #3A221400);
+		background: linear-gradient(to top, #3a2214cc, #3a221400);
 		opacity: 1;
 		transition: opacity 0.3s ease;
 	}
@@ -663,7 +818,7 @@ const projectVideos: Record<string, string> = {
 
 	.palette-details {
 		z-index: 5;
-		margin-bottom: .5em;
+		margin-bottom: 0.5em;
 		justify-content: center;
 		align-items: center;
 		display: flex;
@@ -673,11 +828,12 @@ const projectVideos: Record<string, string> = {
 	.palette-details p {
 		font-size: 1em;
 		line-height: 1.2;
-		font-family: 'Switzer', sans-serif;
+		font-family: "Switzer", sans-serif;
 		font-weight: 400;
 		color: var(--white);
 		opacity: 1;
-		transform: translate3d(0px, 0em, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg);
+		transform: translate3d(0px, 0em, 0px) scale3d(1, 1, 1) rotateX(0deg)
+			rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg);
 		transform-style: preserve-3d;
 	}
 
@@ -698,7 +854,7 @@ const projectVideos: Record<string, string> = {
 		z-index: 2;
 		clip-path: circle(0% at 50% 50%);
 		background-color: var(--light-beige);
-		background-image: url('../assets/images/scroll-container-bg.webp');
+		background-image: url("../assets/images/scroll-container-bg.webp");
 		background-size: cover;
 		background-position: center;
 	}
@@ -715,7 +871,8 @@ const projectVideos: Record<string, string> = {
 		pointer-events: none;
 	}
 
-	.text-initial, .text-final {
+	.text-initial,
+	.text-final {
 		position: absolute;
 		text-align: center;
 	}
@@ -723,7 +880,7 @@ const projectVideos: Record<string, string> = {
 	.text-initial {
 		color: var(--black);
 		z-index: 1;
-		font-family: 'Switzer', sans-serif;
+		font-family: "Switzer", sans-serif;
 		text-transform: uppercase;
 		font-weight: 700;
 		font-size: 10vw;
@@ -766,16 +923,34 @@ const projectVideos: Record<string, string> = {
 	}
 
 	@media (min-width: 1024px) {
-		#hero .hero-title h1 { font-size: 11vw; line-height: 0.8; }
-		#hero .hero-title h1:nth-child(1) { margin-left: 15%; }
-		#hero .hero-title h1:nth-child(2) { margin-right: 20%; }
-		#hero .hero-title h1:nth-child(3) { margin-left: 25%; }
+		#hero .hero-title h1 {
+			font-size: 11vw;
+			line-height: 0.8;
+		}
+		#hero .hero-title h1:nth-child(1) {
+			margin-left: 15%;
+		}
+		#hero .hero-title h1:nth-child(2) {
+			margin-right: 20%;
+		}
+		#hero .hero-title h1:nth-child(3) {
+			margin-left: 25%;
+		}
 
-		#hero .hero-bottom-container { padding-left: 30px; padding-right: 30px; }
+		#hero .hero-bottom-container {
+			padding-left: 30px;
+			padding-right: 30px;
+		}
 
-		#hero .hero-bottom { padding-top: 29px; padding-bottom: 29px; }
+		#hero .hero-bottom {
+			padding-top: 29px;
+			padding-bottom: 29px;
+		}
 		#hero .hero-bottom-left,
-		#hero .hero-bottom-right { display: block; text-transform: uppercase; }
+		#hero .hero-bottom-right {
+			display: block;
+			text-transform: uppercase;
+		}
 		#hero .hero-bottom-left p,
 		#hero .hero-bottom-right p {
 			color: var(--white);
@@ -785,18 +960,29 @@ const projectVideos: Record<string, string> = {
 			line-height: 1.1;
 		}
 
-		#hero .hero-bottom-center { max-width: 553px; }
+		#hero .hero-bottom-center {
+			max-width: 553px;
+		}
 
 		#about {
 			padding: 175px 30px 189px;
 		}
-		#about .about-container { width: 46%; }
-		#about .about-description { font-size: 20px; line-height: 1.15; }
+		#about .about-container {
+			width: 46%;
+		}
+		#about .about-description {
+			font-size: 20px;
+			line-height: 1.15;
+		}
 
-		#work { padding-left: 30px; padding-right: 30px; padding-bottom: 221px; }
+		#work {
+			padding-left: 30px;
+			padding-right: 30px;
+			padding-bottom: 221px;
+		}
 		#work .work-title-flex p {
 			display: block;
-			font-family: 'Jubilee', serif;
+			font-family: "Jubilee", serif;
 			font-size: 64px;
 			font-weight: 100;
 			line-height: 1.4;
@@ -811,9 +997,14 @@ const projectVideos: Record<string, string> = {
 			width: 100%;
 		}
 
-		#work .work-projects-up .project-wrapper { width: 40%; }
-		#work .work-projects-up .project-wrapper:nth-child(2) { width: 60%; }
-		#work .work-projects-down .project-wrapper {  }
+		#work .work-projects-up .project-wrapper {
+			width: 40%;
+		}
+		#work .work-projects-up .project-wrapper:nth-child(2) {
+			width: 60%;
+		}
+		#work .work-projects-down .project-wrapper {
+		}
 
 		.work-projects-up {
 			height: 100%;
@@ -978,7 +1169,9 @@ const projectVideos: Record<string, string> = {
 			height: auto;
 			object-fit: cover;
 			opacity: 0;
-			transition: transform 0.6s ease-out, opacity 0.6s ease-out;
+			transition:
+				transform 0.6s ease-out,
+				opacity 0.6s ease-out;
 		}
 
 		.palette-bg-images img:first-child {
@@ -1017,7 +1210,7 @@ const projectVideos: Record<string, string> = {
 			display: flex;
 			position: absolute;
 			inset: auto 0 0;
-			background: linear-gradient(to top, #08182C99, #08182C00);
+			background: linear-gradient(to top, #08182c99, #08182c00);
 			opacity: 0;
 			transition: opacity 0.3s ease;
 		}
@@ -1036,7 +1229,7 @@ const projectVideos: Record<string, string> = {
 
 		.palette-details {
 			z-index: 5;
-			margin-bottom: .5em;
+			margin-bottom: 0.5em;
 			justify-content: center;
 			align-items: center;
 			display: flex;
@@ -1047,11 +1240,12 @@ const projectVideos: Record<string, string> = {
 		.palette-details p {
 			font-size: 1em;
 			line-height: 1.2;
-			font-family: 'Switzer', sans-serif;
+			font-family: "Switzer", sans-serif;
 			font-weight: 400;
 			color: var(--white);
 			opacity: 0;
-			transform: translate3d(0px, 1em, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg);
+			transform: translate3d(0px, 1em, 0px) scale3d(1, 1, 1) rotateX(0deg)
+				rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg);
 			transform-style: preserve-3d;
 		}
 
@@ -1089,11 +1283,29 @@ const projectVideos: Record<string, string> = {
 			gap: 15px;
 		}
 
-		.ui-skeleton { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
-		.ui-skeleton.header { width: 100%; height: 30px; }
-		.ui-skeleton.body { width: 100%; height: 100%; flex-grow: 1; }
-		.ui-skeleton.card { width: 60%; height: 80px; }
-		.ui-skeleton.button { width: 40%; height: 25px; border-radius: 15px; margin-top: auto; }
+		.ui-skeleton {
+			background: rgba(255, 255, 255, 0.1);
+			border-radius: 4px;
+		}
+		.ui-skeleton.header {
+			width: 100%;
+			height: 30px;
+		}
+		.ui-skeleton.body {
+			width: 100%;
+			height: 100%;
+			flex-grow: 1;
+		}
+		.ui-skeleton.card {
+			width: 60%;
+			height: 80px;
+		}
+		.ui-skeleton.button {
+			width: 40%;
+			height: 25px;
+			border-radius: 15px;
+			margin-top: auto;
+		}
 
 		.palette-bg-dev {
 			position: absolute;
@@ -1104,7 +1316,7 @@ const projectVideos: Record<string, string> = {
 			justify-content: center;
 			padding-left: 15%;
 			pointer-events: none;
-			font-family: 'Courier New', Courier, monospace;
+			font-family: "Courier New", Courier, monospace;
 			font-size: 14px;
 			color: rgba(255, 255, 255, 0.4);
 			line-height: 1.6;
@@ -1139,7 +1351,7 @@ const projectVideos: Record<string, string> = {
 			z-index: 2;
 			clip-path: circle(0% at 50% 50%);
 			background-color: var(--light-beige);
-			background-image: url('../assets/images/scroll-container-bg.webp');
+			background-image: url("../assets/images/scroll-container-bg.webp");
 			background-size: cover;
 			background-position: center;
 		}
@@ -1156,7 +1368,8 @@ const projectVideos: Record<string, string> = {
 			pointer-events: none;
 		}
 
-		.text-initial, .text-final {
+		.text-initial,
+		.text-final {
 			position: absolute;
 			text-align: center;
 		}
@@ -1164,7 +1377,7 @@ const projectVideos: Record<string, string> = {
 		.text-initial {
 			color: var(--black);
 			z-index: 1;
-			font-family: 'Switzer', sans-serif;
+			font-family: "Switzer", sans-serif;
 			text-transform: uppercase;
 			font-weight: 700;
 			font-size: 74px;
@@ -1213,63 +1426,87 @@ const projectVideos: Record<string, string> = {
 	import { gsap } from "gsap";
 	import { ScrollTrigger } from "gsap/ScrollTrigger";
 	import SplitType from "split-type";
-	import Lenis from 'lenis';
+	import Lenis from "lenis";
 
 	gsap.registerPlugin(ScrollTrigger, SplitType);
 
-	const tl = gsap.timeline({
-		scrollTrigger: {
-			trigger: ".scroll-container",
-			start: "top top",
-			end: "+=1500",
-			scrub: 1,
-			pin: true
-		}
-	});
-
-	tl.fromTo(".image-reveal",
-		{
-			clipPath: "circle(0% at 50% 50%)"
-		},
-		{
-			clipPath: "circle(100% at 50% 50%)",
-			duration: 2,
-			ease: "none"
-		}
-	)
-		.to(".text-initial", {
-			opacity: 0,
-			duration: 0.5
-		}, "<")
-		.to(".text-final", {
-			opacity: 1,
-			duration: 0.5
-		}, "-=1.2");
-
-	tl.to(".floating-blur", {
-		y: -500,
-		opacity: 0,
-		duration: 1.5
-	}, 0);
-
 	document.addEventListener("astro:page-load", () => {
+		const isHomePage = document.getElementById("hero");
+		if (!isHomePage) return;
+
 		const lenis = new Lenis();
 
-		lenis.on('scroll', ScrollTrigger.update);
+		lenis.on("scroll", ScrollTrigger.update);
 
-		gsap.ticker.add((time) => {
+		const tickerFn = (time) => {
 			lenis.raf(time * 1000);
-		});
-
+		};
+		gsap.ticker.add(tickerFn);
 		gsap.ticker.lagSmoothing(0);
+
+		const scrollContainer = document.querySelector(".scroll-container");
+		if (scrollContainer) {
+			const tl = gsap.timeline({
+				scrollTrigger: {
+					trigger: ".scroll-container",
+					start: "top top",
+					end: "+=1500",
+					scrub: 1,
+					pin: true,
+				},
+			});
+
+			tl.fromTo(
+				".image-reveal",
+				{
+					clipPath: "circle(0% at 50% 50%)",
+				},
+				{
+					clipPath: "circle(100% at 50% 50%)",
+					duration: 2,
+					ease: "none",
+				},
+			)
+				.to(
+					".text-initial",
+					{
+						opacity: 0,
+						duration: 0.5,
+					},
+					"<",
+				)
+				.to(
+					".text-final",
+					{
+						opacity: 1,
+						duration: 0.5,
+					},
+					"-=1.2",
+				);
+
+			tl.to(
+				".floating-blur",
+				{
+					y: -500,
+					opacity: 0,
+					duration: 1.5,
+				},
+				0,
+			);
+		}
 		const prepareSplitReveal = (element) => {
-			if (!element || window.getComputedStyle(element.parentElement).display === 'none') return [];
-			const split = new SplitType(element, { types: 'lines' });
+			if (
+				!element ||
+				window.getComputedStyle(element.parentElement).display ===
+					"none"
+			)
+				return [];
+			const split = new SplitType(element, { types: "lines" });
 
 			split.lines.forEach((el) => {
-				const wrapper = document.createElement('div');
-				wrapper.style.overflow = 'hidden';
-				wrapper.style.display = 'block';
+				const wrapper = document.createElement("div");
+				wrapper.style.overflow = "hidden";
+				wrapper.style.display = "block";
 				el.parentNode.insertBefore(wrapper, el);
 				wrapper.appendChild(el);
 			});
@@ -1278,26 +1515,35 @@ const projectVideos: Record<string, string> = {
 			return split.lines;
 		};
 
-		const heroTitles = document.querySelectorAll('#hero .hero-title h1');
-		const heroLine = document.querySelector('.hero-line');
-		const textCenter = document.querySelector('.hero-bottom-center p');
-		const textLeft = document.querySelector('.hero-bottom-left p');
-		const textRight = document.querySelector('.hero-bottom-right p');
+		const heroTitles = document.querySelectorAll("#hero .hero-title h1");
+		const heroLine = document.querySelector(".hero-line");
+		const textCenter = document.querySelector(".hero-bottom-center p");
+		const textLeft = document.querySelector(".hero-bottom-left p");
+		const textRight = document.querySelector(".hero-bottom-right p");
 
 		if (heroTitles.length > 0) {
-			const splitHero = new SplitType(heroTitles, { types: 'chars' });
+			if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+				return;
+			}
+
+			const splitHero = new SplitType(heroTitles, { types: "chars" });
 			gsap.set(splitHero.chars, { opacity: 0, x: 60, y: 60 });
 
 			gsap.set(heroLine, { scaleX: 0, transformOrigin: "center" });
 
 			const prepareLines = (element) => {
-				if (!element || window.getComputedStyle(element.parentElement).display === 'none') return [];
+				if (
+					!element ||
+					window.getComputedStyle(element.parentElement).display ===
+						"none"
+				)
+					return [];
 
-				const split = new SplitType(element, { types: 'lines' });
+				const split = new SplitType(element, { types: "lines" });
 				split.lines.forEach((el) => {
-					const wrapper = document.createElement('div');
-					wrapper.style.overflow = 'hidden';
-					wrapper.style.display = 'block';
+					const wrapper = document.createElement("div");
+					wrapper.style.overflow = "hidden";
+					wrapper.style.display = "block";
 					el.parentNode.insertBefore(wrapper, el);
 					wrapper.appendChild(el);
 				});
@@ -1308,44 +1554,65 @@ const projectVideos: Record<string, string> = {
 			const linesCenter = prepareLines(textCenter);
 			const linesSides = [
 				...prepareLines(textLeft),
-				...prepareLines(textRight)
+				...prepareLines(textRight),
 			];
 
 			const playHeroAnimation = () => {
 				const tlHero = gsap.timeline();
 
-				tlHero.to(splitHero.chars, {
-					opacity: 1,
-					x: 0,
-					y: 0,
-					duration: 1.2,
-					ease: "power3.out",
-					stagger: { amount: 1, from: "random" }
-				}, 0)
+				tlHero
+					.to(
+						splitHero.chars,
+						{
+							opacity: 1,
+							x: 0,
+							y: 0,
+							duration: 1.2,
+							ease: "power3.out",
+							stagger: { amount: 1, from: "random" },
+						},
+						0,
+					)
 
-					.to(heroLine, {
-						scaleX: 1,
-						duration: 2,
-						ease: "power3.inOut"
-					}, 0.3)
+					.to(
+						heroLine,
+						{
+							scaleX: 1,
+							duration: 2,
+							ease: "power3.inOut",
+						},
+						0.3,
+					)
 
-					.to(linesCenter, {
-						y: "0%",
-						duration: 0.6,
-						stagger: 0.1,
-						ease: "power3.out"
-					}, 0.6)
+					.to(
+						linesCenter,
+						{
+							y: "0%",
+							duration: 0.6,
+							stagger: 0.1,
+							ease: "power3.out",
+						},
+						0.6,
+					)
 
-					.to(linesSides, {
-						y: "0%",
-						duration: 0.6,
-						stagger: 0.1,
-						ease: "power3.out"
-					}, 1.2);
+					.to(
+						linesSides,
+						{
+							y: "0%",
+							duration: 0.6,
+							stagger: 0.1,
+							ease: "power3.out",
+						},
+						1.2,
+					);
 			};
 
-			const aboutSubtitle = document.querySelector('#about .grey-subtitle');
-			const aboutDescription = document.querySelector('#about .about-description');
+			const aboutSubtitle = document.querySelector(
+				"#about .grey-subtitle",
+			);
+			const aboutDescription = document.querySelector(
+				"#about .about-description",
+			);
 
 			if (aboutSubtitle && aboutDescription) {
 				const linesSubtitle = prepareSplitReveal(aboutSubtitle);
@@ -1357,28 +1624,37 @@ const projectVideos: Record<string, string> = {
 					onEnter: () => {
 						const tlAbout = gsap.timeline();
 
-						tlAbout.to(linesSubtitle, {
-							y: "0%",
-							duration: 0.6,
-							ease: "power3.out"
-						})
-
-							.to(linesDescription, {
+						tlAbout
+							.to(linesSubtitle, {
 								y: "0%",
-								duration: 0.8,
-								stagger: 0.1,
-								ease: "power3.out"
-							}, "-=0.4");
+								duration: 0.6,
+								ease: "power3.out",
+							})
+
+							.to(
+								linesDescription,
+								{
+									y: "0%",
+									duration: 0.8,
+									stagger: 0.1,
+									ease: "power3.out",
+								},
+								"-=0.4",
+							);
 					},
-					once: true
+					once: true,
 				});
 			}
 
-			const workTitle = document.querySelector('#work .work-title-flex h2');
-			const workNum = document.querySelector('#work .work-title-flex p');
-			const workLine = document.querySelector('#work .work-line');
-			const workProjects = document.querySelectorAll('#work .project-wrapper');
-			const workBtn = document.querySelector('#work .button-dot');
+			const workTitle = document.querySelector(
+				"#work .work-title-flex h2",
+			);
+			const workNum = document.querySelector("#work .work-title-flex p");
+			const workLine = document.querySelector("#work .work-line");
+			const workProjects = document.querySelectorAll(
+				"#work .project-wrapper",
+			);
+			const workBtn = document.querySelector("#work .button-dot");
 
 			if (workTitle) {
 				const linesWorkTitle = prepareSplitReveal(workTitle);
@@ -1395,38 +1671,55 @@ const projectVideos: Record<string, string> = {
 					onEnter: () => {
 						const tlWork = gsap.timeline();
 
-						tlWork.to(linesWorkTitle, {
-							y: "0%",
-							duration: 0.6,
-							ease: "power3.out"
-						})
-
-							.to(workLine, {
-								scaleX: 1,
-								duration: 1.2,
-								ease: "power3.inOut"
-							}, "-=0.2")
-
-							.to(linesWorkNum, {
+						tlWork
+							.to(linesWorkTitle, {
 								y: "0%",
 								duration: 0.6,
-								ease: "power3.out"
-							}, "-=0.5")
+								ease: "power3.out",
+							})
 
-							.to([workProjects, workBtn], {
-								opacity: 1,
-								duration: 0.8,
-								stagger: 0.1,
-								ease: "power2.out"
-							}, "-=0.2");
+							.to(
+								workLine,
+								{
+									scaleX: 1,
+									duration: 1.2,
+									ease: "power3.inOut",
+								},
+								"-=0.2",
+							)
+
+							.to(
+								linesWorkNum,
+								{
+									y: "0%",
+									duration: 0.6,
+									ease: "power3.out",
+								},
+								"-=0.5",
+							)
+
+							.to(
+								[workProjects, workBtn],
+								{
+									opacity: 1,
+									duration: 0.8,
+									stagger: 0.1,
+									ease: "power2.out",
+								},
+								"-=0.2",
+							);
 					},
-					once: true
+					once: true,
 				});
 			}
 
-			const paletteTitle = document.querySelector('#palette .palette-title-flex h2');
-			const paletteNum = document.querySelector('#palette .palette-title-flex p');
-			const palettes = document.querySelectorAll('#palette .palette');
+			const paletteTitle = document.querySelector(
+				"#palette .palette-title-flex h2",
+			);
+			const paletteNum = document.querySelector(
+				"#palette .palette-title-flex p",
+			);
+			const palettes = document.querySelectorAll("#palette .palette");
 
 			if (paletteTitle) {
 				const linesPaletteTitle = prepareSplitReveal(paletteTitle);
@@ -1439,38 +1732,57 @@ const projectVideos: Record<string, string> = {
 					onEnter: () => {
 						const tlPalette = gsap.timeline();
 
-						tlPalette.to(linesPaletteTitle, {
-							y: "0%",
-							duration: 0.6,
-							ease: "power3.out"
-						})
-
-							.to(linesPaletteNum, {
+						tlPalette
+							.to(linesPaletteTitle, {
 								y: "0%",
 								duration: 0.6,
-								ease: "power3.out"
-							}, "-=0.4")
+								ease: "power3.out",
+							})
 
-							.to(palettes, {
-								opacity: 1,
-								y: 0,
-								duration: 0.8,
-								stagger: 0.2,
-								ease: "power3.out"
-							}, "-=0.2");
+							.to(
+								linesPaletteNum,
+								{
+									y: "0%",
+									duration: 0.6,
+									ease: "power3.out",
+								},
+								"-=0.4",
+							)
+
+							.to(
+								palettes,
+								{
+									opacity: 1,
+									y: 0,
+									duration: 0.8,
+									stagger: 0.2,
+									ease: "power3.out",
+								},
+								"-=0.2",
+							);
 					},
-					once: true
+					once: true,
 				});
 			}
 
-			const overlay = document.getElementById('transition-overlay');
-			const isFirstLoad = document.documentElement.classList.contains('is-first-load');
-			const isTransitioning = overlay && overlay.style.pointerEvents === 'auto';
+			const overlay = document.getElementById("transition-overlay");
+			const isFirstLoad =
+				document.documentElement.classList.contains("is-first-load");
+			const isTransitioning =
+				overlay && overlay.style.pointerEvents === "auto";
 
 			if (isFirstLoad || isTransitioning) {
-				window.addEventListener('transition-finished', playHeroAnimation, { once: true });
+				window.addEventListener(
+					"transition-finished",
+					() => {
+						playHeroAnimation();
+						ScrollTrigger.refresh();
+					},
+					{ once: true },
+				);
 			} else {
 				playHeroAnimation();
+				ScrollTrigger.refresh();
 			}
 		}
 
@@ -1485,7 +1797,9 @@ const projectVideos: Record<string, string> = {
 		};
 		document.addEventListener("astro:before-swap", cleanupIndex);
 
-		const allWorkProjects = document.querySelectorAll("#work .project-wrapper");
+		const allWorkProjects = document.querySelectorAll(
+			"#work .project-wrapper",
+		);
 		allWorkProjects.forEach((project) => {
 			project.addEventListener("click", (e) => {
 				if (!e.target.closest("a")) {
@@ -1502,37 +1816,74 @@ const projectVideos: Record<string, string> = {
 
 			projects.forEach((project) => {
 				const projectImage = project.querySelector(".project-image");
-				const videoContainer = project.querySelector(".video-container");
+				const videoContainer =
+					project.querySelector(".video-container");
 				const video = project.querySelector("video");
 				const blurBg = project.querySelector(".blurred-background");
 				const rolesText = project.querySelector(".project-roles");
 
 				if (!rolesText || !videoContainer || !projectImage) return;
 
-				if (video) video.muted = true;
+				if (video) {
+					video.muted = true;
+					video.defaultMuted = true;
+					video.load();
+				}
 
-				const split = new SplitType(rolesText, { types: 'lines' });
+				const split = new SplitType(rolesText, { types: "lines" });
 
-				split.lines.forEach((el) => {
-					const wrapper = document.createElement('div');
-					wrapper.style.overflow = 'hidden';
-					wrapper.style.display = 'block';
-					el.parentNode.insertBefore(wrapper, el);
-					wrapper.appendChild(el);
+				if (split.lines) {
+					split.lines.forEach((el) => {
+						const wrapper = document.createElement("div");
+						wrapper.style.overflow = "hidden";
+						wrapper.style.display = "block";
+						el.parentNode.insertBefore(wrapper, el);
+						wrapper.appendChild(el);
+					});
+					gsap.set(split.lines, { y: "100%" });
+				}
+
+				gsap.set(videoContainer, {
+					scale: 0.8,
+					xPercent: -50,
+					yPercent: -50,
 				});
 
-				gsap.set(split.lines, { y: "100%" });
-				gsap.set(videoContainer, { scale: 0.8, xPercent: -50, yPercent: -50 });
+				const xTo = gsap.quickTo(videoContainer, "x", {
+					duration: 0.4,
+					ease: "power3.out",
+				});
+				const yTo = gsap.quickTo(videoContainer, "y", {
+					duration: 0.4,
+					ease: "power3.out",
+				});
 
-				const xTo = gsap.quickTo(videoContainer, "x", { duration: 0.4, ease: "power3.out" });
-				const yTo = gsap.quickTo(videoContainer, "y", { duration: 0.4, ease: "power3.out" });
+				const textTl = gsap
+					.timeline({ paused: true })
+					.to(split.lines || [], {
+						y: "0%",
+						duration: 0.4,
+						stagger: 0.05,
+						ease: "power3.out",
+					});
 
-				const textTl = gsap.timeline({ paused: true })
-					.to(split.lines, { y: "0%", duration: 0.4, stagger: 0.05, ease: "power3.out" });
-
-				const videoTl = gsap.timeline({ paused: true })
-					.to(blurBg, { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 0)
-					.to(videoContainer, { opacity: 1, scale: 1, duration: 0.5, ease: "power3.out" }, 0);
+				const videoTl = gsap
+					.timeline({ paused: true })
+					.to(
+						blurBg,
+						{ opacity: 1, duration: 0.4, ease: "power2.inOut" },
+						0,
+					)
+					.to(
+						videoContainer,
+						{
+							opacity: 1,
+							scale: 1,
+							duration: 0.5,
+							ease: "power3.out",
+						},
+						0,
+					);
 
 				project.addEventListener("mouseenter", () => {
 					textTl.play();
@@ -1548,6 +1899,9 @@ const projectVideos: Record<string, string> = {
 					if (pauseCall) pauseCall.kill();
 					videoTl.play();
 					if (video) {
+						if (video.readyState === 0) {
+							video.load();
+						}
 						video.play().catch(() => {});
 					}
 				});
@@ -1555,7 +1909,9 @@ const projectVideos: Record<string, string> = {
 				projectImage.addEventListener("mouseleave", () => {
 					videoTl.reverse();
 					if (video) {
-						pauseCall = gsap.delayedCall(videoTl.duration(), () => video.pause());
+						pauseCall = gsap.delayedCall(videoTl.duration(), () =>
+							video.pause(),
+						);
 					}
 					xTo(0);
 					yTo(0);
@@ -1574,33 +1930,43 @@ const projectVideos: Record<string, string> = {
 				});
 			});
 
-			const hoverPalettes = document.querySelectorAll('.palette');
+			const hoverPalettes = document.querySelectorAll(".palette");
 
 			hoverPalettes.forEach((palette) => {
-				const detailsWrapper = palette.querySelector('.palette-details-wrapper');
-				const detailLines = palette.querySelectorAll('.palette-details p');
+				const detailsWrapper = palette.querySelector(
+					".palette-details-wrapper",
+				);
+				const detailLines =
+					palette.querySelectorAll(".palette-details p");
 
 				gsap.set(detailsWrapper, { opacity: 0 });
 				gsap.set(detailLines, { y: "100%", opacity: 0 });
 
 				const tlHover = gsap.timeline({ paused: true });
 
-				tlHover.to(detailsWrapper, {
-					opacity: 1,
-					duration: 0.3,
-					ease: "power2.out"
-				})
-					.to(detailLines, {
-						y: "0%",
+				tlHover
+					.to(detailsWrapper, {
 						opacity: 1,
-						duration: 0.4,
-						stagger: 0.05,
-						ease: "power3.out"
-					}, "-=0.15");
+						duration: 0.3,
+						ease: "power2.out",
+					})
+					.to(
+						detailLines,
+						{
+							y: "0%",
+							opacity: 1,
+							duration: 0.4,
+							stagger: 0.05,
+							ease: "power3.out",
+						},
+						"-=0.15",
+					);
 
 				let tlImages, tlUI, tlDev;
-				if (palette.classList.contains('palette1')) {
-					const bgImages = palette.querySelectorAll('.palette-bg-images img');
+				if (palette.classList.contains("palette1")) {
+					const bgImages = palette.querySelectorAll(
+						".palette-bg-images img",
+					);
 					tlImages = gsap.timeline({ paused: true });
 					tlImages.to(bgImages, {
 						opacity: 1,
@@ -1608,14 +1974,17 @@ const projectVideos: Record<string, string> = {
 						y: 0,
 						duration: 0.6,
 						stagger: 0.1,
-						ease: "back.out(1.2)"
+						ease: "back.out(1.2)",
 					});
-				}
-				else if (palette.classList.contains('palette2')) {
-					const uiLayers = palette.querySelectorAll('.ui-layer');
+				} else if (palette.classList.contains("palette2")) {
+					const uiLayers = palette.querySelectorAll(".ui-layer");
 
-
-					gsap.set(uiLayers, { opacity: 0, rotationX: 60, rotationZ: -45, y: 50 });
+					gsap.set(uiLayers, {
+						opacity: 0,
+						rotationX: 60,
+						rotationZ: -45,
+						y: 50,
+					});
 
 					tlUI = gsap.timeline({ paused: true });
 					tlUI.to(uiLayers, {
@@ -1624,11 +1993,11 @@ const projectVideos: Record<string, string> = {
 						y: (index) => index * -45,
 						duration: 0.6,
 						stagger: 0.15,
-						ease: "power3.out"
+						ease: "power3.out",
 					});
-				}
-				else if (palette.classList.contains('palette3')) {
-					const codeSpans = palette.querySelectorAll('.code-line span');
+				} else if (palette.classList.contains("palette3")) {
+					const codeSpans =
+						palette.querySelectorAll(".code-line span");
 
 					gsap.set(codeSpans, { width: "0%" });
 
@@ -1637,19 +2006,18 @@ const projectVideos: Record<string, string> = {
 						width: "100%",
 						duration: 0.8,
 						stagger: 0.15,
-						ease: "steps(20)"
+						ease: "steps(20)",
 					});
 				}
 
-
-				palette.addEventListener('mouseenter', () => {
+				palette.addEventListener("mouseenter", () => {
 					tlHover.play();
 					if (tlImages) tlImages.timeScale(1).play();
 					if (tlUI) tlUI.timeScale(1).play();
 					if (tlDev) tlDev.timeScale(1).play();
 				});
 
-				palette.addEventListener('mouseleave', () => {
+				palette.addEventListener("mouseleave", () => {
 					tlHover.reverse();
 					if (tlImages) tlImages.timeScale(4).reverse();
 					if (tlUI) tlUI.timeScale(3).reverse();
