@@ -21,7 +21,27 @@ const { Content } = await render(projet);
 ---
 
 <Layout
-    titre={`${projet.data.title} - Clément Torchiat`}
+    titre={`${projet.data.title} — Clément Torchiat`}
+    description={projet.data.description}
+    image={projet.data.coverImage.src}
+    imageAlt={`Projet ${projet.data.title} — Direction Artistique & Développement par Clément Torchiat`}
+    article={true}
+    tags={projet.data.tags}
+    publishedTime={new Date(projet.data.year, 0, 1)}
+    schemaType="CreativeWork"
+    breadcrumb={[
+        { name: "Projets", path: "/work" },
+        { name: projet.data.title, path: `/projets/${projet.id}` }
+    ]}
+    projectData={{
+        title: projet.data.title,
+        description: projet.data.description,
+        clientName: projet.data.clientName,
+        clientCompany: projet.data.clientCompany,
+        year: projet.data.year,
+        tags: projet.data.tags,
+        link: projet.data.link
+    }}
     masquerFooter={false}
     typeHeader="alternatif"
 >

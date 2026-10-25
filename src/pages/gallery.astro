@@ -24,8 +24,12 @@ const galleryData = await Promise.all(allProjects.map(async (gallery) => {
 ---
 
 <Layout 
-    titre="Galerie - Clément Torchiat" 
-    description="Explorez ma galerie de créations et d'expérimentations visuelles."
+    titre="Galerie & Expérimentations Visuelles — Clément Torchiat" 
+    description="Explorez une collection de créations graphiques, posters, expérimentations 3D et explorations visuelles par Clément Torchiat."
+    schemaType="CollectionPage"
+    breadcrumb={[{ name: "Galerie", path: "/gallery" }]}
+    image="/og-image.png"
+    imageAlt="Galerie et explorations visuelles de Clément Torchiat"
     masquerFooter={true} 
     typeHeader="alternatif">
     <div class="gallery-wrapper">
