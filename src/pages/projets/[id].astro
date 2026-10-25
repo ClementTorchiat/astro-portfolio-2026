@@ -30,6 +30,21 @@ const { Content } = await render(projet);
             <div class="col-info">
                 <h1>{projet.data.title}</h1>
                 <p>{projet.data.description}</p>
+                {
+                    projet.data.link && (
+                        <a
+                            href={projet.data.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="project-link"
+                            data-cursor-text="Visiter"
+                        >
+                            <span>
+                                {projet.data.linkLabel || "Visiter le site"}
+                            </span>
+                        </a>
+                    )
+                }
             </div>
             <div class="col-roles">
                 <h3>RÔLES :</h3>
@@ -107,6 +122,29 @@ const { Content } = await render(projet);
         max-width: 90%;
     }
 
+    .project-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 1rem;
+        font-family: "Switzer", sans-serif;
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: #2563eb;
+        text-decoration: underline;
+        text-decoration-color: rgba(37, 99, 235, 0.4);
+        text-underline-offset: 4px;
+        text-decoration-thickness: 1.5px;
+        transition:
+            color 0.25s ease,
+            text-decoration-color 0.25s ease;
+    }
+
+    .project-link:hover {
+        color: #1d4ed8;
+        text-decoration-color: #1d4ed8;
+    }
+
     .col-roles h3,
     .col-client h3 {
         font-family: "Switzer", sans-serif;
@@ -143,6 +181,43 @@ const { Content } = await render(projet);
         gap: 20px;
     }
 
+    .project-content :global(h2) {
+        font-family: "Jubilee", serif;
+        font-size: 2.2rem;
+        line-height: 1.15;
+        margin-top: 3.5rem;
+        margin-bottom: 0.25rem;
+        text-transform: uppercase;
+        color: var(--black);
+    }
+
+    .project-content :global(p) {
+        font-family: "Switzer", sans-serif;
+        font-size: 1.05rem;
+        line-height: 1.6;
+        color: var(--black);
+    }
+
+    .project-content :global(ul) {
+        list-style: disc;
+        padding-left: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+    }
+
+    .project-content :global(li) {
+        font-family: "Switzer", sans-serif;
+        font-size: 1.05rem;
+        line-height: 1.6;
+        color: var(--black);
+    }
+
+    .project-content :global(li strong) {
+        font-weight: 600;
+        color: var(--black);
+    }
+
     .project-content :global(img) {
         width: 100%;
         height: auto;
@@ -177,6 +252,10 @@ const { Content } = await render(projet);
         background-color: #e6e6e6 !important;
         border-radius: 4px;
         line-height: 1;
+    }
+
+    .minimap-content :global(.project-link) {
+        display: none !important;
     }
 
     .minimap-content :global(img) {
@@ -368,8 +447,28 @@ const { Content } = await render(projet);
         );
         const linesHeader = prepareSplitReveal(headerTexts);
         const minimapContainer = document.querySelector(".minimap-container");
+        const projectLink = document.querySelector(".project-link");
 
         if (minimapContainer) gsap.set(minimapContainer, { opacity: 0 });
+        if (projectLink) gsap.set(projectLink, { opacity: 0, y: 15 });
+
+        // Split and hide body text lines immediately (synchronously) so they are hidden
+        // before the page transition finishes, avoiding any flash of unhidden text.
+        const contentTextElements = Array.from(
+            document.querySelectorAll(
+                ".project-content h1, .project-content h2, .project-content h3, .project-content h4, .project-content h5, .project-content h6, .project-content p, .project-content li, .project-content blockquote",
+            ),
+        ).filter(
+            (el) =>
+                !el.querySelector("img") && el.textContent.trim().length > 0,
+        );
+
+        const contentTextEntries = contentTextElements
+            .map((el) => ({
+                el,
+                lines: prepareSplitReveal(el),
+            }))
+            .filter((entry) => entry.lines.length > 0);
 
         const playProjectIntro = () => {
             const tlIntro = gsap.timeline();
@@ -393,6 +492,35 @@ const { Content } = await render(projet);
                     "-=0.4",
                 );
             }
+            if (projectLink) {
+                tlIntro.to(
+                    projectLink,
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.8,
+                        ease: "power3.out",
+                    },
+                    "-=0.4",
+                );
+            }
+
+            // Activate ScrollTriggers for body text now that the transition is finished
+            contentTextEntries.forEach(({ el, lines }) => {
+                ScrollTrigger.create({
+                    trigger: el,
+                    start: "top 85%",
+                    onEnter: () => {
+                        gsap.to(lines, {
+                            y: "0%",
+                            duration: 0.8,
+                            stagger: 0.02,
+                            ease: "power3.out",
+                        });
+                    },
+                    once: true,
+                });
+            });
         };
 
         const overlay = document.getElementById("transition-overlay");
@@ -475,7 +603,7 @@ const { Content } = await render(projet);
 
                 // Restrict minimap height to prevent overflow
                 const maxMinimapHeight = windowHeight - 320;
-                const maxMinimapWidth = 100;
+                const maxMinimapWidth = 80;
 
                 const scaleX = maxMinimapWidth / totalWidth;
                 const scaleY = maxMinimapHeight / cloneHeight;

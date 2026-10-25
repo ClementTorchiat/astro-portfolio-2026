@@ -21,6 +21,8 @@ const projetsCollection = defineCollection({
         clientName: z.string(),
         clientCompany: z.string(),
         year: z.number(),
+        link: z.string().optional(),
+        linkLabel: z.string().optional(),
     }),
 });
 
