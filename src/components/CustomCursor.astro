@@ -39,10 +39,11 @@
         height: 80px;
         background-color: #0000004d;
         border-radius: 50%;
-        backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
         transform: translate(-50%, -50%) scale(0.2);
         will-change: transform;
+        transition: background-color 0.3s ease;
     }
 
     .cursor-text {
@@ -55,9 +56,17 @@
         letter-spacing: 0.5px;
         white-space: nowrap;
         opacity: 0;
-        transition: opacity 0.2s ease;
-        font-family: 'Jubilee', serif;
+        transition: opacity 0.2s ease, color 0.3s ease;
+        font-family: "Jubilee", serif;
         font-weight: 500;
+    }
+
+    :global(body.cursor-light) .cursor-blob {
+        background-color: rgba(255, 255, 255, 0.65);
+    }
+
+    :global(body.cursor-light) .cursor-text {
+        color: var(--black);
     }
 
     [data-magnetic] {
@@ -68,28 +77,31 @@
 </style>
 
 <script>
-    let rafId;
-    let cleanupFuncs = [];
+    let rafId: number | null = null;
+    let cleanupFuncs: (() => void)[] = [];
 
     function cleanupCursor() {
         if (rafId) {
             cancelAnimationFrame(rafId);
             rafId = null;
         }
-        cleanupFuncs.forEach(fn => fn());
+        cleanupFuncs.forEach((fn) => fn());
         cleanupFuncs = [];
     }
 
     function initCursor() {
         cleanupCursor();
 
-        if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+        if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches)
+            return;
 
-        const cursor = document.getElementById('custom-cursor');
-        const blob = cursor?.querySelector('.cursor-blob') as HTMLElement;
-        const textEl = cursor?.querySelector('.cursor-text') as HTMLElement;
+        const cursor = document.getElementById("custom-cursor") as HTMLElement;
+        if (!cursor) return;
 
-        if (!cursor || !blob || !textEl) return;
+        const blob = cursor.querySelector(".cursor-blob") as HTMLElement;
+        const textEl = cursor.querySelector(".cursor-text") as HTMLElement;
+
+        if (!blob || !textEl) return;
 
         let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
         let pos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
@@ -98,9 +110,9 @@
         let scale = 0.2;
         let isHovering = false;
         let hasMoved = false;
-        let magneticTarget = null;
+        let magneticTarget: HTMLElement | null = null;
 
-        const onMouseMove = (e) => {
+        const onMouseMove = (e: MouseEvent) => {
             if (!hasMoved) {
                 pos.x = e.clientX;
                 pos.y = e.clientY;
@@ -109,44 +121,52 @@
             mouse.x = e.clientX;
             mouse.y = e.clientY;
         };
-        window.addEventListener('mousemove', onMouseMove);
-        cleanupFuncs.push(() => window.removeEventListener('mousemove', onMouseMove));
+        window.addEventListener("mousemove", onMouseMove);
+        cleanupFuncs.push(() =>
+            window.removeEventListener("mousemove", onMouseMove),
+        );
 
         const onMouseLeaveDoc = () => {
-            cursor.style.opacity = '0';
+            cursor.style.opacity = "0";
         };
-        document.addEventListener('mouseleave', onMouseLeaveDoc);
-        cleanupFuncs.push(() => document.removeEventListener('mouseleave', onMouseLeaveDoc));
+        document.addEventListener("mouseleave", onMouseLeaveDoc);
+        cleanupFuncs.push(() =>
+            document.removeEventListener("mouseleave", onMouseLeaveDoc),
+        );
 
         const onMouseEnterDoc = () => {
-            cursor.style.opacity = '1';
+            cursor.style.opacity = "1";
         };
-        document.addEventListener('mouseenter', onMouseEnterDoc);
-        cleanupFuncs.push(() => document.removeEventListener('mouseenter', onMouseEnterDoc));
+        document.addEventListener("mouseenter", onMouseEnterDoc);
+        cleanupFuncs.push(() =>
+            document.removeEventListener("mouseenter", onMouseEnterDoc),
+        );
 
-        const interactives = document.querySelectorAll('[data-cursor-text], [data-magnetic], [data-cursor-hover]');
-        
-        interactives.forEach(el => {
+        const interactives = document.querySelectorAll<HTMLElement>(
+            "[data-cursor-text], [data-magnetic], [data-cursor-hover]",
+        );
+
+        interactives.forEach((el) => {
             const onMouseEnter = () => {
                 isHovering = true;
                 targetScale = 0.5;
 
-                if (el.hasAttribute('data-cursor-text')) {
+                if (el.hasAttribute("data-cursor-text")) {
                     targetScale = 1;
-                    textEl.textContent = el.getAttribute('data-cursor-text');
-                    textEl.style.opacity = '1';
+                    textEl.textContent = el.getAttribute("data-cursor-text");
+                    textEl.style.opacity = "1";
                 }
 
-                if (el.hasAttribute('data-magnetic')) {
+                if (el.hasAttribute("data-magnetic")) {
                     magneticTarget = el;
-                    targetScale = el.hasAttribute('data-cursor-text') ? 1 : 0.6;
+                    targetScale = el.hasAttribute("data-cursor-text") ? 1 : 0.6;
                 }
             };
 
             const onMouseLeave = () => {
                 isHovering = false;
                 targetScale = 0.2;
-                textEl.style.opacity = '0';
+                textEl.style.opacity = "0";
 
                 if (magneticTarget) {
                     magneticTarget.style.transform = `translate(0px, 0px)`;
@@ -154,17 +174,17 @@
                 }
             };
 
-            el.addEventListener('mouseenter', onMouseEnter);
-            el.addEventListener('mouseleave', onMouseLeave);
+            el.addEventListener("mouseenter", onMouseEnter);
+            el.addEventListener("mouseleave", onMouseLeave);
 
             cleanupFuncs.push(() => {
-                el.removeEventListener('mouseenter', onMouseEnter);
-                el.removeEventListener('mouseleave', onMouseLeave);
+                el.removeEventListener("mouseenter", onMouseEnter);
+                el.removeEventListener("mouseleave", onMouseLeave);
             });
         });
 
         function render() {
-            const lerp = 0.15;
+            const lerp = 0.25;
 
             let targetX = mouse.x;
             let targetY = mouse.y;
@@ -216,10 +236,10 @@
 
         rafId = requestAnimationFrame(render);
     }
-    document.addEventListener('dom-updated', () => {
+    document.addEventListener("dom-updated", () => {
         initCursor();
     });
 
-    document.addEventListener('astro:page-load', initCursor);
-    document.addEventListener('astro:before-swap', cleanupCursor);
+    document.addEventListener("astro:page-load", initCursor);
+    document.addEventListener("astro:before-swap", cleanupCursor);
 </script>

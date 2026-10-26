@@ -38,6 +38,16 @@ const slidesData = projets.map((projet) => ({
                     <div class="slide-link">
                         <a data-cursor-hover href={slidesData[0].slideUrl}>Voir le projet</a>
                     </div>
+                    <button class="slide-scroll-indicator" aria-label="Projet suivant" data-cursor-hover>
+                        <span class="scroll-mouse">
+                            <svg width="20" height="30" viewBox="0 0 20 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="1" y="1" width="18" height="28" rx="9" stroke="currentColor" stroke-width="1.2" />
+                                <g class="scroll-arrow">
+                                    <path d="M10 6.5V13.5M7.5 11.5L10 14L12.5 11.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+                                </g>
+                            </svg>
+                        </span>
+                    </button>
                 </div>
                 <div class="slide-info">
                     <div class="slide-tags">
@@ -96,6 +106,45 @@ const slidesData = projets.map((projet) => ({
 
     .work-page .slide-link a {
         text-decoration: underline;
+    }
+
+    .work-page .slide-scroll-indicator {
+        background: transparent;
+        border: none;
+        color: var(--white);
+        opacity: 0.75;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 0.25rem;
+        padding: 4px;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .work-page .slide-scroll-indicator:hover {
+        opacity: 1;
+        transform: translateY(2px);
+    }
+
+    .work-page .scroll-arrow {
+        transform-origin: 10px 10px;
+        animation: scrollPrompt 1.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+    }
+
+    @keyframes scrollPrompt {
+        0% {
+            opacity: 0.3;
+            transform: translateY(-2px);
+        }
+        50% {
+            opacity: 1;
+            transform: translateY(3px);
+        }
+        100% {
+            opacity: 0.3;
+            transform: translateY(-2px);
+        }
     }
 
     .work-page .slider {
@@ -241,8 +290,14 @@ const slidesData = projets.map((projet) => ({
 
             const words = initialSlide.querySelectorAll(".word");
             const lines = initialSlide.querySelectorAll(".line");
+            const initialScrollIndicator = initialSlide.querySelector(".slide-scroll-indicator");
 
             gsap.set([...words, ...lines], { y: "100%", force3D: true });
+            if (initialScrollIndicator) {
+                gsap.set(initialScrollIndicator, { y: 15, opacity: 0 });
+            }
+
+            attachScrollIndicator(initialSlide);
 
             const playInitialAnimation = () => {
                 const tl = gsap.timeline({
@@ -259,6 +314,7 @@ const slidesData = projets.map((projet) => ({
                 const indexLines = initialSlide.querySelectorAll(".slide-index-wrapper .line");
                 const descriptionLines = initialSlide.querySelectorAll(".slide-description .line");
                 const linkLines = initialSlide.querySelectorAll(".slide-link .line");
+                const scrollIndicator = initialSlide.querySelector(".slide-scroll-indicator");
 
                 tl.to(headerWords, {
                     y: "0%",
@@ -280,6 +336,15 @@ const slidesData = projets.map((projet) => ({
                         ease: "power4.out",
                         force3D: true,
                     }, "-=0.8");
+
+                if (scrollIndicator) {
+                    tl.to(scrollIndicator, {
+                        y: 0,
+                        opacity: 0.75,
+                        duration: 0.8,
+                        ease: "power3.out",
+                    }, "-=0.6");
+                }
             };
 
             const overlay = document.getElementById('transition-overlay');
@@ -341,9 +406,25 @@ const slidesData = projets.map((projet) => ({
             a.textContent = "Voir le projet";
             slideLink.appendChild(a);
 
+            const scrollIndicator = document.createElement("button");
+            scrollIndicator.className = "slide-scroll-indicator";
+            scrollIndicator.setAttribute("aria-label", "Projet suivant");
+            scrollIndicator.setAttribute("data-cursor-hover", "");
+            scrollIndicator.innerHTML = `
+                <span class="scroll-mouse">
+                    <svg width="20" height="30" viewBox="0 0 20 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="1" y="1" width="18" height="28" rx="9" stroke="currentColor" stroke-width="1.2" />
+                        <g class="scroll-arrow">
+                            <path d="M10 6.5V13.5M7.5 11.5L10 14L12.5 11.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+                        </g>
+                    </svg>
+                </span>
+            `;
+
             slideHeader.appendChild(slideTitle);
             slideHeader.appendChild(slideDescription);
             slideHeader.appendChild(slideLink);
+            slideHeader.appendChild(scrollIndicator);
 
             const slideInfo = document.createElement("div");
             slideInfo.className = "slide-info";
@@ -528,7 +609,30 @@ const slidesData = projets.map((projet) => ({
                     force3D: true,
                 }, "-=1");
 
+                const newScrollIndicator = newSlide.querySelector(".slide-scroll-indicator");
+                if (newScrollIndicator) {
+                    gsap.set(newScrollIndicator, { y: 15, opacity: 0 });
+                    mainTl.to(newScrollIndicator, {
+                        y: 0,
+                        opacity: 0.75,
+                        duration: 0.8,
+                        ease: "power3.out",
+                    }, "-=0.8");
+                }
+
+                attachScrollIndicator(newSlide);
             }, 750);
+        }
+
+        function attachScrollIndicator(slideElement) {
+            const btn = slideElement?.querySelector(".slide-scroll-indicator");
+            if (btn) {
+                btn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleScroll("down");
+                });
+            }
         }
 
         function handleScroll(direction) {

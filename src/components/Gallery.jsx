@@ -8,7 +8,7 @@ const MINIMAP_SIZE = 360;
 const IMG_WIDTH = 250;
 const GAP = 50;
 
-function ZoomableImage({ src, alt }) {
+function ZoomableImage({ src, alt, origWidth, origHeight }) {
     const [position, setPosition] = useState({ x: 50, y: 50 });
     const [isZoomed, setIsZoomed] = useState(false);
     const containerRef = useRef(null);
@@ -16,15 +16,18 @@ function ZoomableImage({ src, alt }) {
     const handleMouseMove = (e) => {
         if (!containerRef.current) return;
         const { left, top, width, height } = containerRef.current.getBoundingClientRect();
-        const x = ((e.clientX - left) / width) * 100;
-        const y = ((e.clientY - top) / height) * 100;
+        const x = Math.max(0, Math.min(100, ((e.clientX - left) / width) * 100));
+        const y = Math.max(0, Math.min(100, ((e.clientY - top) / height) * 100));
         setPosition({ x, y });
     };
+
+    const aspectRatioStyle = origWidth && origHeight ? { aspectRatio: `${origWidth} / ${origHeight}` } : {};
 
     return (
         <div
             className="zoom-image-container"
             ref={containerRef}
+            style={aspectRatioStyle}
             onMouseEnter={() => setIsZoomed(true)}
             onMouseLeave={() => setIsZoomed(false)}
             onMouseMove={handleMouseMove}
@@ -74,12 +77,91 @@ function App({ projects = [] }) {
     const [items, setItems] = useState([]);
     const [minScale, setMinScale] = useState(1);
     const [selectedItem, setSelectedItem] = useState(null);
+    const [showHint, setShowHint] = useState(false);
+    const [isHintHiding, setIsHintHiding] = useState(false);
+    const hintVisibleRef = useRef(false);
+    const isHidingRef = useRef(false);
+    const hasStartedCountdownRef = useRef(false);
+    const hintTimerRef = useRef(null);
     const pointerPos = useRef({ x: 0, y: 0 });
     const viewStateRef = useRef({ positionX: 0, positionY: 0, scale: 1 });
+
+    hintVisibleRef.current = showHint;
+    isHidingRef.current = isHintHiding;
     
     // Refs for direct DOM updates (60fps performance without React re-renders)
     const minimapViewportRef = useRef(null);
     const minimapDotsRef = useRef(new Map());
+
+    const startDismissAnimation = () => {
+        if (isHidingRef.current) return;
+        isHidingRef.current = true;
+        setIsHintHiding(true);
+        sessionStorage.setItem("hasSeenGalleryHint", "true");
+        setTimeout(() => {
+            setShowHint(false);
+            setIsHintHiding(false);
+            hintVisibleRef.current = false;
+            isHidingRef.current = false;
+            hasStartedCountdownRef.current = false;
+        }, 600);
+    };
+
+    const handleUserInteraction = () => {
+        if (!hintVisibleRef.current || isHidingRef.current || hasStartedCountdownRef.current) return;
+        hasStartedCountdownRef.current = true;
+        if (hintTimerRef.current) {
+            clearTimeout(hintTimerRef.current);
+        }
+        hintTimerRef.current = setTimeout(() => {
+            startDismissAnimation();
+        }, 3000);
+    };
+
+    useEffect(() => {
+        const hasSeen = sessionStorage.getItem("hasSeenGalleryHint");
+        if (!hasSeen) {
+            setShowHint(true);
+            hintVisibleRef.current = true;
+            hasStartedCountdownRef.current = false;
+            hintTimerRef.current = setTimeout(() => {
+                startDismissAnimation();
+            }, 10000);
+        }
+        return () => {
+            if (hintTimerRef.current) clearTimeout(hintTimerRef.current);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!showHint || isHintHiding) return;
+
+        const onUserInput = () => {
+            handleUserInteraction();
+        };
+
+        window.addEventListener("pointerdown", onUserInput, { passive: true });
+        window.addEventListener("wheel", onUserInput, { passive: true });
+        window.addEventListener("keydown", onUserInput, { passive: true });
+
+        return () => {
+            window.removeEventListener("pointerdown", onUserInput);
+            window.removeEventListener("wheel", onUserInput);
+            window.removeEventListener("keydown", onUserInput);
+        };
+    }, [showHint, isHintHiding]);
+
+    useEffect(() => {
+        if (selectedItem) {
+            document.body.classList.add("cursor-light");
+            startDismissAnimation();
+        } else {
+            document.body.classList.remove("cursor-light");
+        }
+        return () => {
+            document.body.classList.remove("cursor-light");
+        };
+    }, [selectedItem]);
 
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -117,8 +199,8 @@ function App({ projects = [] }) {
 
             while (!validPosition && attempts < 150) {
                 attempts++;
-                const spreadX = (Math.random() + Math.random() - 1) * 1400;
-                const spreadY = (Math.random() + Math.random() - 1) * 1400;
+                const spreadX = (Math.random() + Math.random() - 1) * 900;
+                const spreadY = (Math.random() + Math.random() - 1) * 900;
                 x = CENTER + spreadX - (w / 2);
                 y = CENTER + spreadY - (h / 2);
 
@@ -243,10 +325,53 @@ function App({ projects = [] }) {
     const containerRef = useRef(null);
 
     return (
-        <div className="gallery-container" ref={containerRef}>
+        <div
+            className="gallery-container"
+            ref={containerRef}
+            onPointerDown={handleUserInteraction}
+            onWheel={handleUserInteraction}
+        >
+            {showHint && (
+                <div
+                    className={`gallery-onboarding-hint ${isHintHiding ? 'is-hiding' : ''}`}
+                    onClick={startDismissAnimation}
+                    data-cursor-hover
+                >
+                    <div className="hint-row">
+                        <span className="hint-mouse-icon">
+                            <svg width="14" height="21" viewBox="0 0 20 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="1" y="1" width="18" height="28" rx="9" stroke="currentColor" strokeWidth="1.2" />
+                                <path d="M10 1C5.03 1 1 5.03 1 10H10V1Z" fill="currentColor" fillOpacity="0.4" />
+                                <line x1="10" y1="1" x2="10" y2="10" stroke="currentColor" strokeWidth="1.2" />
+                                <line x1="1" y1="10" x2="19" y2="10" stroke="currentColor" strokeWidth="1.2" opacity="0.4" />
+                                <g className="pan-arrows">
+                                    <path d="M5 20H15M7 18L5 20L7 22M13 18L15 20L13 22" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                                </g>
+                            </svg>
+                        </span>
+                        <span className="hint-text">Maintenir le clic gauche et glisser pour se déplacer</span>
+                    </div>
+
+                    <div className="hint-row">
+                        <span className="hint-mouse-icon">
+                            <svg width="14" height="21" viewBox="0 0 20 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="1" y="1" width="18" height="28" rx="9" stroke="currentColor" strokeWidth="1.2" />
+                                <line x1="1" y1="10" x2="19" y2="10" stroke="currentColor" strokeWidth="1.2" opacity="0.3" />
+                                <line x1="10" y1="1" x2="10" y2="5" stroke="currentColor" strokeWidth="1.2" opacity="0.4" />
+                                <line x1="10" y1="11" x2="10" y2="10" stroke="currentColor" strokeWidth="1.2" opacity="0.4" />
+                                <g className="zoom-wheel">
+                                    <rect x="8.5" y="5" width="3" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
+                                    <path d="M10 18V24M7.5 20L10 17.5L12.5 20M7.5 22L10 24.5L12.5 22" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
+                                </g>
+                            </svg>
+                        </span>
+                        <span className="hint-text">Zoomer avec la molette</span>
+                    </div>
+                </div>
+            )}
             <TransformWrapper
                 ref={transformComponentRef}
-                initialScale={1.5}
+                initialScale={1.0}
                 minScale={minScale}
                 maxScale={3}
                 limitToBounds={true}
@@ -255,12 +380,24 @@ function App({ projects = [] }) {
                 wheel={{ step: 0.1 }}
                 pinch={{ step: 5 }}
                 panning={{ velocityDisabled: false, velocitySensitivity: 2 }}
-                onPanningStart={() => containerRef.current?.classList.add('is-interacting')}
+                onPanningStart={() => {
+                    containerRef.current?.classList.add('is-interacting');
+                    handleUserInteraction();
+                }}
                 onPanningStop={() => containerRef.current?.classList.remove('is-interacting')}
-                onZoomStart={() => containerRef.current?.classList.add('is-interacting')}
+                onZoomStart={() => {
+                    containerRef.current?.classList.add('is-interacting');
+                    handleUserInteraction();
+                }}
                 onZoomStop={() => containerRef.current?.classList.remove('is-interacting')}
-                onPanning={(ref) => updateMinimap(ref.state)}
-                onZooming={(ref) => updateMinimap(ref.state)}
+                onPanning={(ref) => {
+                    updateMinimap(ref.state);
+                    handleUserInteraction();
+                }}
+                onZooming={(ref) => {
+                    updateMinimap(ref.state);
+                    handleUserInteraction();
+                }}
                 onTransformed={(ref) => updateMinimap(ref.state)}
                 onInit={(ref) => updateMinimap(ref.state)}
             >
@@ -317,9 +454,13 @@ function App({ projects = [] }) {
                     <div className="project-modal-content">
 
                         <div className="modal-left" style={{ cursor: 'auto' }}>
-
-                            <div onPointerDown={(e) => e.stopPropagation()} style={{ width: '100%', height: '100%' }}>
-                                <ZoomableImage src={selectedItem.fullSrc || selectedItem.src} alt={selectedItem.title} />
+                            <div onPointerDown={(e) => e.stopPropagation()} className="modal-image-wrapper">
+                                <ZoomableImage
+                                    src={selectedItem.fullSrc || selectedItem.src}
+                                    alt={selectedItem.title}
+                                    origWidth={selectedItem.origWidth}
+                                    origHeight={selectedItem.origHeight}
+                                />
                             </div>
                         </div>
 

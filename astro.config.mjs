@@ -9,8 +9,17 @@ export default defineConfig({
   site: 'https://clement-torchiat.fr',
   integrations: [react(), mdx(), sitemap()],
   vite: {
+    resolve: {
+      dedupe: ['react', 'react-dom'],
+    },
     optimizeDeps: {
-      include: ['react-zoom-pan-pinch']
+      include: [
+        'react',
+        'react-dom',
+        'react/jsx-runtime',
+        'react/jsx-dev-runtime',
+        'react-zoom-pan-pinch'
+      ]
     }
   }
 });
